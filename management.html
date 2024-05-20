@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirLimited - Fertigung</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+   <header>
+        <div class="logo">
+            <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
+        </div>
+        <h1>Willkommen im AirLimited Shop</h1>
+        <nav>
+            <button onclick="window.location.href='index.html'">Onlineshop</button>
+            <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
+            <button onclick="window.location.href='management.html'" class="management-btn">Management</button>
+            <button onclick="window.location.href='login.html'" class="login-btn">Login</button>
+        </nav>
+        <div class="account-buttons">
+            <button onclick="window.location.href='management.html'">Hallo Management!</button>
+        </div>
+    </header>
+
+<h2>Auftragsübersicht für das Management</h2>
+
+<main>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Reihenfolge</th>
+                <th>Auftragsnummer</th>
+ 	    <th>Fertigungsstätte</th>
+                <th>Artikel</th>
+                <th>SKUNr.</th>
+                <th>Losgröße</th>
+                <th>Lagerbestand</th>
+                <th>Auftragsstatus</th>
+                <th>VIP</th>
+                <th>Auftragsdetails</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <select>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+						<option value="4">4</option>
+						<option value="5">5</option>
+                    </select>
+                </td>
+                <td>0001</td>
+	    <td> 01 - Dortmund </td>
+                <td>Lüfterblatt</td>
+                <td>0001</td>
+                <td>20</td>
+                <td>5</td>
+                <td>In der Fertigung</td>
+	    <td>ja</td>
+                <td><a href="kundendetails.html">Auftragsdetails anzeigen</a></td>
+            </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer>
+    <p>&copy; 2024 AirLimited. Alle Rechte vorbehalten.</p>
+</footer>
+</body>
+</html>
+
+
+
+
