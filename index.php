@@ -1,7 +1,7 @@
 <?php
+    // Get Access to our database
     require_once "db_class.php";
 
-    // Get Access to our database
     $DBServer   = 'localhost';
 	$DBHost     = 'airlimited';
 	$DBUser     = 'root';
@@ -9,6 +9,33 @@
 	
 	$db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 	$db->connect();
+
+    // Variablen für Filter getten 
+    $price_min = 0;
+    $price_max = 99999;
+
+    if (isset($_GET['price_min']) and (int)$_GET['price_min'] <> 0 ) {
+        $price_min = (int)$_GET['price_min'];
+    }
+    if (isset($_GET['price_max']) and (int)$_GET['price_max'] <> 0 ) {
+        $price_max = (int)$_GET['price_max'];
+    }
+    if (!isset($_GET['sort'])) {
+        $sort = 'SKUNr ASC';
+    } else {
+        $sort = $_GET['sort'];
+    }
+
+    
+    // Construct the query for the data that we want to see
+    $query = 'SELECT    `Foto`, `Name`, `SKUNr`, `Beschreibung`, `Preis`, `Verfuegbarkeit` ';
+    $query .= 'FROM `airlimited`.`sku`';
+    $query .= 'WHERE Preis > '. $price_min .' AND Preis < ' . $price_max . ' ';
+    $query .= 'ORDER BY ' . $sort . ' ';
+    $query .= 'LIMIT 1000;';
+
+    // Query the data
+    $result = $db->getEntityArray($query);
 ?>
 
 <!DOCTYPE html>
@@ -65,34 +92,6 @@
         </div>
         <div class="product-content">
             <?php
-
-                // Variablen für Filter getten 
-                $price_min = 0;
-                $price_max = 99999;
-
-                if (isset($_GET['price_min']) and (int)$_GET['price_min'] <> 0 ) {
-                    $price_min = (int)$_GET['price_min'];
-                }
-                if (isset($_GET['price_max']) and (int)$_GET['price_max'] <> 0 ) {
-                    $price_max = (int)$_GET['price_max'];
-                }
-                if (!isset($_GET['sort'])) {
-                    $sort = 'SKUNr ASC';
-                } else {
-                    $sort = $_GET['sort'];
-                }
-
-                
-                // Construct the query for the data that we want to see
-                $query = 'SELECT    `Foto`, `Name`, `SKUNr`, `Beschreibung`, `Preis`, `Verfuegbarkeit` ';
-                $query .= 'FROM `airlimited`.`sku`';
-                $query .= 'WHERE Preis > '. $price_min .' AND Preis < ' . $price_max . ' ';
-                $query .= 'ORDER BY ' . $sort;
-                $query .= ';';
-
-                // Query the data
-                $result = $db->getEntityArray($query);
-                
                 //Eigentliche Liste erstellen
                 foreach ( $result as $sku ){
                     echo '
@@ -102,7 +101,7 @@
                                 <img src="product0001.jpg" alt="Produkt 0001" width="150" height="150">
                             </div>
                             <div class="product-details">
-                                <h3><a href="0001.html?sku=' . urlencode($sku->SKUNr) . '"> ' . htmlspecialchars($sku->Name) . ' </a></h3>
+                                <h3><a href="sku_details.php?sku=' . urlencode($sku->SKUNr) . '"> ' . htmlspecialchars($sku->Name) . ' </a></h3>
                                 <p>Artikelnummer: '. $sku->SKUNr .'</p>
                                 <p>'. $sku->Beschreibung .'</p>
                                 <p class="price">Preis: '. $sku->Preis .'</p> <!-- Hier den Preis des Produkts einfügen -->
