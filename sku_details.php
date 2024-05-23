@@ -19,17 +19,20 @@
 	$db->connect();
 
     // Construct the query for the data that we want to see
-    $query = 'SELECT `Name`, `SKUNr`, `Foto`, `Preis`, `Verfuegbarkeit` , `Länge`,  `Breite`,  `Hoehe`,  `Gewicht`,  `Beschreibung` ';
+    $query = 'SELECT `Name`, `SKUNr`, `Foto`, `Preis`, `Verfuegbarkeit` , `Laenge`,  `Breite`,  `Hoehe`,  `Gewicht`,  `Beschreibung` ';
     $query .= 'FROM `airlimited`.`sku` ';
     $query .= 'WHERE `SKUNr` = '. $sku . ' ';
     $query .= 'LIMIT 1000;';
 
-    echo $query;
-    echo '<br>';
-
-
     // Query the data
     $result = $db->getEntityArray($query);
+    $skuDB = $result[0];
+
+    echo $query;
+    echo '<br>';
+    echo json_encode($result[0]);
+    echo '<br>';
+    echo $result[0]->SKUNr;
 ?>
 
 <!DOCTYPE html>
@@ -66,41 +69,46 @@
                 <img src="product0001.jpg" alt="Produkt 0001" width="150" height="150">
             </div>
             <div class="product-details">
-                <h3>Lüfterblatt</h3>
-                <p>Artikelnummer: 0001</p>
-                <p>Hochwertiges Lüfterblatt für Industrieanlagen</p>
-
-               
-                
-                <p class="price">Preis: 25,99€</p>
-                <p>Lieferstatus: Versandbereit</p>
-                <form action="#" class="order-form">
-                    <label for="quantity">Menge:</label>
-                    <input type="number" id="quantity" name="quantity" min="1" value="1">
-                    <button type="submit">In den Warenkorb</button>
-                </form>
+                <?php
+                    echo '
+                        <h3>'. $skuDB->Name .'</h3>
+                        <p>Artikelnummer: '. $skuDB->SKUNr .'</p>
+                        <p>'. $skuDB->Beschreibung .'</p>
+                        <p class="price">Preis: '. $skuDB->Preis .' €</p>
+                        <p>Verfügbarkeit: '. $skuDB->Verfuegbarkeit .'</p>
+                        <form action="#" class="order-form">
+                            <label for="quantity">Menge:</label>
+                            <input type="number" id="quantity" name="quantity" min="1" value="1">
+                            <button type="submit">In den Warenkorb</button>
+                        </form>
+                    ';
+                ?>
             </div>
         </div>
         <div class="product-details-container">
-            <h2>Technisches Datenblatt</h2>
-            <table>
-                <tr>
-                    <td>Länge [mm]:</td>
-                    <td>30</td>
-                </tr>
-                <tr>
-                    <td>Breite [mm]:</td>
-                    <td>30</td>
-                </tr>
-                <tr>
-                    <td>Höhe [mm]:</td>
-                    <td>5</td>
-                </tr>
-                <tr>
-                    <td>Gewicht [kg]:</td>
-                    <td>0.5</td>
-                </tr>
-            </table>
+            <?php
+                echo '
+                    <h2>Technisches Datenblatt</h2>
+                    <table>
+                        <tr>
+                            <td>Länge [mm]:</td>
+                            <td>'. $skuDB->Laenge .'</td>
+                        </tr>
+                        <tr>
+                            <td>Breite [mm]:</td>
+                            <td>'. $skuDB->Breite .'</td>
+                        </tr>
+                        <tr>
+                            <td>Höhe [mm]:</td>
+                            <td>'. $skuDB->Hoehe .'</td>
+                        </tr>
+                        <tr>
+                            <td>Gewicht [kg]:</td>
+                            <td>'. $skuDB->Gewicht .'</td>
+                        </tr>
+                    </table>
+                ';
+            ?>
         </div>
     </div>
 </main>
