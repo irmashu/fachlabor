@@ -11,7 +11,6 @@
 	$db->connect();
 ?>
 
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -42,7 +41,7 @@
     <main>
         <div class="product-nav">
             <h2>Navigation</h2>
-            <form action="#">
+            <form action="#" method="GET">
                 <label for="price">Preis:</label>
                 <input type="number" id="price" name="price_min" min="0">
                 <span>bis</span>
@@ -56,29 +55,64 @@
                 </select>
                 <label for="sort">Sortieren nach:</label>
                 <select id="sort" name="sort">
-                    <option value="price_asc">Preis aufsteigend</option>
-                    <option value="price_desc">Preis absteigend</option>
-                    <option value="number_asc">Artikelnummer aufsteigend</option>
-                    <option value="number_desc">Artikelnummer absteigend</option>
+                    <option value="Preis ASC">Preis aufsteigend</option>
+                    <option value="Preis DESC">Preis absteigend</option>
+                    <option value="SKUNr ASC">Artikelnummer aufsteigend</option>
+                    <option value="SKUNr DESC">Artikelnummer absteigend</option>
                 </select>
                 <button type="submit">Filtern</button>
             </form>
         </div>
         <div class="product-content">
-            <div class="product">
-                <a href="#">
-                    <div class="product-image">
-                        <img src="product0001.jpg" alt="Produkt 0001" width="150" height="150">
+            <?php
+
+                // Variablen für Filter getten 
+                $price_min = 0;
+                $price_max = 99999;
+
+                if (isset($_GET['price_min']) and (int)$_GET['price_min'] <> 0 ) {
+                    $price_min = (int)$_GET['price_min'];
+                }
+                if (isset($_GET['price_max']) and (int)$_GET['price_max'] <> 0 ) {
+                    $price_max = (int)$_GET['price_max'];
+                }
+                if (!isset($_GET['sort'])) {
+                    $sort = 'SKUNr ASC';
+                } else {
+                    $sort = $_GET['sort'];
+                }
+
+                
+                // Construct the query for the data that we want to see
+                $query = 'SELECT    `Foto`, `Name`, `SKUNr`, `Beschreibung`, `Preis`, `Verfuegbarkeit` ';
+                $query .= 'FROM `airlimited`.`sku`';
+                $query .= 'WHERE Preis > '. $price_min .' AND Preis < ' . $price_max . ' ';
+                $query .= 'ORDER BY ' . $sort;
+                $query .= ';';
+
+                // Query the data
+                $result = $db->getEntityArray($query);
+                
+                //Eigentliche Liste erstellen
+                foreach ( $result as $sku ){
+                    echo '
+                    <div class="product">
+                        <a href="#">
+                            <div class="product-image">
+                                <img src="product0001.jpg" alt="Produkt 0001" width="150" height="150">
+                            </div>
+                            <div class="product-details">
+                                <h3><a href="0001.html?sku=' . urlencode($sku->SKUNr) . '"> ' . htmlspecialchars($sku->Name) . ' </a></h3>
+                                <p>Artikelnummer: '. $sku->SKUNr .'</p>
+                                <p>'. $sku->Beschreibung .'</p>
+                                <p class="price">Preis: '. $sku->Preis .'</p> <!-- Hier den Preis des Produkts einfügen -->
+                                <p>Verfügbarkeit: '. $sku->Verfuegbarkeit .'</p>
+                            </div>
+                        </a>
                     </div>
-                    <div class="product-details">
-                        <h3><a href="0001.html">Lüfterblatt</a></h3>
-                        <p>Artikelnummer: 0001</p>
-                        <p>Hochwertiges Lüfterblatt für Industrieanlagen</p>
-                        <p class="price">Preis: 25,99€</p> <!-- Hier den Preis des Produkts einfügen -->
-                        <p>Lieferstatus: Versandbereit</p>
-                    </div>
-                </a>
-            </div>
+                    ';
+                }
+            ?>
         </div>
     </main>
 
