@@ -1,6 +1,18 @@
 <?php
+    require_once "db_class.php";
 
-echo '<!DOCTYPE html>
+    // Get Access to our database
+    $DBServer   = 'localhost';
+	$DBHost     = 'airlimited';
+	$DBUser     = 'root';
+	$DBPassword = '';
+	
+	$db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
+	$db->connect();
+?>
+
+
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -15,14 +27,14 @@ echo '<!DOCTYPE html>
         </div>
         <h1>Willkommen im AirLimited Shop</h1>
         <nav>
-            <button onclick="window.location.href=\'index.html\'">Onlineshop</button>
-            <button onclick="window.location.href=\'fertigung.html\'" class="fertigung-btn">Fertigung</button>
-            <button onclick="window.location.href=\'management.html\'" class="management-btn">Management</button>
-            <button onclick="window.location.href=\'login.html\'" class="login-btn">Login</button>
+            <button onclick="window.location.href='index.php'">Onlineshop</button>
+            <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
+            <button onclick="window.location.href='management.html'" class="management-btn">Management</button>
+            <button onclick="window.location.href='login.html'" class="login-btn">Login</button>
         </nav>
         <div class="account-buttons">
-            <button onclick="window.location.href=\'konto.html\'">Mein Konto</button>
-            <button onclick="window.location.href=\'warenkorb.html\'">Warenkorb</button>
+            <button onclick="window.location.href='konto.html'">Mein Konto</button>
+            <button onclick="window.location.href='warenkorb.html'">Warenkorb</button>
         </div>
     </header>
 
@@ -75,6 +87,6 @@ echo '<!DOCTYPE html>
     </footer>
 </body>
 </html>
-';
 
-?>
+
+
