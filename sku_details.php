@@ -38,7 +38,7 @@
     // Warenkorb füllen
     if (isset($_POST['quantity'])) {
         $sql = 'INSERT INTO `warenkorb` (`ServicepartnerNr`, `LagerNr`, `SKUNr`, `Menge`) ';
-        $sql .= 'VALUES (1, 2, 3, 4);';
+        $sql .= 'VALUES (1, 2, '. $sku .', '. $_POST['quantity'] .');';
         $input = $db->query($sql);
     }
 
@@ -63,7 +63,7 @@
             <button onclick="window.location.href='index.php'">Onlineshop</button>
             <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
             <button onclick="window.location.href='management.html'" class="management-btn">Management</button>
-            <button onclick="window.location.href='login.html'" class="login-btn">Login</button>
+            <button onclick="window.location.href='login.php'" class="login-btn">Login</button>
         </nav>
         <div class="account-buttons">
             <button onclick="window.location.href='konto.html'">Mein Konto</button>
