@@ -1,17 +1,34 @@
 <?php
+// Session starten/ fortsetzen
 session_start();
 
-// Annehmen, dass die Benutzerauthentifizierung erfolgreich war und wir `userType` und `userID` haben
-$userType = 'admin'; // Beispielwert
-$userID = 123; // Beispielwert
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Benutzereingaben sicher abrufen und verarbeiten
+    $username = htmlspecialchars($_POST['username']);
+    $password = htmlspecialchars($_POST['password']);
+    $loginType = htmlspecialchars($_POST['login-type']);
+    $id = htmlspecialchars($_POST['id']);
 
-// Speichern der Werte in der Session
-$_SESSION['userType'] = $userType;
-$_SESSION['userID'] = $userID;
+    $_SESSION['username'] = $username;
+    $_SESSION['password'] = $password;
+    $_SESSION['userType'] = $loginType;
+    $_SESSION['userID'] = $id;
+}
 
-// Umleitung zur Index-Seite oder einer anderen Seite
-header('Location: index.php');
-exit();
+
+// Überprüfen, ob die Variablen in der Session gesetzt sind
+if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
+    $userType = $_SESSION['userType'];
+    $userID = $_SESSION['userID'];
+
+    echo "User Type: " . $userType . "<br>";
+    echo "User ID: " . $userID . "<br>";
+} else {
+    echo "User is not logged in.";
+}
+
+
+
 ?>
 
 
@@ -38,12 +55,12 @@ exit();
     </header>
 
     <main>
-        <form action="#">
+        <form action="#" method="POST">
             <label for="username">Benutzername:</label>
-            <input type="text" id="username" name="username" required>
+            <input type="text" id="username" name="username">
             
             <label for="password">Passwort:</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password">
 
             <label for="login-type">Login als:</label>
             <select id="login-type" name="login-type">
@@ -52,8 +69,15 @@ exit();
                 <option value="fertigung">Fertigung</option>
             </select>
             
+            <label for="id">Fertigungs-/ Lager/- Servicepartnernummer:</label>
+            <input type="number" id="id" name="id">
+
             <button type="submit">Anmelden</button>
         </form>
+        <form action="logout.php" method="GET">
+            <button type="submit">Abmelden</button>
+        </form>
+
     </main>
 
     <footer>

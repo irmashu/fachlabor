@@ -1,4 +1,16 @@
 <?php
+    session_start();
+    // Überprüfen, ob die Variablen in der Session gesetzt sind
+    if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
+        $userType = $_SESSION['userType'];
+        $userID = $_SESSION['userID'];
+
+        echo "User Type: " . $userType . "<br>";
+        echo "User ID: " . $userID . "<br>";
+    } else {
+        echo "User is not logged in.";
+    }
+
     // Get Access to our database
     require_once "db_class.php";
 
