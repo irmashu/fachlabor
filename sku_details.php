@@ -33,6 +33,16 @@
     echo json_encode($result[0]);
     echo '<br>';
     echo $result[0]->SKUNr; */
+
+
+    // Warenkorb füllen
+    if (isset($_POST['quantity'])) {
+        $sql = 'INSERT INTO `warenkorb` (`ServicepartnerNr`, `LagerNr`, `SKUNr`, `Menge`) ';
+        $sql .= 'VALUES (1, 2, 3, 4);';
+        $input = $db->query($sql);
+    }
+
+    
 ?>
 
 <!DOCTYPE html>
@@ -77,10 +87,19 @@
                             <p>Verfügbarkeit: '. $skuDB->Verfuegbarkeit .'</p>
                         ';
                     ?>
-                    <form action="#" class="order-form">
+                    <form action="#" class="order-form" method="POST">
                         <label for="quantity">Menge:</label>
                         <input type="number" id="quantity" name="quantity" min="1" value="1">
+                        <input type="hidden" name="sku" value="<?php echo htmlspecialchars($sku); ?>">
                         <button type="submit">In den Warenkorb</button>
+                        
+                            <?php 
+                                //Feedback sobald Produkt hinzugefügt wurde
+                                if (isset($_POST['quantity'])) {
+                                    echo $skuDB->Name .' wurde '. $_POST['quantity'] .' mal in den Warenkorb gelegt.';
+                                }
+                            ?>
+                        
                     </form>
                 </div>
             </div>
