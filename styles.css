@@ -94,6 +94,29 @@ nav button:hover {
     border-radius: 5px;
 }
 
+.login-button button {
+    background-color: #77B0E3; /* Blau */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    opacity: 1; /* Volle Deckkraft */
+    transition: opacity 0.3s ease; /* Sanfter Übergang */
+}
+
+.login-button button:hover {
+    opacity: 0.8; /* Geringere Deckkraft bei Hover */
+}
+
+.login-button .red {
+    background-color: #dc6c6c; 
+}
+
 .meine-logindaten {
     position: absolute;
     top: 20px;
@@ -107,6 +130,10 @@ nav button:hover {
     font-size: 16px;
 }
 
+.login-form div {
+    margin-bottom: 10px;
+}
+
 .account-buttons button:hover {
     background-color: #5d91c9; /* Dunkleres Blau bei Hover */
 }
@@ -118,6 +145,7 @@ main {
 
 .main-login {
     display: grid;
+    text-align: center;
 }
 
 .product-nav {

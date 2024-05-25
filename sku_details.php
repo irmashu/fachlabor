@@ -106,7 +106,7 @@
         </nav>
         <div class="account-buttons">
             <button onclick="window.location.href='konto.html'">Mein Konto</button>
-            <button onclick="window.location.href='warenkorb.html'">Warenkorb</button>
+            <button onclick="window.location.href='warenkorb.php'">Warenkorb</button>
         </div>
         <div class="meine-logindaten">
             <p>

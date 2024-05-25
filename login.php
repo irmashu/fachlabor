@@ -113,36 +113,36 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     </header>
 
     <main class="main-login">
-        <div>
-            <form action="#" method="POST">
-                <div>
-                    <label for="username">Benutzername:</label>
-                    <input type="text" id="username" name="username">
-                    
-                    <label for="password">Passwort:</label>
-                    <input type="password" id="password" name="password">
-                </div>
-                <div>
-                    <label for="login-type">Login als:</label>
-                    <select id="login-type" name="login-type">
-                        <option value="servicepartner">Servicepartner</option>
-                        <option value="lager">Lager</option>
-                        <option value="fertigung">Fertigung</option>
-                        <option value="management">Management</option>
-                    </select>
-                    
-                    <label for="id">Fertigungs-/ Lager/- Servicepartnernummer:</label>
-                    <input type="number" id="id" name="id" min=1 value=1>
-                </div>
-                
-                <div>
-                    <button type="submit">Anmelden</button>
-                </div>
-            </form>
-        </div>
-        <div>
+        
+        <form action="#" method="POST" class="login-form">
+            <div>
+                <label for="username">Benutzername:</label>
+                <input type="text" id="username" name="username">
+                <br>
+                <label for="password">Passwort:</label>
+                <input type="password" id="password" name="password">
+            </div>
+            <div>
+                <label for="login-type">Login als:</label>
+                <select id="login-type" name="login-type">
+                    <option value="servicepartner">Servicepartner</option>
+                    <option value="lager">Lager</option>
+                    <option value="fertigung">Fertigung</option>
+                    <option value="management">Management</option>
+                </select>
+                <br>
+                <label for="id">Fertigungs-/ Lager/- Servicepartnernummer:</label>
+                <input type="number" id="id" name="id" min=1 value=1>
+            </div>
+            
+            <div class = login-button>
+                <button type="submit">Anmelden</button>
+            </div>
+        </form>
+        
+        <div class = login-button>
             <form action="logout.php" method="GET">
-                <button type="submit">Abmelden</button>
+                <button type="submit" class = red>Abmelden</button>
             </form>
         </div>
         <div>
