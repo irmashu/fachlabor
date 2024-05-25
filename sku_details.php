@@ -1,5 +1,19 @@
 <?php
 
+    session_start();
+    // Überprüfen, ob die Variablen in der Session gesetzt sind
+    if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
+        $userType = $_SESSION['userType'];
+        $userID = $_SESSION['userID'];
+
+        $userTypeText = "Angemeldet als: " . $userType . " ";
+        $userIDText = $userID . "<br>";
+    } else {
+        $userTypeText = "Nicht Angemeldet". "<br>";
+        $userIDText = '';
+    }
+
+
     //SKUNr aus der URL getten
     if (isset($_GET['sku'])) {
         $sku = htmlspecialchars($_GET['sku']);
@@ -36,11 +50,36 @@
 
 
     // Warenkorb füllen
-    if (isset($_POST['quantity'])) {
-        $sql = 'INSERT INTO `warenkorb` (`ServicepartnerNr`, `LagerNr`, `SKUNr`, `Menge`) ';
-        $sql .= 'VALUES (1, 2, '. $sku .', '. $_POST['quantity'] .');';
-        $input = $db->query($sql);
+    // Login überprüfen
+    if (isset($userType) and isset($userID)) {
+        // userType überprüfen
+        if ($userType == 'servicepartner' or $userType == 'lager' ) {
+            // quantity überprüfen
+            if (isset($_POST['quantity'])) {
+                // Nach userType auswählen
+                if ($userType == 'servicepartner') {
+                    $sql = 'INSERT INTO `warenkorb` (`ServicepartnerNr`, `SKUNr`, `Menge`) ';
+                    $sql .= 'VALUES ('. $userID .' , '. $sku .', '. $_POST['quantity'] .');';
+                } elseif ($userType == 'lager') {
+                    $sql = 'INSERT INTO `warenkorb` ( `LagerNr`, `SKUNr`, `Menge`) ';
+                    $sql .= 'VALUES ('. $userID .' , '. $sku .', '. $_POST['quantity'] .');';
+                }
+
+                $input = $db->query($sql);
+                $feedback = $skuDB->Name .' wurde '. $_POST['quantity'] .' mal in den Warenkorb gelegt.';
+            } else {
+                $feedback = 'Mindestens 1 Produkt wählen.';
+            }
+        } else {
+            $feedback = 'Zum Hinzufügen bitte als Servicepartner oder Lager anmelden.';
+        }
+    } else {
+        $feedback = 'Zum Hinzufügen bitte anmelden.';
     }
+    
+    
+
+
 
     
 ?>
@@ -63,11 +102,19 @@
             <button onclick="window.location.href='index.php'">Onlineshop</button>
             <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
             <button onclick="window.location.href='management.html'" class="management-btn">Management</button>
-            <button onclick="window.location.href='login.php'" class="login-btn">Login</button>
+            <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
         </nav>
         <div class="account-buttons">
             <button onclick="window.location.href='konto.html'">Mein Konto</button>
             <button onclick="window.location.href='warenkorb.html'">Warenkorb</button>
+        </div>
+        <div class="meine-logindaten">
+            <p>
+                <?php
+                    echo $userTypeText;
+                    echo $userIDText;
+                ?>
+            </p>
         </div>
     </header>
 
@@ -95,9 +142,7 @@
                         
                             <?php 
                                 //Feedback sobald Produkt hinzugefügt wurde
-                                if (isset($_POST['quantity'])) {
-                                    echo $skuDB->Name .' wurde '. $_POST['quantity'] .' mal in den Warenkorb gelegt.';
-                                }
+                                echo $feedback;
                             ?>
                         
                     </form>

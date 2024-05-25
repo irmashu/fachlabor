@@ -94,6 +94,19 @@ nav button:hover {
     border-radius: 5px;
 }
 
+.meine-logindaten {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.meine-logindaten p {
+    color: white;
+    text-align: left;
+    text-decoration: none;
+    font-size: 16px;
+}
+
 .account-buttons button:hover {
     background-color: #5d91c9; /* Dunkleres Blau bei Hover */
 }

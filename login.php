@@ -21,10 +21,11 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $userType = $_SESSION['userType'];
     $userID = $_SESSION['userID'];
 
-    echo "User Type: " . $userType . "<br>";
-    echo "User ID: " . $userID . "<br>";
+    $userTypeText = "Angemeldet als: " . $userType . " ";
+    $userIDText = $userID . "<br>";
 } else {
-    echo "User is not logged in.";
+    $userTypeText = "Nicht Angemeldet". "<br>";
+    $userIDText = '';
 }
 
 
@@ -45,13 +46,21 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
         <div class="logo">
             <img src="logo.png" alt="AirLimited Logo">
         </div>
-        <h1>Willkommen im AirLimited Shop</h1>
+        <h1>Willkommen im AirLimited Shop!</h1>
         <nav>
             <button onclick="window.location.href='index.php'">Onlineshop</button>
             <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
             <button onclick="window.location.href='management.html'" class="management-btn">Management</button>
-            <button onclick="window.location.href='login.php'" class="login-btn">Login</button>
+            <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
         </nav>
+        <div class="meine-logindaten">
+            <p>
+                <?php
+                    echo $userTypeText;
+                    echo $userIDText;
+                ?>
+            </p>
+        </div>
     </header>
 
     <main>
@@ -64,13 +73,14 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
 
             <label for="login-type">Login als:</label>
             <select id="login-type" name="login-type">
-                <option value="management">Management</option>
-                <option value="kunde">Kunde</option>
+                <option value="servicepartner">Servicepartner</option>
+                <option value="lager">Lager</option>
                 <option value="fertigung">Fertigung</option>
+                <option value="management">Management</option>
             </select>
             
             <label for="id">Fertigungs-/ Lager/- Servicepartnernummer:</label>
-            <input type="number" id="id" name="id">
+            <input type="number" id="id" name="id" min=1 value=1>
 
             <button type="submit">Anmelden</button>
         </form>

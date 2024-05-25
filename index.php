@@ -5,10 +5,11 @@
         $userType = $_SESSION['userType'];
         $userID = $_SESSION['userID'];
 
-        echo "User Type: " . $userType . "<br>";
-        echo "User ID: " . $userID . "<br>";
+        $userTypeText = "Angemeldet als: " . $userType . " ";
+        $userIDText = $userID . "<br>";
     } else {
-        echo "User is not logged in.";
+        $userTypeText = "Nicht Angemeldet". "<br>";
+        $userIDText = '';
     }
 
     // Get Access to our database
@@ -63,16 +64,24 @@
         <div class="logo">
             <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
         </div>
-        <h1>Willkommen im AirLimited Shop</h1>
+        <h1>Willkommen im AirLimited Shop!</h1>
         <nav>
             <button onclick="window.location.href='index.php'">Onlineshop</button>
             <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
             <button onclick="window.location.href='management.html'" class="management-btn">Management</button>
-            <button onclick="window.location.href='login.php'" class="login-btn">Login</button>
+            <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
         </nav>
         <div class="account-buttons">
             <button onclick="window.location.href='konto.html'">Mein Konto</button>
             <button onclick="window.location.href='warenkorb.html'">Warenkorb</button>
+        </div>
+        <div class="meine-logindaten">
+            <p>
+                <?php
+                    echo $userTypeText;
+                    echo $userIDText;
+                ?>
+            </p>
         </div>
     </header>
 
