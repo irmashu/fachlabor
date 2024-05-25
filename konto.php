@@ -30,7 +30,7 @@ $query .= ' LEFT JOIN gehört_zu ON bestellung.BestellNr = gehört_zu.BestellNr'
 $query .= ' LEFT JOIN auftrag ON gehört_zu.AuftragsNr = auftrag.AuftragsNr';
 $query .= ' LEFT JOIN bestellposten ON bestellung.BestellNr = bestellposten.BestellNr';
 $query .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
-$query .= ' WHERE bestellung.ServicepartnerNr = '. $id; 
+$query .= ' WHERE bestellung.ServicepartnerNr = '. $userID; 
 $query .= ' GROUP BY bestellung.BestellNr';
 $query .= ' LIMIT 1000';
 
