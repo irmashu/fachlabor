@@ -6,11 +6,9 @@
         $userType = $_SESSION['userType'];
         $userID = $_SESSION['userID'];
 
-        $userTypeText = "Angemeldet als: " . $userType . " ";
-        $userIDText = $userID . "<br>";
+        $loginText = "Angemeldet als: " . $userType . " " . $userID;
     } else {
-        $userTypeText = "Nicht Angemeldet". "<br>";
-        $userIDText = '';
+        $loginText = "Nicht angemeldet". "<br>";
     }
 
 
@@ -67,9 +65,7 @@
 
                 $input = $db->query($sql);
                 $feedback = $skuDB->Name .' wurde '. $_POST['quantity'] .' mal in den Warenkorb gelegt.';
-            } else {
-                $feedback = 'Mindestens 1 Produkt wählen.';
-            }
+            } 
         } else {
             $feedback = 'Zum Hinzufügen bitte als Servicepartner oder Lager anmelden.';
         }
@@ -111,8 +107,7 @@
         <div class="meine-logindaten">
             <p>
                 <?php
-                    echo $userTypeText;
-                    echo $userIDText;
+                    echo $loginText;
                 ?>
             </p>
         </div>
@@ -140,10 +135,11 @@
                         <input type="hidden" name="sku" value="<?php echo htmlspecialchars($sku); ?>">
                         <button type="submit">In den Warenkorb</button>
                         
-                            <?php 
-                                //Feedback sobald Produkt hinzugefügt wurde
-                                echo $feedback;
-                            ?>
+                        <?php
+                            if (isset($feedback)) {
+                                echo '<p class = "feedback">'. $feedback .'</p>';
+                            }
+                        ?>
                         
                     </form>
                 </div>

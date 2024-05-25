@@ -23,26 +23,52 @@
 	$db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 	$db->connect();
     
-    if (isset($userID)) {
+    // richtigen Login Prüfen
+    $loginRichtig = FALSE;
+    if (isset($userID) and isset($userType)) {
+        if($userType == 'servicepartner' or $userType == 'lager'){
+            $loginRichtig = TRUE;
+        }
+    }
+
+    //Datenbankabfrage
+    if($loginRichtig){
         // Construct the query for the data that we want to see
         $query = 'SELECT * FROM `airlimited`.`warenkorb` ';
         $query .= 'LEFT JOIN `airlimited`.`sku` ON warenkorb.SKUNr = sku.SKUNr ';
-        $query .= 'WHERE warenkorb.servicepartnerNr = '. $userID . ' ';
+        $query .= 'WHERE warenkorb.'. $userType .'Nr = '. $userID . ' ';
         $query .= 'ORDER BY warenkorb.SKUNr ';
         $query .= 'LIMIT 1000;';
 
         // Query the data
         $result = $db->getEntityArray($query);
     } else {
-        $feedback = 'Bitte anmelden';
+        $feedback = 'Bitte als Servicepartner oder Lager anmelden';
     }
+
+    // Warenkorb in Bestellung umwandeln 
+    // Login überprüfen
+    if ($loginRichtig) {
+        // Bei Klicken von Bestellknopf
+        if (isset($_POST['bestellen'])) {
+            
+            
+                $sql = 'INSERT INTO `airlimited`.`bestellung` ('. $userType .'Nr'.') VALUES ('. $userID .');';
+            
+
+            $input = $db->query($sql);
+            $feedback = 'Bestellung für '. $userType .' '. $userID . ' wurde erzeugt.';
+        }
+    }
+
     
+
 ?>
 
 
 <!DOCTYPE html>
 <html lang="de">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AirLimited - Warenkorb</title>
@@ -81,39 +107,45 @@
                     <tr>
                         <th>Bild</th>
                         <th>Artikel</th>
-                        <th>Preis pro Stück</th>
+                        <th>Stückpreis</th>
                         <th>Menge</th>
                         <th>Gesamtpreis</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php 
-                        $summe_gesamt = 0;
-                        foreach ($result as $sku) {
-                            $summe = $sku->Preis * $sku->Menge;
-                            echo '
-                            <tr>
-                                <td><img src="product0001.jpg" alt="'. $sku->Name .'"></td>
-                                <td>'. $sku->Name .' (Artikelnummer: '. $sku->SKUNr .')</td>
-                                <td>'. $sku->Preis .' €</td>
-                                <td>'. $sku->Menge .'</td>
-                                <td>'. $summe .' €</td>
-                            </tr>
-                        ';
-                        $summe_gesamt = $summe_gesamt + $summe;
-                        }
+
+                        if ($loginRichtig) {
+                            $summe_gesamt = 0;
+                            foreach ($result as $sku) {
+                                $summe = $sku->Preis * $sku->Menge;
+                                echo '
+                                <tr>
+                                    <td><img src="product0001.jpg" alt="'. $sku->Name .'"></td>
+                                    <td>'. $sku->Name .' (Artikelnummer: '. $sku->SKUNr .')</td>
+                                    <td>'. $sku->Preis .' €</td>
+                                    <td>'. $sku->Menge .'</td>
+                                    <td>'. $summe .' €</td>
+                                </tr>
+                            ';
+                            $summe_gesamt = $summe_gesamt + $summe;
+                            }
+                        }                         
                     ?>
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="4" style="text-align: right;">Gesamt:</td>
-                        <td><?php echo $summe_gesamt;?> €</td>
+                        <td><?php if(isset($summe_gesamt)){echo $summe_gesamt;}?> €</td>
                     </tr>
                 </tfoot>
             </table>
-            <div class="checkout-button">
-                <button onclick="window.location.href='checkout.html'">Zur Kasse gehen</button>
+            <div class="login-button">
+                <form method="POST" action="#">
+                    <button type="submit" name="bestellen">Hier Bestellen</button>
+                </form>
             </div>
+            <?php if(isset($feedback)){echo '<p class = "feedback">'. $feedback .'</p>';} ?>
         </div>
     </main>
     

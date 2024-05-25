@@ -5,11 +5,9 @@
         $userType = $_SESSION['userType'];
         $userID = $_SESSION['userID'];
 
-        $userTypeText = "Angemeldet als: " . $userType . " ";
-        $userIDText = $userID . "<br>";
+        $loginText = "Angemeldet als: " . $userType . " " . $userID;
     } else {
-        $userTypeText = "Nicht Angemeldet". "<br>";
-        $userIDText = '';
+        $loginText = "Nicht angemeldet". "<br>";
     }
 
     // Get Access to our database
@@ -78,8 +76,7 @@
         <div class="meine-logindaten">
             <p>
                 <?php
-                    echo $userTypeText;
-                    echo $userIDText;
+                    echo $loginText;
                 ?>
             </p>
         </div>
