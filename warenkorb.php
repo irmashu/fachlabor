@@ -47,17 +47,31 @@
     }
 
     // Warenkorb in Bestellung umwandeln 
-    // Login überprüfen
     if ($loginRichtig) {
         // Bei Klicken von Bestellknopf
         if (isset($_POST['bestellen'])) {
+            $sql = 'INSERT INTO `airlimited`.`bestellung` ('. $userType .'Nr'.') VALUES ('. $userID .');';
             
-            
-                $sql = 'INSERT INTO `airlimited`.`bestellung` ('. $userType .'Nr'.') VALUES ('. $userID .');';
-            
-
             $input = $db->query($sql);
             $feedback = 'Bestellung für '. $userType .' '. $userID . ' wurde erzeugt.';
+        }
+    }
+
+
+
+
+
+    //
+//
+//
+
+    // Warenkorb in Bestellposten umwandeln 
+    if ($loginRichtig) {
+        // Bei Klicken von Bestellknopf
+        if (isset($_POST['bestellen'])) {
+            $sql = 'INSERT INTO `airlimited`.`bestellung` ('. $userType .'Nr'.') VALUES ('. $userID .');';
+            
+            $input = $db->query($sql);
         }
     }
 
