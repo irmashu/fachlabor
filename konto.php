@@ -87,9 +87,9 @@ $result = $db->getEntityArray($query);
         <tbody>
             <?php
             if ($result) {
-                foreach ($result as $row) {
+                foreach ($result as $orderservicepartner) {
                     echo '<tr>';
-                    echo '<td>' . htmlspecialchars($row['Bestelldatum']) . '</td>';
+                    echo '<td>' . $orderservicepartner->Bestelldatum . '</td>';
                     echo '<td>' . htmlspecialchars($row['BestellNr']) . '</td>';
                     echo '<td>' . number_format($row['Bestellsumme'], 2, ',', '.') . ' €</td>';
                     echo '<td>' . htmlspecialchars($row['Status']) . '</td>';
