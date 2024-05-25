@@ -2,6 +2,20 @@
 // Session starten/ fortsetzen
 session_start();
 
+// Get Access to our database
+require_once "db_class.php";
+
+$DBServer   = 'localhost';
+$DBHost     = 'airlimited';
+$DBUser     = 'root';
+$DBPassword = '';
+
+$db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
+$db->connect();
+
+
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Benutzereingaben sicher abrufen und verarbeiten
     $username = htmlspecialchars($_POST['username']);
@@ -9,11 +23,46 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $loginType = htmlspecialchars($_POST['login-type']);
     $id = htmlspecialchars($_POST['id']);
 
-    $_SESSION['username'] = $username;
-    $_SESSION['password'] = $password;
-    $_SESSION['userType'] = $loginType;
-    $_SESSION['userID'] = $id;
-}
+    //Überprüfen, ob logindaten existieren
+    $loginRichtig = FALSE;
+    
+    // Query erstellen
+    switch ($loginType) {
+        case 'servicepartner':
+            $query = 'SELECT * FROM `airlimited`.`servicepartner` WHERE ServicepartnerNr = '. $id .' LIMIT 1000;';
+            break;
+        case 'lager':
+            $query = 'SELECT * FROM `airlimited`.`lager` WHERE LagerNr = '. $id .' LIMIT 1000;';
+            break;
+        case 'fertigung':
+            $query = 'SELECT * FROM `airlimited`.`fertigung` WHERE FertigungsNr = '. $id .' LIMIT 1000;';
+            break;
+        case 'management':
+            $loginRichtig = TRUE;
+            break;
+        default:
+            break;
+    }
+
+    // Einträge in DB suchen
+    if (isset($query)) {
+        $result = $db->query($query);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            $loginRichtig = TRUE;
+        } else {
+            $feedback = $loginType . ' ' . $id . ' konnte nicht gefunden werden';
+        }
+    }
+
+    // bei richtigea login Daten in Session übernehmen
+    if ($loginRichtig) {
+        $_SESSION['username'] = $username;
+        $_SESSION['password'] = $password;
+        $_SESSION['userType'] = $loginType;
+        $_SESSION['userID'] = $id;
+    }
+}   
 
 
 // Überprüfen, ob die Variablen in der Session gesetzt sind
@@ -63,30 +112,48 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
         </div>
     </header>
 
-    <main>
-        <form action="#" method="POST">
-            <label for="username">Benutzername:</label>
-            <input type="text" id="username" name="username">
-            
-            <label for="password">Passwort:</label>
-            <input type="password" id="password" name="password">
-
-            <label for="login-type">Login als:</label>
-            <select id="login-type" name="login-type">
-                <option value="servicepartner">Servicepartner</option>
-                <option value="lager">Lager</option>
-                <option value="fertigung">Fertigung</option>
-                <option value="management">Management</option>
-            </select>
-            
-            <label for="id">Fertigungs-/ Lager/- Servicepartnernummer:</label>
-            <input type="number" id="id" name="id" min=1 value=1>
-
-            <button type="submit">Anmelden</button>
-        </form>
-        <form action="logout.php" method="GET">
-            <button type="submit">Abmelden</button>
-        </form>
+    <main class="main-login">
+        <div>
+            <form action="#" method="POST">
+                <div>
+                    <label for="username">Benutzername:</label>
+                    <input type="text" id="username" name="username">
+                    
+                    <label for="password">Passwort:</label>
+                    <input type="password" id="password" name="password">
+                </div>
+                <div>
+                    <label for="login-type">Login als:</label>
+                    <select id="login-type" name="login-type">
+                        <option value="servicepartner">Servicepartner</option>
+                        <option value="lager">Lager</option>
+                        <option value="fertigung">Fertigung</option>
+                        <option value="management">Management</option>
+                    </select>
+                    
+                    <label for="id">Fertigungs-/ Lager/- Servicepartnernummer:</label>
+                    <input type="number" id="id" name="id" min=1 value=1>
+                </div>
+                
+                <div>
+                    <button type="submit">Anmelden</button>
+                </div>
+            </form>
+        </div>
+        <div>
+            <form action="logout.php" method="GET">
+                <button type="submit">Abmelden</button>
+            </form>
+        </div>
+        <div>
+            <p>
+                <?php
+                    if (isset($feedback)) {
+                        echo $feedback;
+                    }
+                ?>
+            </p>
+        </div>
 
     </main>
 

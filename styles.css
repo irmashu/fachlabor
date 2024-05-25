@@ -116,6 +116,10 @@ main {
     display: flex;
 }
 
+.main-login {
+    display: grid;
+}
+
 .product-nav {
     width: 25%; /* Breite der Produkt-Navigation */
     padding-right: 40px; /* Abstand zwischen Produkt-Navigation und Hauptinhalt */
