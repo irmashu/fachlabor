@@ -31,13 +31,13 @@ if (isset($_GET['BestellNr'])) {
 }
 
 // Construct the query for the data that we want to see
-$query = 'SELECT bestellposten.BestellpostenNr, sku.`Name`, bestellposten.SKUNr, sku.Preis, bestellposten.Quantität, auftrag.`Status`';
+$query = 'SELECT DISTINCT bestellposten.BestellpostenNr, sku.`Name`, bestellposten.SKUNr, sku.Preis, bestellposten.Quantität, auftrag.`Status`';
 $query .= ' FROM bestellposten';
 $query .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
 $query .= ' LEFT JOIN bestellung ON bestellposten.BestellNr = bestellung.BestellNr';
 $query .= ' LEFT JOIN gehört_zu ON bestellung.BestellNr = gehört_zu.BestellNr';
 $query .= ' LEFT JOIN auftrag ON gehört_zu.AuftragsNr = auftrag.AuftragsNr';
-$query .= ' WHERE bestellposten.BestellNr = ' . $bestellnr . ' AND auftrag.SKUNr = bestellposten.SKUNr';
+$query .= ' WHERE bestellposten.BestellNr = ' . $bestellnr; 
 
 // Query the data
 $result = $db->getEntityArray($query);
