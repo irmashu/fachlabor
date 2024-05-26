@@ -1,3 +1,34 @@
+<?php
+session_start();
+// Überprüfen, ob die Variablen in der Session gesetzt sind
+if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
+    $userType = $_SESSION['userType'];
+    $userID = $_SESSION['userID'];
+
+    $userTypeText = "Angemeldet als: " . $userType . " ";
+    $userIDText = $userID . "<br>";
+} else {
+    $userTypeText = "Nicht Angemeldet". "<br>";
+    $userIDText = '';
+}
+
+    // Get Access to our database
+    require_once "db_class.php";
+
+    $DBServer   = 'localhost';
+	$DBHost     = 'airlimited';
+	$DBUser     = 'root';
+	$DBPassword = '';
+	
+	$db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
+	$db->connect();
+
+    // Construct the query for the data that we want to see
+
+    // Query the data
+   // $result = $db->getEntityArray($query);
+
+    ?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -15,13 +46,21 @@
         <h1>Willkommen im AirLimited Shop</h1>
         <nav>
             <button onclick="window.location.href='index.php'">Onlineshop</button>
-            <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
+            <button onclick="window.location.href='fertigung.php'" class="fertigung-btn">Fertigung</button>
             <button onclick="window.location.href='management.php'" class="management-btn">Management</button>
             <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
         </nav>
         <div class="account-buttons">
-            <button onclick="window.location.href='fertigung.html'">Hallo Fertigung!</button>
+            <button onclick="window.location.href='fertigung.php'">Hallo Fertigung!</button>
         </div>
+        <div class="meine-logindaten">
+        <p>
+            <?php
+                echo $userTypeText;
+                echo $userIDText;
+            ?>
+        </p>
+    </div>
     </header>
 
 <h2>Auftragsübersicht</h2>
