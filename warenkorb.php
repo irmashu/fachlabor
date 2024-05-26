@@ -120,24 +120,26 @@
     <h2>Warenkorb</h2>
     <main>
         <div class="product-content">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Bild</th>
-                        <th>Artikel</th>
-                        <th>Stückpreis</th>
-                        <th>Menge</th>
-                        <th>Gesamtpreis</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php 
-
-                        if ($loginRichtig) {
-                            $summe_gesamt = 0;
-                            foreach ($result as $sku) {
-                                $summe = $sku->Preis * $sku->Menge;
-                                echo '
+            <?php 
+                if ($loginRichtig) {
+                    echo '
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Bild</th>
+                                    <th>Artikel</th>
+                                    <th>Stückpreis</th>
+                                    <th>Menge</th>
+                                    <th>Gesamtpreis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                        ';
+                            
+                        $summe_gesamt = 0;
+                        foreach ($result as $sku) {
+                            $summe = $sku->Preis * $sku->Menge;
+                            echo '
                                 <tr>
                                     <td><img src="product0001.jpg" alt="'. $sku->Name .'"></td>
                                     <td>'. $sku->Name .' (Artikelnummer: '. $sku->SKUNr .')</td>
@@ -146,24 +148,27 @@
                                     <td>'. $summe .' €</td>
                                 </tr>
                             ';
-                            $summe_gesamt = $summe_gesamt + $summe;
-                            }
-                        }                         
-                    ?>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="4" style="text-align: right;">Gesamt:</td>
-                        <td><?php if(isset($summe_gesamt)){echo $summe_gesamt;}?> €</td>
-                    </tr>
-                </tfoot>
-            </table>
-            <div class="login-button">
-                <form method="POST" action="#">
-                    <button type="submit" name="bestellen">Hier Bestellen</button>
-                    <button type="submit" name="leeren" class = red>Warenkorb leeren</button>
-                </form>
-            </div>
+                        $summe_gesamt = $summe_gesamt + $summe;
+                        }
+                        echo '
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="4" style="text-align: right;">Gesamt:</td>
+                                    <td>'. $summe_gesamt .' €</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <div class="login-button">
+                            <form method="POST" action="#">
+                                <button type="submit" name="bestellen">Hier Bestellen</button>
+                                <button type="submit" name="leeren" class = red>Warenkorb leeren</button>
+                            </form>
+                        </div>
+                    ';
+                }                         
+            ?>
+            
             <?php if(isset($feedback)){echo '<p class = "feedback">'. $feedback .'</p>';} ?>
         </div>
     </main>
