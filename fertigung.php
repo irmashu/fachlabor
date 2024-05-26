@@ -24,9 +24,15 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
 	$db->connect();
 
     // Construct the query for the data that we want to see
+    $query = 'SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, sku.´Name´, auftrag.SKUNr, SUM(gehört_zu.´Quantität´) AS Losgröße, sku.Fertigungsanweisungen, auftrag.´Status´';
+    $query .= ' FROM auftrag';
+    $query .= ' LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr';
+    $query .= ' LEFT JOIN gehört_zu ON auftrag.AuftragsNr = gehört_zu.AuftragsNr';
+    $query .= ' GROUP BY auftrag.AuftragsNr';
+
 
     // Query the data
-   // $result = $db->getEntityArray($query);
+   $result = $db->getEntityArray($query);
 
     ?>
 
@@ -66,37 +72,40 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
 <h2>Auftragsübersicht</h2>
 
 <main>
-
     <table>
         <thead>
             <tr>
                 <th>Reihenfolge</th>
                 <th>Auftragsnummer</th>
-                <th>Artikel</th>
-                <th>SKUNr.</th>
+                <th>Artikelname</th>
+                <th>Artikelnummer</th>
                 <th>Losgröße</th>
                 <th>Fertigungsanweisungen</th>
                 <th>Auftragsstatus</th>
-                <th>Lieferdetails</th>
+                <th>Details</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>1</td>
-                <td>0001</td>
-                <td>Lüfterblatt</td>
-                <td>0001</td>
-                <td>20</td>
-                <td>0001.pdf</td>
-                <td>
-                    <select>
-                        <option value="In Auftrag">In Auftrag</option>
-                        <option value="In Fertigung">In Fertigung</option>
-                        <option value="Fertig">Fertig</option>
-                    </select>
-                </td>
-                <td><a href="fertigungsdetails.php">Lieferdetails anzeigen</a></td>
-            </tr>
+            <?php
+            if ($result) {
+
+                foreach ($result as $auftrag) {
+                    echo '<tr>';
+                    echo '<td>' . $auftrag->Reihenfolge . '</td>';
+                    echo '<td>' . $auftrag->AuftragsNr. '</td>';
+                    echo '<td>' . $auftrag->Name.'</td>';
+                    echo '<td>' . $auftrag->SKUNr . '</td>';
+                    echo '<td>' . $auftrag->Losgröße . '</td>';
+                    echo '<td>' . $auftrag->Fertigungsanweisungen . '</td>';
+                    echo '<td>' . $auftrag->Status . '</td>';
+                    echo '<td><a href="fertigungsdetails.php?AuftragsNr=' . urlencode($auftrag->AuftragsNr) . '">Details anzeigen</a></td>';
+                    echo '</tr>';
+                  
+                }
+            } else {
+                echo '<tr><td colspan="5">Keine Bestellungen gefunden.</td></tr>';
+            }
+            ?>
         </tbody>
     </table>
 </main>

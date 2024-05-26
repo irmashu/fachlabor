@@ -24,9 +24,9 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
 	$db->connect();
 
     // Construct the query for the data that we want to see
-
+    
     // Query the data
-   // $result = $db->getEntityArray($query);
+    // $result = $db->getEntityArray($query);
 
     ?>
 
