@@ -24,16 +24,29 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
 	$db->connect();
 
     
-if (isset($_GET['auftragsNr'])) {
-    $auftragsNr = (int)$_GET['auftragsNr'];
-    echo $auftragsNr;
+if (isset($_GET['AuftragsNr'])) {
+    $AuftragsNr = (int)$_GET['AuftragsNr'];
 }
 
 
     // Construct the query for the data that we want to see
-    
+
+    $query = 'SELECT sku.Name, auftrag.SKUNr, gehört_zu.BestellNr, bestellung.ServicepartnerNr, servicepartner.Firmenname, 
+    CONCAT(servicepartner.Straße, " " , servicepartner.HausNr, ", ", servicepartner.PLZ, " ", servicepartner.Stadt) AS ServicepartnerAdresse,
+    bestellung.LagerNr, lager.Lagerstandort,
+    CONCAT(lager.Straße, " " , lager.HausNr, ", ", lager.PLZ, " ", lager.Lagerstandort) AS LagerAdresse,
+    gehört_zu.Quantität, gehört_zu.Versandt
+    FROM gehört_zu
+    LEFT JOIN bestellung ON gehört_zu.BestellNr = bestellung.BestellNr
+    LEFT JOIN auftrag ON gehört_zu.AuftragsNr = auftrag.AuftragsNr
+    LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr
+    LEFT JOIN servicepartner ON bestellung.ServicepartnerNr = servicepartner.ServicepartnerNr
+    LEFT JOIN lager ON bestellung.LagerNr = lager.LagerNr
+    WHERE gehört_zu.AuftragsNr = ' . $AuftragsNr;
+
+
     // Query the data
-    // $result = $db->getEntityArray($query);
+     $result = $db->getEntityArray($query);
 
     ?>
 
@@ -70,7 +83,7 @@ if (isset($_GET['auftragsNr'])) {
     </div>
     </header>
 
-<h2>Auftragsdetails</h2>
+<h2>Auftragsdetails für Auftrag Nummer  <?php echo( $AuftragsNr)  ?> </h2>
 
 <main>
 
