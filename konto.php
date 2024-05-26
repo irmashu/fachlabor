@@ -87,13 +87,13 @@ $result = $db->getEntityArray($query);
         <tbody>
             <?php
             if ($result) {
-                foreach ($result as $orderservicepartner) {
+                foreach ($result as $bestellung) {
                     echo '<tr>';
-                    echo '<td>' . $orderservicepartner->Bestelldatum . '</td>';
-                    echo '<td>' . htmlspecialchars($row['BestellNr']) . '</td>';
-                    echo '<td>' . number_format($row['Bestellsumme'], 2, ',', '.') . ' €</td>';
-                    echo '<td>' . htmlspecialchars($row['Status']) . '</td>';
-                    echo '<td><a href="bestelldetails.php?BestellNr=' . urlencode($row['BestellNr']) . '">Details anzeigen</a></td>';
+                    echo '<td>' . $bestellung->Bestelldatum . '</td>';
+                    echo '<td>' . $bestellung->BestellNr. '</td>';
+                    echo '<td>' . number_format($bestellung->Bestellsumme, 2, ',', '.') . ' €</td>';
+                    echo '<td>' . $bestellung->Status . '</td>';
+                    echo '<td><a href="bestelldetails.php?BestellNr=' . urlencode($bestellung->BestellNr) . '">Details anzeigen</a></td>';
                     echo '</tr>';
                 }
             } else {
