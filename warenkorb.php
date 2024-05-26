@@ -46,32 +46,28 @@
         $feedback = 'Bitte als Servicepartner oder Lager anmelden';
     }
 
-    // Warenkorb in Bestellung umwandeln 
+    // Warenkorb in Bestellung umwandeln
+    $datum = date('Y-m-d H:i:s'); 
     if ($loginRichtig) {
         // Bei Klicken von Bestellknopf
         if (isset($_POST['bestellen'])) {
-            $sql = 'INSERT INTO `airlimited`.`bestellung` ('. $userType .'Nr'.') VALUES ('. $userID .');';
-            
-            $input = $db->query($sql);
-            $feedback = 'Bestellung für '. $userType .' '. $userID . ' wurde erzeugt.';
-        }
-    }
-
-    $datum = date('Y-m-d H:i:s');
-
-
-
-    //
-//
-//
-
-    // Warenkorb in Bestellposten umwandeln 
-    if ($loginRichtig) {
-        // Bei Klicken von Bestellknopf
-        if (isset($_POST['bestellen'])) {
+            // Bestellung erzeugen
             $sql = 'INSERT INTO `airlimited`.`bestellung` (`Bestelldatum`, '. $userType .'Nr'.') VALUES ("'. $datum .'", '. $userID .');';
-            
             $input = $db->query($sql);
+
+            // Erzeugte BestellNr speichern
+            if ($input) {
+                $erzeugte_BestellNr = $db->getAutoIncID();
+            }
+            
+            // Warenkorb in Bestellposten umwandeln
+            foreach ($result as $sku) {
+                
+                $sql = 'INSERT INTO `airlimited`.`bestellposten` (`BestellNr`, `Quantität`, `SKUNr`) VALUES ('. $erzeugte_BestellNr .', '. $sku->Menge .', '. $sku->SKUNr .');';
+                $input = $db->query($sql);
+            }
+
+            $feedback = 'Bestellung für '. $userType .' '. $userID . ' wurde erzeugt.';
         }
     }
 ?>
@@ -159,8 +155,6 @@
             <?php if(isset($feedback)){echo '<p class = "feedback">'. $feedback .'</p>';} ?>
         </div>
     </main>
-    
-	
 
     <footer>
         <p>&copy; 2024 AirLimited. Alle Rechte vorbehalten.</p>
