@@ -57,13 +57,13 @@ CREATE TABLE IF NOT EXISTS `bestellposten` (
   KEY `bestellposten_BestellNr` (`BestellNr`),
   CONSTRAINT `SKUNr` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `bestellposten_BestellNr` FOREIGN KEY (`BestellNr`) REFERENCES `bestellung` (`BestellNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.bestellposten: ~13 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.bestellposten: ~18 rows (ungefähr)
 DELETE FROM `bestellposten`;
 INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUNr`) VALUES
-	(43, 17, 8, 31),
-	(43, 18, 4, 41),
+	(1, 17, 8, 31),
+	(1, 18, 4, 41),
 	(44, 19, 2, 1),
 	(44, 20, 2, 6),
 	(45, 21, 2, 1),
@@ -74,7 +74,12 @@ INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUN
 	(47, 26, 2, 6),
 	(48, 27, 2, 1),
 	(48, 28, 2, 6),
-	(49, 29, 1, 6);
+	(49, 29, 1, 6),
+	(50, 30, 4, 4),
+	(50, 31, 1, 5),
+	(50, 32, 1, 7),
+	(50, 33, 2, 10),
+	(50, 34, 2, 18);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellung
 DROP TABLE IF EXISTS `bestellung`;
@@ -88,9 +93,9 @@ CREATE TABLE IF NOT EXISTS `bestellung` (
   KEY `bestellung ServicepartnerNr` (`ServicepartnerNr`),
   CONSTRAINT `bestellung LagerNr` FOREIGN KEY (`LagerNr`) REFERENCES `lager` (`LagerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `bestellung ServicepartnerNr` FOREIGN KEY (`ServicepartnerNr`) REFERENCES `servicepartner` (`ServicepartnerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.bestellung: ~11 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.bestellung: ~9 rows (ungefähr)
 DELETE FROM `bestellung`;
 INSERT INTO `bestellung` (`BestellNr`, `Bestelldatum`, `ServicepartnerNr`, `LagerNr`) VALUES
 	(1, '2024-05-05 17:33:07', 1, NULL),
@@ -103,7 +108,8 @@ INSERT INTO `bestellung` (`BestellNr`, `Bestelldatum`, `ServicepartnerNr`, `Lage
 	(46, '2024-05-26 10:36:34', 7, NULL),
 	(47, '2024-05-26 10:51:03', 7, NULL),
 	(48, '2024-05-26 10:51:17', 7, NULL),
-	(49, '2024-05-26 11:01:00', 7, NULL);
+	(49, '2024-05-26 11:01:00', 7, NULL),
+	(50, '2024-05-26 12:40:00', 1, NULL);
 
 -- Exportiere Struktur von Tabelle airlimited.fertigung
 DROP TABLE IF EXISTS `fertigung`;
@@ -132,12 +138,12 @@ INSERT INTO `fertigung` (`FertigungsNr`, `Straße`, `HausNr`, `PLZ`, `Stadt`, `L
 	(9, 'Montageweg', 18, '23456', 'Budapest', 'Ungarn', '+36 1 1357924'),
 	(10, 'Herstellungsstraße', 6, '34567', 'Kopenhagen', 'Dänemark', '+45 1234 5678');
 
--- Exportiere Struktur von Tabelle airlimited.gehört_zu
-DROP TABLE IF EXISTS `gehört_zu`;
-CREATE TABLE IF NOT EXISTS `gehört_zu` (
+-- Exportiere Struktur von Tabelle airlimited.gehoert_zu
+DROP TABLE IF EXISTS `gehoert_zu`;
+CREATE TABLE IF NOT EXISTS `gehoert_zu` (
   `AuftragsNr` int(11) NOT NULL,
   `BestellNr` int(11) NOT NULL,
-  `Quantität` int(11) DEFAULT NULL,
+  `Quantitaet` int(11) DEFAULT NULL,
   `Versandt` varchar(5) DEFAULT 'Nein',
   PRIMARY KEY (`AuftragsNr`,`BestellNr`),
   KEY `gehört_zu_BestellNr` (`BestellNr`),
@@ -145,9 +151,9 @@ CREATE TABLE IF NOT EXISTS `gehört_zu` (
   CONSTRAINT `gehört_zu_BestellNr` FOREIGN KEY (`BestellNr`) REFERENCES `bestellung` (`BestellNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.gehört_zu: ~4 rows (ungefähr)
-DELETE FROM `gehört_zu`;
-INSERT INTO `gehört_zu` (`AuftragsNr`, `BestellNr`, `Quantität`, `Versandt`) VALUES
+-- Exportiere Daten aus Tabelle airlimited.gehoert_zu: ~4 rows (ungefähr)
+DELETE FROM `gehoert_zu`;
+INSERT INTO `gehoert_zu` (`AuftragsNr`, `BestellNr`, `Quantitaet`, `Versandt`) VALUES
 	(1, 1, 20, 'Nein'),
 	(1, 2, 5, 'Nein'),
 	(2, 1, 10, 'Nein'),
@@ -196,13 +202,13 @@ CREATE TABLE IF NOT EXISTS `servicepartner` (
   `Land` varchar(50) DEFAULT NULL,
   `TelefonNr` varchar(50) DEFAULT NULL,
   `E-Mail` varchar(50) DEFAULT NULL,
-  `VIP-Kunde` varchar(5) DEFAULT 'Nein',
+  `VIPKunde` varchar(5) DEFAULT 'Nein',
   PRIMARY KEY (`ServicepartnerNr`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Exportiere Daten aus Tabelle airlimited.servicepartner: ~10 rows (ungefähr)
 DELETE FROM `servicepartner`;
-INSERT INTO `servicepartner` (`ServicepartnerNr`, `Firmenname`, `Nachname Kontaktperson`, `Vorname Kontaktperson`, `Straße`, `HausNr`, `Stadt`, `PLZ`, `Land`, `TelefonNr`, `E-Mail`, `VIP-Kunde`) VALUES
+INSERT INTO `servicepartner` (`ServicepartnerNr`, `Firmenname`, `Nachname Kontaktperson`, `Vorname Kontaktperson`, `Straße`, `HausNr`, `Stadt`, `PLZ`, `Land`, `TelefonNr`, `E-Mail`, `VIPKunde`) VALUES
 	(1, 'Ventilator-Expert GmbH', 'Müller', 'Klaus', 'Industriestraße', 10, 'Berlin', '12345', 'Deutschland', '+49 30 1234567', 'klaus.mueller@ventilator-expert.de', 'Ja'),
 	(2, 'Luftstrom AG', 'Schneider', 'Sabine', 'Hauptstraße', 25, 'Hamburg', '54321', 'Deutschland', '+49 40 9876543', 'sabine.schneider@luftstrom-ag.de', 'Nein'),
 	(3, 'AirTech Solutions GmbH', 'Meier', 'Michael', 'Luftweg', 5, 'München', '67890', 'Deutschland', '+49 89 246813', 'michael.meier@airtech-solutions.de', 'Nein'),
@@ -331,9 +337,9 @@ CREATE TABLE IF NOT EXISTS `warenkorb` (
   CONSTRAINT `warenkorb_LagerNr` FOREIGN KEY (`LagerNr`) REFERENCES `lager` (`LagerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `warenkorb_SKUNr` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `warenkorb_ServicepartnerNr` FOREIGN KEY (`ServicepartnerNr`) REFERENCES `servicepartner` (`ServicepartnerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.warenkorb: ~11 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.warenkorb: ~14 rows (ungefähr)
 DELETE FROM `warenkorb`;
 INSERT INTO `warenkorb` (`WarenkorbNr`, `ServicepartnerNr`, `LagerNr`, `SKUNr`, `Menge`) VALUES
 	(45, 1, NULL, 4, 4),
@@ -346,7 +352,10 @@ INSERT INTO `warenkorb` (`WarenkorbNr`, `ServicepartnerNr`, `LagerNr`, `SKUNr`, 
 	(53, 5, NULL, 6, 2),
 	(54, 3, NULL, 6, 15),
 	(55, 3, NULL, 4, 1),
-	(57, NULL, 3, 41, 4);
+	(57, NULL, 3, 41, 4),
+	(62, 1, NULL, 1, 1),
+	(63, 1, NULL, 11, 1),
+	(64, 1, NULL, 1, 1);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
