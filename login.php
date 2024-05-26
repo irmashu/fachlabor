@@ -13,9 +13,6 @@ $DBPassword = '';
 $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
-
-
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Benutzereingaben sicher abrufen und verarbeiten
     $username = htmlspecialchars($_POST['username']);
@@ -48,8 +45,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($query)) {
         $result = $db->query($query);
 
+        //Login richtig wenn ein Eintrag gefunden wurde
         if ($result && mysqli_num_rows($result) > 0) {
             $loginRichtig = TRUE;
+            $feedback = ' Erfolgreich angemeldet als '. $loginType .' ' . $id;
         } else {
             $feedback = $loginType . ' ' . $id . ' konnte nicht gefunden werden';
         }
@@ -70,11 +69,9 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $userType = $_SESSION['userType'];
     $userID = $_SESSION['userID'];
 
-    $userTypeText = "Angemeldet als: " . $userType . " ";
-    $userIDText = $userID . "<br>";
+    $loginText = "Angemeldet als: " . $userType . " " . $userID;
 } else {
-    $userTypeText = "Nicht Angemeldet". "<br>";
-    $userIDText = '';
+    $loginText = "Nicht angemeldet". "<br>";
 }
 
 
@@ -99,14 +96,17 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
         <nav>
             <button onclick="window.location.href='index.php'">Onlineshop</button>
             <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
-            <button onclick="window.location.href='management.html'" class="management-btn">Management</button>
+            <button onclick="window.location.href='management.php'" class="management-btn">Management</button>
             <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
         </nav>
+        <div class="account-buttons">
+            <button onclick="window.location.href='konto.php'">Mein Konto</button>
+            <button onclick="window.location.href='warenkorb.php'">Warenkorb</button>
+        </div>
         <div class="meine-logindaten">
             <p>
                 <?php
-                    echo $userTypeText;
-                    echo $userIDText;
+                    echo $loginText;
                 ?>
             </p>
         </div>
@@ -149,7 +149,7 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
             <p>
                 <?php
                     if (isset($feedback)) {
-                        echo $feedback;
+                        echo '<p class = "feedback">'. $feedback .'</p>';
                     }
                 ?>
             </p>

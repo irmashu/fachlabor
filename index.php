@@ -5,11 +5,9 @@
         $userType = $_SESSION['userType'];
         $userID = $_SESSION['userID'];
 
-        $userTypeText = "Angemeldet als: " . $userType . " ";
-        $userIDText = $userID . "<br>";
+        $loginText = "Angemeldet als: " . $userType . " " . $userID;
     } else {
-        $userTypeText = "Nicht Angemeldet". "<br>";
-        $userIDText = '';
+        $loginText = "Nicht angemeldet". "<br>";
     }
 
     // Get Access to our database
@@ -49,6 +47,7 @@
 
     // Query the data
     $result = $db->getEntityArray($query);
+
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +67,7 @@
         <nav>
             <button onclick="window.location.href='index.php'">Onlineshop</button>
             <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
-            <button onclick="window.location.href='management.html'" class="management-btn">Management</button>
+            <button onclick="window.location.href='management.php'" class="management-btn">Management</button>
             <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
         </nav>
         <div class="account-buttons">
@@ -78,8 +77,7 @@
         <div class="meine-logindaten">
             <p>
                 <?php
-                    echo $userTypeText;
-                    echo $userIDText;
+                    echo $loginText;
                 ?>
             </p>
         </div>

@@ -55,7 +55,7 @@ $result = $db->getEntityArray($query);
     <nav>
         <button onclick="window.location.href='index.php'">Onlineshop</button>
         <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
-        <button onclick="window.location.href='management.html'" class="management-btn">Management</button>
+        <button onclick="window.location.href='management.php'" class="management-btn">Management</button>
         <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
     </nav>
     <div class="account-buttons">

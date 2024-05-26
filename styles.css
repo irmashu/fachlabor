@@ -106,7 +106,7 @@ nav button:hover {
     border-radius: 5px;
     margin-bottom: 10px;
     opacity: 1; /* Volle Deckkraft */
-    transition: opacity 0.3s ease; /* Sanfter Übergang */
+    transition: opacity 0.1s ease; /* Sanfter Übergang */
 }
 
 .login-button button:hover {
@@ -282,3 +282,8 @@ footer {
  .checkout-button {
             margin-left: 300px;
         }
+
+.feedback {
+    color: #dc6c6c;
+    font-weight: bold;
+}
