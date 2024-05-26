@@ -71,7 +71,7 @@
             <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
         </nav>
         <div class="account-buttons">
-            <button onclick="window.location.href='konto.html'">Mein Konto</button>
+            <button onclick="window.location.href='konto.php'">Mein Konto</button>
             <button onclick="window.location.href='warenkorb.php'">Warenkorb</button>
         </div>
         <div class="meine-logindaten">

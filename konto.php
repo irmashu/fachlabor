@@ -24,7 +24,7 @@ $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
 // Construct the query for the data that we want to see
-$query = 'SELECT bestellung.Bestelldatum, bestellung.BestellNr, SUM(sku.Preis) AS Bestellsumme, auftrag.Status';
+$query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, SUM(sku.Preis * bestellposten.Quantität) AS Bestellsumme, auftrag.Status';
 $query .= ' FROM bestellung';
 $query .= ' LEFT JOIN gehört_zu ON bestellung.BestellNr = gehört_zu.BestellNr';
 $query .= ' LEFT JOIN auftrag ON gehört_zu.AuftragsNr = auftrag.AuftragsNr';
@@ -54,13 +54,13 @@ $result = $db->getEntityArray($query);
     <h1>Willkommen im AirLimited Shop!</h1>
     <nav>
         <button onclick="window.location.href='index.php'">Onlineshop</button>
-        <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
+        <button onclick="window.location.href='fertigung.php'" class="fertigung-btn">Fertigung</button>
         <button onclick="window.location.href='management.php'" class="management-btn">Management</button>
         <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
     </nav>
     <div class="account-buttons">
         <button onclick="window.location.href='konto.php'">Mein Konto</button>
-        <button onclick="window.location.href='warenkorb.html'">Warenkorb</button>
+        <button onclick="window.location.href='warenkorb.php'">Warenkorb</button>
     </div>
     <div class="meine-logindaten">
         <p>
@@ -72,7 +72,7 @@ $result = $db->getEntityArray($query);
     </div>
 </header>
 <h2> Hallo Kunde! - Meine Bestellungen </h2>
-<button onclick="window.location.href='account.html'" style="margin-left:40px;">Meine Accountdetails ändern</button>
+<!-- <button onclick="window.location.href='account.html'" style="margin-left:40px;">Meine Accountdetails ändern</button> */ -->
 <main>
     <table>
         <thead>
@@ -87,14 +87,16 @@ $result = $db->getEntityArray($query);
         <tbody>
             <?php
             if ($result) {
-                foreach ($result as $orderservicepartner) {
+
+                foreach ($result as $bestellung) {
                     echo '<tr>';
-                    echo '<td>' . $orderservicepartner->Bestelldatum . '</td>';
-                    echo '<td>' . htmlspecialchars($row['BestellNr']) . '</td>';
-                    echo '<td>' . number_format($row['Bestellsumme'], 2, ',', '.') . ' €</td>';
-                    echo '<td>' . htmlspecialchars($row['Status']) . '</td>';
-                    echo '<td><a href="bestelldetails.php?BestellNr=' . urlencode($row['BestellNr']) . '">Details anzeigen</a></td>';
+                    echo '<td>' . $bestellung->Bestelldatum . '</td>';
+                    echo '<td>' . $bestellung->BestellNr. '</td>';
+                    echo '<td>' . $bestellung->Bestellsumme.' €</td>';
+                    echo '<td>' . $bestellung->Status . '</td>';
+                    echo '<td><a href="bestelldetails.php?BestellNr=' . urlencode($bestellung->BestellNr) . '">Details anzeigen</a></td>';
                     echo '</tr>';
+                  
                 }
             } else {
                 echo '<tr><td colspan="5">Keine Bestellungen gefunden.</td></tr>';
