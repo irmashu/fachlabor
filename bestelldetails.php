@@ -31,13 +31,13 @@ if (isset($_GET['BestellNr'])) {
 }
 
 // Construct the query for the data that we want to see
-$query = 'SELECT bestellposten.BestellpostenNr, sku.`Name`, bestellposten.SKUNr, sku.´Preis in EUR´, bestellposten.Quantität, auftrag.´Status´';
+$query = 'SELECT bestellposten.BestellpostenNr, sku.`Name`, bestellposten.SKUNr, sku.Preis, bestellposten.Quantität, auftrag.`Status`';
 $query .= ' FROM bestellposten';
 $query .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
 $query .= ' LEFT JOIN bestellung ON bestellposten.BestellNr = bestellung.BestellNr';
 $query .= ' LEFT JOIN gehört_zu ON bestellung.BestellNr = gehört_zu.BestellNr';
 $query .= ' LEFT JOIN auftrag ON gehört_zu.AuftragsNr = auftrag.AuftragsNr';
-$query .= ' WHERE bestellposten.BestellNr = '. $bestellnr . 'AND auftrag.SKUNr = bestellposten.SKUNr'; 
+$query .= ' WHERE bestellposten.BestellNr = ' . $bestellnr . ' AND auftrag.SKUNr = bestellposten.SKUNr';
 
 // Query the data
 $result = $db->getEntityArray($query);
@@ -82,27 +82,29 @@ $result = $db->getEntityArray($query);
     <table>
         <thead>
             <tr>
-                <th>Bestelldatum</th>
-                <th>Bestellnummer</th>
-                <th>Bestellsumme</th>
+                <th>Bestellposten</th>
+                <th>Artikelname</th>
+                <th>Artikelnummer</th>
+                <th>Kosten</th>
+                <th>Quantität</th>
                 <th>Auftragsstatus</th>
-                <th>Bestelldetails</th>
             </tr>
         </thead>
         <tbody>
             <?php
             if ($result) {
-                foreach ($result as $bestellung) {
+                foreach ($result as $bestellposten) {
                     echo '<tr>';
-                    echo '<td>' . $bestellung->Bestelldatum . '</td>';
-                    echo '<td>' . $bestellung->BestellNr. '</td>';
-                    echo '<td>' . number_format($bestellung->Bestellsumme, 2, ',', '.') . ' €</td>';
-                    echo '<td>' . $bestellung->Status . '</td>';
-                    echo '<td><a href="bestelldetails.php?BestellNr=' . urlencode($bestellung->BestellNr) . '">Details anzeigen</a></td>';
+                    echo '<td>' . $bestellposten->BestellpostenNr . '</td>';
+                    echo '<td>' . $bestellposten->Name. '</td>';
+                    echo '<td>' . $bestellposten->SKUNr. '</td>';
+                    echo '<td>' . $bestellposten->Preis . '</td>';
+                    echo '<td>' . $bestellposten->Quantität . '</td>';
+                    echo '<td>' . $bestellposten->Status . '</td>';
                     echo '</tr>';
                 }
             } else {
-                echo '<tr><td colspan="5">Keine Bestellungen gefunden.</td></tr>';
+                echo '<tr><td colspan="6">Keine Bestellungen gefunden.</td></tr>';
             }
             ?>
         </tbody>
