@@ -23,6 +23,13 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
 	$db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 	$db->connect();
 
+    
+if (isset($_GET['auftragsNr'])) {
+    $auftragsNr = (int)$_GET['auftragsNr'];
+    echo $auftragsNr;
+}
+
+
     // Construct the query for the data that we want to see
     
     // Query the data
