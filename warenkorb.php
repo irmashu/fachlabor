@@ -46,12 +46,13 @@
         $feedback = 'Bitte als Servicepartner oder Lager anmelden';
     }
 
-    // Warenkorb in Bestellung umwandeln
-    $datum = date('Y-m-d H:i:s'); 
+    // Beim Drücken der Knöpfe
+    // Login prüfen
     if ($loginRichtig) {
         // Bei Klicken von Bestellknopf
         if (isset($_POST['bestellen'])) {
             // Bestellung erzeugen
+            $datum = date('Y-m-d H:i:s');
             $sql = 'INSERT INTO `airlimited`.`bestellung` (`Bestelldatum`, '. $userType .'Nr'.') VALUES ("'. $datum .'", '. $userID .');';
             $input = $db->query($sql);
 
@@ -68,6 +69,16 @@
             }
 
             $feedback = 'Bestellung für '. $userType .' '. $userID . ' wurde erzeugt.';
+        }
+
+        // Bei Klicken von Leeren
+        if (isset($_POST['leeren'])) {
+            $sql = 'DELETE FROM `airlimited`.`warenkorb` WHERE warenkorb.'. $userType .'Nr = '. $userID . ' ;';
+            $input = $db->query($sql);
+
+            // Seite Neu laden (Ohne alten Warenkorb)
+            header("Refresh:0");
+            exit();
         }
     }
 ?>
@@ -150,6 +161,7 @@
             <div class="login-button">
                 <form method="POST" action="#">
                     <button type="submit" name="bestellen">Hier Bestellen</button>
+                    <button type="submit" name="leeren" class = red>Warenkorb leeren</button>
                 </form>
             </div>
             <?php if(isset($feedback)){echo '<p class = "feedback">'. $feedback .'</p>';} ?>
