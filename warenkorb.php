@@ -57,7 +57,7 @@
         }
     }
 
-
+    $datum = date('Y-m-d H:i:s');
 
 
 
@@ -69,14 +69,11 @@
     if ($loginRichtig) {
         // Bei Klicken von Bestellknopf
         if (isset($_POST['bestellen'])) {
-            $sql = 'INSERT INTO `airlimited`.`bestellung` ('. $userType .'Nr'.') VALUES ('. $userID .');';
+            $sql = 'INSERT INTO `airlimited`.`bestellung` (`Bestelldatum`, '. $userType .'Nr'.') VALUES ("'. $datum .'", '. $userID .');';
             
             $input = $db->query($sql);
         }
     }
-
-    
-
 ?>
 
 
