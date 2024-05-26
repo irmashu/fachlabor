@@ -72,7 +72,7 @@ $result = $db->getEntityArray($query);
     </div>
 </header>
 <h2> Hallo Kunde! - Meine Bestellungen </h2>
-<button onclick="window.location.href='account.html'" style="margin-left:40px;">Meine Accountdetails ändern</button>
+<!-- <button onclick="window.location.href='account.html'" style="margin-left:40px;">Meine Accountdetails ändern</button> */ -->
 <main>
     <table>
         <thead>
