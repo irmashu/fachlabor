@@ -95,7 +95,7 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
                         <option value="Fertig">Fertig</option>
                     </select>
                 </td>
-                <td><a href="lieferdetails.html">Lieferdetails anzeigen</a></td>
+                <td><a href="fertigungsdetails.php">Lieferdetails anzeigen</a></td>
             </tr>
         </tbody>
     </table>

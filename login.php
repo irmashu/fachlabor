@@ -95,7 +95,7 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
         <h1>Willkommen im AirLimited Shop!</h1>
         <nav>
             <button onclick="window.location.href='index.php'">Onlineshop</button>
-            <button onclick="window.location.href='fertigung.html'" class="fertigung-btn">Fertigung</button>
+            <button onclick="window.location.href='fertigung.php'" class="fertigung-btn">Fertigung</button>
             <button onclick="window.location.href='management.php'" class="management-btn">Management</button>
             <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
         </nav>
