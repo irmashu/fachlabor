@@ -24,7 +24,8 @@ $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
 // Construct the query for the data that we want to see
-$query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, SUM(sku.Preis * bestellposten.Quantität) AS Bestellsumme, auftrag.Status';
+// $query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, SUM(sku.Preis * bestellposten.Quantität) AS Bestellsumme, auftrag.Status';
+$query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, sku.Preis, bestellposten.Quantität, auftrag.Status';
 $query .= ' FROM bestellung';
 $query .= ' LEFT JOIN gehört_zu ON bestellung.BestellNr = gehört_zu.BestellNr';
 $query .= ' LEFT JOIN auftrag ON gehört_zu.AuftragsNr = auftrag.AuftragsNr';
@@ -34,9 +35,20 @@ $query .= ' WHERE bestellung.ServicepartnerNr = '. $userID;
 $query .= ' GROUP BY bestellung.BestellNr';
 $query .= ' LIMIT 1000';
 
+
+
 // Query the data
 $result = $db->getEntityArray($query);
+$bestellposten = array();
+foreach($result as $bestellung){
+    $postenquery = 'SELECT sku.SKUNr, sku.Preis, bestellposten.Quantität FROM bestellposten';
+    $postenquery .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
+    $postenquery .= ' WHERE bestellposten.BestellNr = '. $bestellung->BestellNr;
+    $postenresult = $db->getEntityArray($postenquery); //Ergebnis query 2 
+    $bestellposten[$bestellung->BestellNr] = $postenresult;
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="de">
@@ -87,12 +99,16 @@ $result = $db->getEntityArray($query);
         <tbody>
             <?php
             if ($result) {
-
+                // print("<pre>".print_r($bestellposten,true)."</pre>"); debug-ausgabe
                 foreach ($result as $bestellung) {
                     echo '<tr>';
                     echo '<td>' . $bestellung->Bestelldatum . '</td>';
                     echo '<td>' . $bestellung->BestellNr. '</td>';
-                    echo '<td>' . $bestellung->Bestellsumme.' €</td>';
+                    $sum = 0;
+                    foreach($bestellposten[$bestellung->BestellNr] as $posten){
+                        $sum += $posten->Preis * $posten->Quantität;
+                    }
+                    echo '<td>' . $sum.' €</td>';
                     echo '<td>' . $bestellung->Status . '</td>';
                     echo '<td><a href="bestelldetails.php?BestellNr=' . urlencode($bestellung->BestellNr) . '">Details anzeigen</a></td>';
                     echo '</tr>';
