@@ -83,9 +83,50 @@ if (isset($_GET['AuftragsNr'])) {
     </div>
     </header>
 
-<h2>Auftragsdetails für Auftrag Nummer  <?php echo( $AuftragsNr)  ?> </h2>
+<h2>Auftrags- und Lieferdetails für Auftrag Nummer  <?php echo( $AuftragsNr)  ?> </h2>
 
 <main>
+    <table>
+        <thead>
+            <tr>
+                <th>Artikelname</th>
+                <th>Artikelnummer</th>
+                <th>Bestellnummer</th>
+                <th>Kunde Servicepartner</th>
+                <th>Lieferadresse Servicepartner</th>
+                <th>Bestellung für Lager:</th>
+                <th>Lieferadresse Lager</th>
+                <th>Quantität</th>
+                <th>Versandt?</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            if ($result) {
+
+                foreach ($result as $bestellung) {
+                    echo '<tr>';
+                    echo '<td>' . $bestellung->Name . '</td>';
+                    echo '<td>' . $bestellung->SKUNr. '</td>';
+                    echo '<td>' . $bestellung->BestellNr.'</td>';
+                    echo '<td>' . $bestellung->Firmenname . '</td>';
+                    echo '<td>' . $bestellung->ServicepartnerAdresse . '</td>';
+                    echo '<td>' . $bestellung->Lagerstandort . '</td>';
+                    echo '<td>' . $bestellung->LagerAdresse . '</td>';
+                    echo '<td>' . $bestellung->Quantitaet . '</td>';
+                    echo '<td>' . $bestellung->Versandt . '</td>';
+                    echo '</tr>';
+                  
+                }
+            } else {
+                echo '<tr><td colspan="5">Keine Bestellungen gefunden.</td></tr>';
+            }
+            ?>
+        </tbody>
+    </table>
+</main>
+
+<!-- <main>
 
     <table>
         <thead>
@@ -119,7 +160,7 @@ if (isset($_GET['AuftragsNr'])) {
             </tr>
         </tbody>
     </table>
-</main>
+</main> -->
 
 <footer>
     <p>&copy; 2024 AirLimited. Alle Rechte vorbehalten.</p>
