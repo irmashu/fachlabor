@@ -24,10 +24,10 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
 	$db->connect();
 
     // Construct the query for the data that we want to see
-    $query = 'SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, sku.Name, auftrag.SKUNr, SUM(gehört_zu.Quantität) AS Losgröße, sku.Fertigungsanweisungen, auftrag.Status';
+    $query = 'SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, sku.Name, auftrag.SKUNr, SUM(gehoert_zu.Quantitaet) AS Losgröße, sku.Fertigungsanweisungen, auftrag.Status';
     $query .= ' FROM auftrag';
     $query .= ' LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr';
-    $query .= ' LEFT JOIN gehört_zu ON auftrag.AuftragsNr = gehört_zu.AuftragsNr';
+    $query .= ' LEFT JOIN gehoert_zu ON auftrag.AuftragsNr = gehoert_zu.AuftragsNr';
     $query .= ' GROUP BY auftrag.AuftragsNr';
 
 

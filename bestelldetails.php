@@ -35,8 +35,8 @@ $query = 'SELECT DISTINCT bestellposten.BestellpostenNr, sku.`Name`, bestellpost
 $query .= ' FROM bestellposten';
 $query .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
 $query .= ' LEFT JOIN bestellung ON bestellposten.BestellNr = bestellung.BestellNr';
-$query .= ' LEFT JOIN gehört_zu ON bestellung.BestellNr = gehört_zu.BestellNr';
-$query .= ' LEFT JOIN auftrag ON gehört_zu.AuftragsNr = auftrag.AuftragsNr';
+$query .= ' LEFT JOIN gehoert_zu ON bestellung.BestellNr = gehoert_zu.BestellNr';
+$query .= ' LEFT JOIN auftrag ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr';
 $query .= ' WHERE bestellposten.BestellNr = ' . $bestellnr . ' AND auftrag.SKUNr = bestellposten.SKUNr';
 
 // Query the data

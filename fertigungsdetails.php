@@ -31,18 +31,18 @@ if (isset($_GET['AuftragsNr'])) {
 
     // Construct the query for the data that we want to see
 
-    $query = 'SELECT sku.Name, auftrag.SKUNr, gehört_zu.BestellNr, bestellung.ServicepartnerNr, servicepartner.Firmenname, 
+    $query = 'SELECT sku.Name, auftrag.SKUNr, gehoert_zu.BestellNr, bestellung.ServicepartnerNr, servicepartner.Firmenname, 
     CONCAT(servicepartner.Straße, " " , servicepartner.HausNr, ", ", servicepartner.PLZ, " ", servicepartner.Stadt) AS ServicepartnerAdresse,
     bestellung.LagerNr, lager.Lagerstandort,
     CONCAT(lager.Straße, " " , lager.HausNr, ", ", lager.PLZ, " ", lager.Lagerstandort) AS LagerAdresse,
-    gehört_zu.Quantität, gehört_zu.Versandt
-    FROM gehört_zu
-    LEFT JOIN bestellung ON gehört_zu.BestellNr = bestellung.BestellNr
-    LEFT JOIN auftrag ON gehört_zu.AuftragsNr = auftrag.AuftragsNr
+    gehoert_zu.Quantitaet, gehoert_zu.Versandt
+    FROM gehoert_zu
+    LEFT JOIN bestellung ON gehoert_zu.BestellNr = bestellung.BestellNr
+    LEFT JOIN auftrag ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr
     LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr
     LEFT JOIN servicepartner ON bestellung.ServicepartnerNr = servicepartner.ServicepartnerNr
     LEFT JOIN lager ON bestellung.LagerNr = lager.LagerNr
-    WHERE gehört_zu.AuftragsNr = ' . $AuftragsNr;
+    WHERE gehoert_zu.AuftragsNr = ' . $AuftragsNr;
 
 
     // Query the data
