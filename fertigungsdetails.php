@@ -126,41 +126,6 @@ if (isset($_GET['AuftragsNr'])) {
     </table>
 </main>
 
-<!-- <main>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Reihenfolge</th>
-                <th>Auftragsnummer</th>
-                <th>Artikel</th>
-                <th>SKUNr.</th>
-                <th>Losgröße</th>
-                <th>Fertigungsanweisungen</th>
-                <th>Auftragsstatus</th>
-                <th>Lieferdetails</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>1</td>
-                <td>0001</td>
-                <td>Lüfterblatt</td>
-                <td>0001</td>
-                <td>20</td>
-                <td>0001.pdf</td>
-                <td>
-                    <select>
-                        <option value="In Auftrag">In Auftrag</option>
-                        <option value="In Fertigung">In Fertigung</option>
-                        <option value="Fertig">Fertig</option>
-                    </select>
-                </td>
-                <td><a href="lieferdetails.html">Lieferdetails anzeigen</a></td>
-            </tr>
-        </tbody>
-    </table>
-</main> -->
 
 <footer>
     <p>&copy; 2024 AirLimited. Alle Rechte vorbehalten.</p>
