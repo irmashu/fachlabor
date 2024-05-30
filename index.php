@@ -111,13 +111,13 @@
         </div>
         <div class="product-content">
             <?php
-                //Eigentliche Liste erstellen
+                //Eigentliche Liste erstellen <img src="product0001.jpg" alt="Produkt 0001" width="150" height="150">
                 foreach ( $result as $sku ){
                     echo '
                     <div class="product">
                         <a href="#">
                             <div class="product-image">
-                                <img src="product0001.jpg" alt="Produkt 0001" width="150" height="150">
+                                <img src="images/' . htmlspecialchars($sku->SKUNr) . '.jpg" alt="Produkt ' . htmlspecialchars($sku->SKUNr) . '" width="150" height="150">
                             </div>
                             <div class="product-details">
                                 <h3><a href="sku_details.php?sku=' . urlencode($sku->SKUNr) . '"> ' . htmlspecialchars($sku->Name) . ' </a></h3>
