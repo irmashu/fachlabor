@@ -116,9 +116,10 @@
     <main>
         <div class="product-content">
             <div class="product">
-                <div class="product-image">
-                    <img src="product0001.jpg" alt="Produkt 0001" width="150" height="150">
-                </div>
+                <?php echo '<div class="product-image">
+                                <img src="images/' . htmlspecialchars($skuDB->SKUNr) . '.jpg" alt="Produkt ' . htmlspecialchars($skuDB->SKUNr) . '" width="150" height="150">
+                            </div> '
+                            ?>
                 <div class="product-details">
                     <?php
                         echo '
