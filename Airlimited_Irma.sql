@@ -16,10 +16,12 @@
 
 
 -- Exportiere Datenbank-Struktur für airlimited
+DROP DATABASE IF EXISTS `airlimited`;
 CREATE DATABASE IF NOT EXISTS `airlimited` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
 USE `airlimited`;
 
 -- Exportiere Struktur von Tabelle airlimited.auftrag
+DROP TABLE IF EXISTS `auftrag`;
 CREATE TABLE IF NOT EXISTS `auftrag` (
   `AuftragsNr` int(11) NOT NULL AUTO_INCREMENT,
   `Auftragsdatum` datetime DEFAULT NULL,
@@ -44,6 +46,7 @@ INSERT INTO `auftrag` (`AuftragsNr`, `Auftragsdatum`, `Status`, `Enddatum`, `Fer
 	(3, '2024-05-04 17:44:20', 'Fertig', '2024-05-05 17:44:28', 1, 43, 3);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellposten
+DROP TABLE IF EXISTS `bestellposten`;
 CREATE TABLE IF NOT EXISTS `bestellposten` (
   `BestellNr` int(11) NOT NULL,
   `BestellpostenNr` int(11) NOT NULL AUTO_INCREMENT,
@@ -79,6 +82,7 @@ INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUN
 	(50, 34, 2, 18);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellung
+DROP TABLE IF EXISTS `bestellung`;
 CREATE TABLE IF NOT EXISTS `bestellung` (
   `BestellNr` int(11) NOT NULL AUTO_INCREMENT,
   `Bestelldatum` datetime DEFAULT NULL,
@@ -108,6 +112,7 @@ INSERT INTO `bestellung` (`BestellNr`, `Bestelldatum`, `ServicepartnerNr`, `Lage
 	(50, '2024-05-26 12:40:00', 1, NULL);
 
 -- Exportiere Struktur von Tabelle airlimited.fertigung
+DROP TABLE IF EXISTS `fertigung`;
 CREATE TABLE IF NOT EXISTS `fertigung` (
   `FertigungsNr` int(11) NOT NULL AUTO_INCREMENT,
   `Straße` varchar(50) DEFAULT NULL,
@@ -134,6 +139,7 @@ INSERT INTO `fertigung` (`FertigungsNr`, `Straße`, `HausNr`, `PLZ`, `Stadt`, `L
 	(10, 'Herstellungsstraße', 6, '34567', 'Kopenhagen', 'Dänemark', '+45 1234 5678');
 
 -- Exportiere Struktur von Tabelle airlimited.gehoert_zu
+DROP TABLE IF EXISTS `gehoert_zu`;
 CREATE TABLE IF NOT EXISTS `gehoert_zu` (
   `AuftragsNr` int(11) NOT NULL,
   `BestellNr` int(11) NOT NULL,
@@ -154,6 +160,7 @@ INSERT INTO `gehoert_zu` (`AuftragsNr`, `BestellNr`, `Quantitaet`, `Versandt`) V
 	(2, 3, 5, 'Nein');
 
 -- Exportiere Struktur von Tabelle airlimited.lager
+DROP TABLE IF EXISTS `lager`;
 CREATE TABLE IF NOT EXISTS `lager` (
   `LagerNr` int(11) NOT NULL AUTO_INCREMENT,
   `Lagerstandort` varchar(50) DEFAULT NULL,
@@ -182,6 +189,7 @@ INSERT INTO `lager` (`LagerNr`, `Lagerstandort`, `Straße`, `HausNr`, `PLZ`, `La
 	(10, 'Leipzig', 'Luftmeisterstraße', 6, '34567', 'Deutschland', 'Finn', 'Schulz', '+49 341 135792');
 
 -- Exportiere Struktur von Tabelle airlimited.servicepartner
+DROP TABLE IF EXISTS `servicepartner`;
 CREATE TABLE IF NOT EXISTS `servicepartner` (
   `ServicepartnerNr` int(11) NOT NULL AUTO_INCREMENT,
   `Firmenname` varchar(50) DEFAULT NULL,
@@ -213,6 +221,7 @@ INSERT INTO `servicepartner` (`ServicepartnerNr`, `Firmenname`, `Nachname Kontak
 	(10, 'AirMaster Solutions GmbH', 'Fischer', 'Laura', 'Luftmeisterstraße', 6, 'Leipzig', '34567', 'Deutschland', '+49 341 135792', 'laura.fischer@airmastersolutions.de', 'Nein');
 
 -- Exportiere Struktur von Tabelle airlimited.sind_in
+DROP TABLE IF EXISTS `sind_in`;
 CREATE TABLE IF NOT EXISTS `sind_in` (
   `LagerNr` int(11) NOT NULL,
   `SKUNr` int(11) NOT NULL,
@@ -231,6 +240,7 @@ INSERT INTO `sind_in` (`LagerNr`, `SKUNr`, `Bestand`) VALUES
 	(2, 10, 10);
 
 -- Exportiere Struktur von Tabelle airlimited.sku
+DROP TABLE IF EXISTS `sku`;
 CREATE TABLE IF NOT EXISTS `sku` (
   `SKUNr` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(20) NOT NULL,
@@ -313,6 +323,7 @@ INSERT INTO `sku` (`SKUNr`, `Name`, `Standardlosgroeße`, `Laenge`, `Breite`, `H
 	(60, 'Luftdrucksensor', 30, 5, 5, 2, 0.2, 'Präziser Luftdrucksensor für Ventilatorüberwachung', 9.99, 'luftdrucksensor.jpg', 'Einfach', 'ja', 'luftdrucksensor_anweisungen.pdf');
 
 -- Exportiere Struktur von Tabelle airlimited.warenkorb
+DROP TABLE IF EXISTS `warenkorb`;
 CREATE TABLE IF NOT EXISTS `warenkorb` (
   `WarenkorbNr` int(11) NOT NULL AUTO_INCREMENT,
   `ServicepartnerNr` int(11) DEFAULT NULL,
@@ -326,7 +337,7 @@ CREATE TABLE IF NOT EXISTS `warenkorb` (
   CONSTRAINT `warenkorb_LagerNr` FOREIGN KEY (`LagerNr`) REFERENCES `lager` (`LagerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `warenkorb_SKUNr` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `warenkorb_ServicepartnerNr` FOREIGN KEY (`ServicepartnerNr`) REFERENCES `servicepartner` (`ServicepartnerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Exportiere Daten aus Tabelle airlimited.warenkorb: ~14 rows (ungefähr)
 DELETE FROM `warenkorb`;
@@ -344,7 +355,8 @@ INSERT INTO `warenkorb` (`WarenkorbNr`, `ServicepartnerNr`, `LagerNr`, `SKUNr`, 
 	(57, NULL, 3, 41, 4),
 	(62, 1, NULL, 1, 1),
 	(63, 1, NULL, 11, 1),
-	(64, 1, NULL, 1, 1);
+	(64, 1, NULL, 1, 1),
+	(65, 1, NULL, 10, 1);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
