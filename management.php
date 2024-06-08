@@ -32,6 +32,24 @@
         $feedback = 'Bitte als Management anmelden';
     }
 
+// Aktualisierung der Reihenfolge
+if(isset($_POST['update_order']) && isset($_POST['AuftragsNr']) && isset($_POST['new_order'])) {
+    $auftragsNr = $_POST['AuftragsNr'];
+    $newOrder = $_POST['new_order'];
+
+    $updateQuery = "UPDATE auftrag SET Reihenfolge = $newOrder WHERE AuftragsNr = $auftragsNr";
+    $result = $db->query($updateQuery);
+    
+    if($result) {
+        $feedback = "Reihenfolge erfolgreich aktualisiert.";
+    } else {
+        $feedback = "Fehler beim Aktualisieren der Reihenfolge.";
+    }
+}
+
+
+
+
     // Construct the query for the data that we want to see
     $query = '
         SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, fertigung.Stadt AS Fertigungsstandort, sku.`Name` ,auftrag.SKUNr, sind_in.Bestand, auftrag.`Status`, 
@@ -56,7 +74,6 @@
     // Query the data
     $result = $db->getEntityArray($query);
 ?>
-
 
 <!DOCTYPE html>
 <html lang="de">
@@ -95,7 +112,7 @@
 <main>
     <div class="product-content">
         <?php 
-            if($loginRichtig and isset($result)){
+            if($loginRichtig && isset($result)){
                 echo '
                     <table>
                         <thead>
@@ -117,7 +134,18 @@
                 foreach ($result as $auftrag) {
                     echo '
                                 <tr>
-                                    <td>'. $auftrag->Reihenfolge .'</td>
+                                    <form method="POST" action="">
+                                    <td>
+                                        <input type="hidden" name="AuftragsNr" value="' . $auftrag->AuftragsNr . '">
+                                        <select name="new_order">
+                                            <option value="1" ' . ($auftrag->Reihenfolge == 1 ? 'selected' : '') . '>1</option>
+                                            <option value="2" ' . ($auftrag->Reihenfolge == 2 ? 'selected' : '') . '>2</option>
+                                            <option value="3" ' . ($auftrag->Reihenfolge == 3 ? 'selected' : '') . '>3</option>
+                                            <!-- Add more options as needed -->
+                                        </select>
+                                        <button type="submit" name="update_order">Aktualisieren</button>
+                                    </td>
+                                    </form>
                                     <td>'. $auftrag->AuftragsNr .'</td>
                                     <td>'. $auftrag->Fertigungsstandort .'</td>
                                     <td>'. $auftrag->Name .'</td>
@@ -126,7 +154,7 @@
                                     <td>'. $auftrag->Bestand .'</td>
                                     <td>'. $auftrag->Status .'</td>
                                     <td>'. $auftrag->VIPKunde .'</td>
-                                    <td><a href="auftragsdetails.php?auftragsNr='. $auftrag->AuftragsNr .'">Auftragsdetails anzeigen</a></td>
+                                    <td><a href="auftragsdetails.php?AuftragsNr='. $auftrag->AuftragsNr .'">Auftragsdetails anzeigen</a></td>
                                 </tr>
                     ';
                 }
