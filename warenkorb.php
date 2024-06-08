@@ -134,14 +134,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                        ';
+                        '; 
                             
                         $summe_gesamt = 0;
                         foreach ($result as $sku) {
                             $summe = $sku->Preis * $sku->Menge;
                             echo '
                                 <tr>
-                                    <td><img src="product0001.jpg" alt="'. $sku->Name .'"></td>
+                                    <td> <img src="images/' . htmlspecialchars($sku->SKUNr) . '.jpg" alt="Produkt ' . htmlspecialchars($sku->SKUNr) . '" width="150" height="150"> </td>
                                     <td>'. $sku->Name .' (Artikelnummer: '. $sku->SKUNr .')</td>
                                     <td>'. $sku->Preis .' €</td>
                                     <td>'. $sku->Menge .'</td>
