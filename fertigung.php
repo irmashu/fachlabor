@@ -12,29 +12,27 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $userIDText = '';
 }
 
-    // Get Access to our database
-    require_once "db_class.php";
+// Get Access to our database
+require_once "db_class.php";
 
-    $DBServer   = 'localhost';
-	$DBHost     = 'airlimited';
-	$DBUser     = 'root';
-	$DBPassword = '';
-	
-	$db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
-	$db->connect();
+$DBServer   = 'localhost';
+$DBHost     = 'airlimited';
+$DBUser     = 'root';
+$DBPassword = '';
 
-    // Construct the query for the data that we want to see
-    $query = 'SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, sku.Name, auftrag.SKUNr, SUM(gehoert_zu.Quantitaet) AS Losgröße, sku.Fertigungsanweisungen, auftrag.Status';
-    $query .= ' FROM auftrag';
-    $query .= ' LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr';
-    $query .= ' LEFT JOIN gehoert_zu ON auftrag.AuftragsNr = gehoert_zu.AuftragsNr';
-    $query .= ' GROUP BY auftrag.AuftragsNr';
+$db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
+$db->connect();
 
+// Construct the query for the data that we want to see
+$query = 'SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, sku.Name, auftrag.SKUNr, SUM(gehoert_zu.Quantitaet) AS Losgröße, sku.Fertigungsanweisungen, auftrag.Status';
+$query .= ' FROM auftrag';
+$query .= ' LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr';
+$query .= ' LEFT JOIN gehoert_zu ON auftrag.AuftragsNr = gehoert_zu.AuftragsNr';
+$query .= ' GROUP BY auftrag.AuftragsNr';
 
-    // Query the data
-   $result = $db->getEntityArray($query);
-
-    ?>
+// Query the data
+$result = $db->getEntityArray($query);
+?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -88,22 +86,30 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
         <tbody>
             <?php
             if ($result) {
-
                 foreach ($result as $auftrag) {
                     echo '<tr>';
                     echo '<td>' . $auftrag->Reihenfolge . '</td>';
-                    echo '<td>' . $auftrag->AuftragsNr. '</td>';
-                    echo '<td>' . $auftrag->Name.'</td>';
+                    echo '<td>' . $auftrag->AuftragsNr . '</td>';
+                    echo '<td>' . $auftrag->Name . '</td>';
                     echo '<td>' . $auftrag->SKUNr . '</td>';
                     echo '<td>' . $auftrag->Losgröße . '</td>';
                     echo '<td>' . $auftrag->Fertigungsanweisungen . '</td>';
-                    echo '<td>' . $auftrag->Status . '</td>';
+                    echo '<td>';
+                    echo '<form method="post" action="update_status.php">';
+                    echo '<input type="hidden" name="AuftragsNr" value="' . $auftrag->AuftragsNr . '">';
+                    echo '<select name="Status">';
+                    echo '<option value="In Auftrag"' . ($auftrag->Status == 'In Auftrag' ? ' selected' : '') . '>In Auftrag</option>';
+                    echo '<option value="In Bearbeitung"' . ($auftrag->Status == 'In Bearbeitung' ? ' selected' : '') . '>In Bearbeitung</option>';
+                    echo '<option value="Fertig"' . ($auftrag->Status == 'Fertig' ? ' selected' : '') . '>Fertig</option>';
+                    echo '</select>';
+                    echo '<input type="submit" value="Ändern">';
+                    echo '</form>';
+                    echo '</td>';
                     echo '<td><a href="fertigungsdetails.php?AuftragsNr=' . urlencode($auftrag->AuftragsNr) . '">Details anzeigen</a></td>';
                     echo '</tr>';
-                  
                 }
             } else {
-                echo '<tr><td colspan="5">Keine Bestellungen gefunden.</td></tr>';
+                echo '<tr><td colspan="8">Kein Auftrag gefunden.</td></tr>';
             }
             ?>
         </tbody>
@@ -115,5 +121,3 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
 </footer>
 </body>
 </html>
-
-
