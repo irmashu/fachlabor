@@ -32,20 +32,20 @@
         $feedback = 'Bitte als Management anmelden';
     }
 
-// Aktualisierung der Reihenfolge
-if(isset($_POST['update_order']) && isset($_POST['AuftragsNr']) && isset($_POST['new_order'])) {
-    $auftragsNr = $_POST['AuftragsNr'];
-    $newOrder = $_POST['new_order'];
+    // Aktualisierung der Reihenfolge
+    if(isset($_POST['update_order']) && isset($_POST['AuftragsNr']) && isset($_POST['new_order'])) {
+        $auftragsNr = $_POST['AuftragsNr'];
+        $newOrder = $_POST['new_order'];
 
-    $updateQuery = "UPDATE auftrag SET Reihenfolge = $newOrder WHERE AuftragsNr = $auftragsNr";
-    $result = $db->query($updateQuery);
-    
-    if($result) {
-        $feedback = "Reihenfolge erfolgreich aktualisiert.";
-    } else {
-        $feedback = "Fehler beim Aktualisieren der Reihenfolge.";
+        $updateQuery = "UPDATE auftrag SET Reihenfolge = $newOrder WHERE AuftragsNr = $auftragsNr";
+        $result = $db->query($updateQuery);
+        
+        if($result) {
+            $feedback = "Reihenfolge erfolgreich aktualisiert.";
+        } else {
+            $feedback = "Fehler beim Aktualisieren der Reihenfolge.";
+        }
     }
-}
 
 
 

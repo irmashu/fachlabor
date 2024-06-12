@@ -12,6 +12,17 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $userIDText = '';
 }
 
+// richtigen Login Prüfen
+$loginRichtig = FALSE;
+if (isset($userID) and isset($userType)) {
+    if($userType == 'fertigung'){
+        $loginRichtig = TRUE;
+    }
+}
+if (!$loginRichtig) {
+    $feedback = 'Bitte als Management anmelden';
+}
+
 // Get Access to our database
 require_once "db_class.php";
 
@@ -70,50 +81,58 @@ $result = $db->getEntityArray($query);
 <h2>Auftragsübersicht</h2>
 
 <main>
-    <table>
-        <thead>
-            <tr>
-                <th>Reihenfolge</th>
-                <th>Auftragsnummer</th>
-                <th>Artikelname</th>
-                <th>Artikelnummer</th>
-                <th>Losgröße</th>
-                <th>Fertigungsanweisungen</th>
-                <th>Auftragsstatus</th>
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            if ($result) {
-                foreach ($result as $auftrag) {
-                    echo '<tr>';
-                    echo '<td>' . $auftrag->Reihenfolge . '</td>';
-                    echo '<td>' . $auftrag->AuftragsNr . '</td>';
-                    echo '<td>' . $auftrag->Name . '</td>';
-                    echo '<td>' . $auftrag->SKUNr . '</td>';
-                    echo '<td>' . $auftrag->Losgröße . '</td>';
-                    echo '<td>' . $auftrag->Fertigungsanweisungen . '</td>';
-                    echo '<td>';
-                    echo '<form method="post" action="update_status.php">';
-                    echo '<input type="hidden" name="AuftragsNr" value="' . $auftrag->AuftragsNr . '">';
-                    echo '<select name="Status">';
-                    echo '<option value="In Auftrag"' . ($auftrag->Status == 'In Auftrag' ? ' selected' : '') . '>In Auftrag</option>';
-                    echo '<option value="In Bearbeitung"' . ($auftrag->Status == 'In Bearbeitung' ? ' selected' : '') . '>In Bearbeitung</option>';
-                    echo '<option value="Fertig"' . ($auftrag->Status == 'Fertig' ? ' selected' : '') . '>Fertig</option>';
-                    echo '</select>';
-                    echo '<input type="submit" value="Ändern">';
-                    echo '</form>';
-                    echo '</td>';
-                    echo '<td><a href="fertigungsdetails.php?AuftragsNr=' . urlencode($auftrag->AuftragsNr) . '">Details anzeigen</a></td>';
-                    echo '</tr>';
-                }
-            } else {
-                echo '<tr><td colspan="8">Kein Auftrag gefunden.</td></tr>';
-            }
-            ?>
-        </tbody>
-    </table>
+    <?php
+        if($loginRichtig && isset($result)){
+            echo '
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reihenfolge</th>
+                            <th>Auftragsnummer</th>
+                            <th>Artikelname</th>
+                            <th>Artikelnummer</th>
+                            <th>Losgröße</th>
+                            <th>Fertigungsanweisungen</th>
+                            <th>Auftragsstatus</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody> 
+            ';
+
+                        if ($result) {
+                            foreach ($result as $auftrag) {
+                                echo '<tr>';
+                                echo '<td>' . $auftrag->Reihenfolge . '</td>';
+                                echo '<td>' . $auftrag->AuftragsNr . '</td>';
+                                echo '<td>' . $auftrag->Name . '</td>';
+                                echo '<td>' . $auftrag->SKUNr . '</td>';
+                                echo '<td>' . $auftrag->Losgröße . '</td>';
+                                echo '<td>' . $auftrag->Fertigungsanweisungen . '</td>';
+                                echo '<td>';
+                                echo '<form method="post" action="update_status.php">';
+                                echo '<input type="hidden" name="AuftragsNr" value="' . $auftrag->AuftragsNr . '">';
+                                echo '<select name="Status">';
+                                echo '<option value="In Auftrag"' . ($auftrag->Status == 'In Auftrag' ? ' selected' : '') . '>In Auftrag</option>';
+                                echo '<option value="In Bearbeitung"' . ($auftrag->Status == 'In Bearbeitung' ? ' selected' : '') . '>In Bearbeitung</option>';
+                                echo '<option value="Fertig"' . ($auftrag->Status == 'Fertig' ? ' selected' : '') . '>Fertig</option>';
+                                echo '</select>';
+                                echo '<input type="submit" value="Ändern">';
+                                echo '</form>';
+                                echo '</td>';
+                                echo '<td><a href="fertigungsdetails.php?AuftragsNr=' . urlencode($auftrag->AuftragsNr) . '">Details anzeigen</a></td>';
+                                echo '</tr>';
+                            }
+                        } else {
+                            echo '<tr><td colspan="8">Kein Auftrag gefunden.</td></tr>';
+                        }
+            echo '
+                    </tbody>
+                </table>
+            ';
+        }
+        if(isset($feedback)){echo '<p class = "feedback">'. $feedback .'</p>';}
+    ?>
 </main>
 
 <footer>
