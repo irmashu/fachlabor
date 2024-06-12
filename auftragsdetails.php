@@ -1,16 +1,16 @@
 <?php
-session_start();
-// Überprüfen, ob die Variablen in der Session gesetzt sind
-if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
-    $userType = $_SESSION['userType'];
-    $userID = $_SESSION['userID'];
+    session_start();
+    // Überprüfen, ob die Variablen in der Session gesetzt sind
+    if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
+        $userType = $_SESSION['userType'];
+        $userID = $_SESSION['userID'];
 
-    $userTypeText = "Angemeldet als: " . $userType . " ";
-    $userIDText = $userID . "<br>";
-} else {
-    $userTypeText = "Nicht Angemeldet". "<br>";
-    $userIDText = '';
-}
+        $userTypeText = "Angemeldet als: " . $userType . " ";
+        $userIDText = $userID . "<br>";
+    } else {
+        $userTypeText = "Nicht Angemeldet". "<br>";
+        $userIDText = '';
+    }
 
     // Get Access to our database
     require_once "db_class.php";
@@ -24,28 +24,28 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
 	$db->connect();
 
 
-if (isset($_GET['auftragsNr'])) {
-    $auftragsNr = (int)$_GET['auftragsNr'];
-    //echo $auftragsNr;
-}
-
-    // Construct the query for the data that we want to see
-
-    $query = 'SELECT fertigung.Stadt, sku.Name, auftrag.SKUNr, gehoert_zu.Quantitaet, servicepartner.Firmenname, lager.Lagerstandort, servicepartner.VIPKunde, lager.Lagerstandort
-    FROM gehoert_zu
-    LEFT JOIN bestellung ON gehoert_zu.BestellNr = bestellung.BestellNr
-    LEFT JOIN auftrag ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr
-    LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr
-    LEFT JOIN servicepartner ON bestellung.ServicepartnerNr = servicepartner.ServicepartnerNr
-    LEFT JOIN lager ON bestellung.LagerNr = lager.LagerNr
-    LEFT JOIN fertigung ON auftrag.FertigungsNr = fertigung.FertigungsNr
-    WHERE gehoert_zu.AuftragsNr = ' . $auftragsNr;
+    if (isset($_GET['AuftragsNr'])) {
+        $auftragsNr = (int)$_GET['AuftragsNr'];
+        //echo $auftragsNr;
 
 
-    // Query the data
-     $result = $db->getEntityArray($query);
+        // Construct the query for the data that we want to see
 
-    ?>
+        $query = 'SELECT fertigung.Stadt, sku.Name, auftrag.SKUNr, gehoert_zu.Quantitaet, servicepartner.Firmenname, lager.Lagerstandort, servicepartner.VIPKunde, lager.Lagerstandort
+        FROM gehoert_zu
+        LEFT JOIN bestellung ON gehoert_zu.BestellNr = bestellung.BestellNr
+        LEFT JOIN auftrag ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr
+        LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr
+        LEFT JOIN servicepartner ON bestellung.ServicepartnerNr = servicepartner.ServicepartnerNr
+        LEFT JOIN lager ON bestellung.LagerNr = lager.LagerNr
+        LEFT JOIN fertigung ON auftrag.FertigungsNr = fertigung.FertigungsNr
+        WHERE gehoert_zu.AuftragsNr = ' . $auftragsNr;
+
+
+        // Query the data
+        $result = $db->getEntityArray($query);
+    }
+?>
 
 <!DOCTYPE html>
 <html lang="de">

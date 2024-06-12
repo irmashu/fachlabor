@@ -125,7 +125,7 @@
                                 <th>Losgröße</th>
                                 <th>Lagerbestand</th>
                                 <th>Auftragsstatus</th>
-                                <th>VIP</th>
+                                <! -- <th>VIP</th>
                                 <th>Auftragsdetails</th>
                             </tr>
                         </thead>
@@ -153,7 +153,7 @@
                                     <td>'. $auftrag->Losgroesse .'</td>
                                     <td>'. $auftrag->Bestand .'</td>
                                     <td>'. $auftrag->Status .'</td>
-                                    <td>'. $auftrag->VIPKunde .'</td>
+                                    <! -- <td>'. $auftrag->VIPKunde .'</td>
                                     <td><a href="auftragsdetails.php?AuftragsNr='. $auftrag->AuftragsNr .'">Auftragsdetails anzeigen</a></td>
                                 </tr>
                     ';

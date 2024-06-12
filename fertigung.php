@@ -39,7 +39,9 @@ $query = 'SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, sku.Name, auftrag.SKUN
 $query .= ' FROM auftrag';
 $query .= ' LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr';
 $query .= ' LEFT JOIN gehoert_zu ON auftrag.AuftragsNr = gehoert_zu.AuftragsNr';
+$query .= ' WHERE auftrag.FertigungsNr = 1';
 $query .= ' GROUP BY auftrag.AuftragsNr';
+$query .= ' ORDER BY auftrag.Reihenfolge;';
 
 // Query the data
 $result = $db->getEntityArray($query);
