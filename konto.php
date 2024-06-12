@@ -12,6 +12,17 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $userIDText = '';
 }
 
+// richtigen Login Prüfen
+$loginRichtig = FALSE;
+if (isset($userID) and isset($userType)) {
+    if($userType == 'servicepartner' or $userType == 'lager'){
+        $loginRichtig = TRUE;
+    }
+}
+if (!$loginRichtig) {
+    $feedback = 'Bitte als Servicepartner oder Lager anmelden';
+}
+
 // Get Access to our database
 require_once "db_class.php";
 
@@ -31,10 +42,9 @@ $query .= ' LEFT JOIN gehoert_zu ON bestellung.BestellNr = gehoert_zu.BestellNr'
 $query .= ' LEFT JOIN auftrag ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr';
 $query .= ' LEFT JOIN bestellposten ON bestellung.BestellNr = bestellposten.BestellNr';
 $query .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
-$query .= ' WHERE bestellung.ServicepartnerNr = '. $userID; 
+$query .= ' WHERE bestellung.'. $userType .'Nr = '. $userID; 
 $query .= ' GROUP BY bestellung.BestellNr';
 $query .= ' LIMIT 1000';
-
 
 
 // Query the data

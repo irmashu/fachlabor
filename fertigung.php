@@ -8,7 +8,7 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $userTypeText = "Angemeldet als: " . $userType . " ";
     $userIDText = $userID . "<br>";
 } else {
-    $userTypeText = "Nicht Angemeldet". "<br>";
+    $userTypeText = "Nicht angemeldet". "<br>";
     $userIDText = '';
 }
 
@@ -20,7 +20,7 @@ if (isset($userID) and isset($userType)) {
     }
 }
 if (!$loginRichtig) {
-    $feedback = 'Bitte als Management anmelden';
+    $feedback = 'Bitte als Fertigung anmelden';
 }
 
 // Get Access to our database
