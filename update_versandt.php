@@ -16,20 +16,26 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
         $bestellNrList = $_POST['BestellNr'];
         $auftragsNrList = $_POST['AuftragsNr'];
         $versandtList = isset($_POST['Versandt']) ? $_POST['Versandt'] : [];
+        //echo print_r($_POST, true);
+        
+        for ($i = 0; $i < count($bestellNrList); $i++) {
+            $bestellNr = $bestellNrList[$i];
+            $versandtStatus = $_POST['Versandt'][$i];
+            //echo print_r($versandtStatus, true);
+            $versandtValue = 0;
+            if ($versandtStatus == true) {
+                $versandtValue = 1;
+            }
+            $updateAllQuery = "UPDATE gehoert_zu SET Versandt = $versandtValue WHERE BestellNr = $bestellNr AND AuftragsNr = $auftragsNrList";
+            $db->query($updateAllQuery);
 
-        // Versandt erst auf 0 setzen
-       $updateAllQuery = "UPDATE gehoert_zu SET Versandt = 0 WHERE BestellNr IN (" . implode(',', array_map('intval', $bestellNrList)) . ")";
-       $db->query($updateAllQuery);
-
-        // Versandt auf 1 setzen
-        if (!empty($versandtList)) {
-            $updateSelectedQuery = "UPDATE gehoert_zu SET Versandt = 1 WHERE BestellNr IN (" . implode(',', array_map('intval', $versandtList)) . ")";
-            $db->query($updateSelectedQuery);
         }
 
-        header("Location: fertigungsdetails.php?AuftragsNr=" . $_GET['AuftragsNr']);
+        header("Location: fertigungsdetails.php?AuftragsNr=" . $_POST['AuftragsNr']);
         exit;
-    } else {
+    } 
+    
+    else {
         echo "Ungültige Anfrage.";
     }
 

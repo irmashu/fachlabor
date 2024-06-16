@@ -111,6 +111,7 @@ $result = $db->getEntityArray($query);
                         echo '<td>' . $bestellung->Quantitaet . '</td>';
                         echo '<td>';
                         echo '<input type="hidden" name="BestellNr[]" value="' . $bestellung->BestellNr . '">';
+                        echo '<input type="hidden" name="AuftragsNr" value="' . $AuftragsNr . '">';
                         echo '<select name="Versandt[]">';
                         echo '<option value="1"' . ($bestellung->Versandt ? ' selected' : '') . '>Ja</option>';
                         echo '<option value="0"' . (!$bestellung->Versandt ? ' selected' : '') . '>Nein</option>';
