@@ -169,6 +169,7 @@ main {
 }
 
 .product-nav input[type="number"],
+.product-nav input[type="text"],
 .product-nav select {
   width: 100%;
   padding: 16px;
