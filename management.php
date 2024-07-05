@@ -35,6 +35,9 @@ if (!$loginRichtig) {
 // Standortfilter
 $standort = isset($_GET['standort']) ? $_GET['standort'] : 1;
 
+// Suchfeld
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+
 // Construct the query for the data that we want to see
 $query = '
     SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, fertigung.Stadt AS Fertigungsstandort, sku.`Name` ,auftrag.SKUNr, sind_in.Bestand, auftrag.`Status`, 
@@ -59,9 +62,54 @@ $query = '
 ';
 
 // Query the data
-$result = $db->getEntityArray($query);
-?>
+$auftragsResult = $db->getEntityArray($query);
 
+// Query for the service partners
+$servicePartnerQuery = '
+    SELECT ServicepartnerNr, Firmenname, `Nachname Kontaktperson`, `Vorname Kontaktperson`, Straße, HausNr, Stadt, PLZ, TelefonNr, `E-Mail`, VIPKunde
+    FROM servicepartner
+';
+if ($searchTerm != '') {
+    $servicePartnerQuery .= " WHERE Firmenname LIKE '%$searchTerm%'";
+}
+$servicePartnerResult = $db->getEntityArray($servicePartnerQuery);
+
+// Update service partner data
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['update_service_partner'])) {
+        $servicePartnerNr = $_POST['ServicepartnerNr'];
+        $nachname = $_POST['NachnameKontaktperson'];
+        $vorname = $_POST['VornameKontaktperson'];
+        $straße = $_POST['Straße'];
+        $hausNr = $_POST['HausNr'];
+        $stadt = $_POST['Stadt'];
+        $plz = $_POST['PLZ'];
+        $telefonNr = $_POST['TelefonNr'];
+        $email = $_POST['Email'];
+        $vipKunde = $_POST['VIPKunde'];
+
+        $updateQuery = "
+            UPDATE servicepartner
+            SET `Nachname Kontaktperson` = '$nachname', `Vorname Kontaktperson` = '$vorname', 
+                Straße = '$straße', HausNr = '$hausNr', Stadt = '$stadt', PLZ = '$plz', TelefonNr = '$telefonNr', 
+                `E-Mail` = '$email', VIPKunde = '$vipKunde'
+            WHERE ServicepartnerNr = $servicePartnerNr
+        ";
+        $db->query($updateQuery);
+    } elseif (isset($_POST['delete_service_partner'])) {
+        $servicePartnerNr = $_POST['ServicepartnerNr'];
+
+        // Löschen der referenzierten Datensätze
+        $deleteBestellungQuery = "DELETE FROM bestellung WHERE ServicepartnerNr = $servicePartnerNr";
+        $db->query($deleteBestellungQuery);
+
+        $deleteQuery = "DELETE FROM servicepartner WHERE ServicepartnerNr = $servicePartnerNr";
+        $db->query($deleteQuery);
+    }
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit();
+}
+?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -121,7 +169,7 @@ $result = $db->getEntityArray($query);
                         </select>
                     </form>
                 ';
-                if (isset($result)) {
+                if (isset($auftragsResult)) {
                     echo '
                         <table>
                             <thead>
@@ -139,7 +187,7 @@ $result = $db->getEntityArray($query);
                             </thead>
                             <tbody id="sortable">
                     ';
-                    foreach ($result as $auftrag) {
+                    foreach ($auftragsResult as $auftrag) {
                         echo '
                             <tr data-id="' . $auftrag->AuftragsNr . '">
                                 <td>' . $auftrag->Reihenfolge . '</td>
@@ -163,6 +211,67 @@ $result = $db->getEntityArray($query);
                 if(isset($feedback)){echo '<p class="feedback">'. $feedback .'</p>';} 
             }
         ?>
+
+        <h2>Kundenübersicht</h2>
+        <form method="GET" action="">
+            <label for="search">Suche nach Firmenname:</label>
+            <input type="text" id="search" name="search" value="<?php echo htmlspecialchars($searchTerm); ?>">
+            <button type="submit">Suchen</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>ServicepartnerNr</th>
+                    <th>Firmenname</th>
+                    <th>Nachname Kontaktperson</th>
+                    <th>Vorname Kontaktperson</th>
+                    <th>Straße</th>
+                    <th>HausNr</th>
+                    <th>Stadt</th>
+                    <th>PLZ</th>
+                    <th>TelefonNr</th>
+                    <th>Email</th>
+                    <th>VIP-Kunde</th>
+                    <th>Aktionen</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($servicePartnerResult) {
+                    foreach ($servicePartnerResult as $partner) {
+                        echo '
+                            <tr>
+                                <form method="POST" action="">
+                                    <td>' . $partner->ServicepartnerNr . '<input type="hidden" name="ServicepartnerNr" value="' . $partner->ServicepartnerNr . '"></td>
+                                    <td>' . $partner->Firmenname . '</td>
+                                    <td><input type="text" name="NachnameKontaktperson" value="' . $partner->{"Nachname Kontaktperson"} . '"></td>
+                                    <td><input type="text" name="VornameKontaktperson" value="' . $partner->{"Vorname Kontaktperson"} . '"></td>
+                                    <td><input type="text" name="Straße" value="' . $partner->Straße . '"></td>
+                                    <td><input type="text" name="HausNr" value="' . $partner->HausNr . '"></td>
+                                    <td><input type="text" name="Stadt" value="' . $partner->Stadt . '"></td>
+                                    <td><input type="text" name="PLZ" value="' . $partner->PLZ . '"></td>
+                                    <td><input type="text" name="TelefonNr" value="' . $partner->TelefonNr . '"></td>
+                                    <td><input type="email" name="Email" value="' . $partner->{"E-Mail"} . '"></td>
+                                    <td>
+                                        <select name="VIPKunde">
+                                            <option value="Ja" ' . ($partner->VIPKunde == "Ja" ? 'selected' : '') . '>Ja</option>
+                                            <option value="Nein" ' . ($partner->VIPKunde == "Nein" ? 'selected' : '') . '>Nein</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <button type="submit" name="update_service_partner">Speichern</button>
+                                        <button type="submit" name="delete_service_partner" onclick="return confirm(\'Sind Sie sicher, dass Sie diesen Servicepartner löschen möchten?\')">Löschen</button>
+                                    </td>
+                                </form>
+                            </tr>
+                        ';
+                    }
+                } else {
+                    echo '<tr><td colspan="12">Keine Servicepartner gefunden.</td></tr>';
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
 </main>
 
