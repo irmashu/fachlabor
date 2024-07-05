@@ -32,6 +32,9 @@ if (!$loginRichtig) {
     $feedback = 'Bitte als Management anmelden';
 }
 
+// Standortfilter
+$standort = isset($_GET['standort']) ? $_GET['standort'] : 1;
+
 // Construct the query for the data that we want to see
 $query = '
     SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, fertigung.Stadt AS Fertigungsstandort, sku.`Name` ,auftrag.SKUNr, sind_in.Bestand, auftrag.`Status`, 
@@ -50,6 +53,7 @@ $query = '
     ON gehoert_zu.BestellNr = bestellung.BestellNr
     LEFT JOIN servicepartner
     ON bestellung.ServicepartnerNr = servicepartner.ServicepartnerNr
+    WHERE fertigung.FertigungsNr = '. $standort .'
     GROUP BY auftrag.AuftragsNr
     ORDER BY auftrag.Reihenfolge ASC;
 ';
@@ -57,6 +61,7 @@ $query = '
 // Query the data
 $result = $db->getEntityArray($query);
 ?>
+
 
 
 <!DOCTYPE html>
@@ -99,44 +104,63 @@ $result = $db->getEntityArray($query);
 <main>
     <div class="product-content">
         <?php 
-            if($loginRichtig && isset($result)){
+            if($loginRichtig) {
                 echo '
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Reihenfolge</th>
-                                <th>Auftragsnummer</th>
-                                <th>Fertigungsstätte</th>
-                                <th>Artikel</th>
-                                <th>SKUNr.</th>
-                                <th>Losgröße</th>
-                                <th>Lagerbestand</th>
-                                <th>Auftragsstatus</th>
-                            </tr>
-                        </thead>
-                        <tbody id="sortable">
+                    <form method="GET" action="">
+                        <label for="standort">Fertigungsstandort:</label>
+                        <select name="standort" id="standort" onchange="this.form.submit()">
+                            <option value="1" ' . ($standort == 1 ? 'selected' : '') . '>Berlin</option>
+                            <option value="2" ' . ($standort == 2 ? 'selected' : '') . '>München</option>
+                            <option value="3" ' . ($standort == 3 ? 'selected' : '') . '>Rom</option>
+                            <option value="4" ' . ($standort == 4 ? 'selected' : '') . '>Barcelona</option>
+                            <option value="5" ' . ($standort == 5 ? 'selected' : '') . '>Mailand</option>
+                            <option value="6" ' . ($standort == 6 ? 'selected' : '') . '>Lissabon</option>
+                            <option value="7" ' . ($standort == 7 ? 'selected' : '') . '>Prag</option>
+                            <option value="8" ' . ($standort == 8 ? 'selected' : '') . '>Warschau</option>
+                            <option value="9" ' . ($standort == 9 ? 'selected' : '') . '>Budapest</option>
+                            <option value="10" ' . ($standort == 10 ? 'selected' : '') . '>Kopenhagen</option>
+                        </select>
+                    </form>
                 ';
-                foreach ($result as $auftrag) {
+                if (isset($result)) {
                     echo '
-                        <tr data-id="' . $auftrag->AuftragsNr . '">
-                            <td>' . $auftrag->Reihenfolge . '</td>
-                            <td>' . $auftrag->AuftragsNr . '</td>
-                            <td>' . $auftrag->Fertigungsstandort . '</td>
-                            <td>' . $auftrag->Name . '</td>
-                            <td>' . $auftrag->SKUNr . '</td>
-                            <td>' . $auftrag->Losgroesse . '</td>
-                            <td>' . $auftrag->Bestand . '</td>
-                            <td>' . $auftrag->Status . '</td>
-                        </tr>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Reihenfolge</th>
+                                    <th>Auftragsnummer</th>
+                                    <th>Fertigungsstätte</th>
+                                    <th>Artikel</th>
+                                    <th>SKUNr.</th>
+                                    <th>Losgröße</th>
+                                    <th>Lagerbestand</th>
+                                    <th>Auftragsstatus</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sortable">
+                    ';
+                    foreach ($result as $auftrag) {
+                        echo '
+                            <tr data-id="' . $auftrag->AuftragsNr . '">
+                                <td>' . $auftrag->Reihenfolge . '</td>
+                                <td>' . $auftrag->AuftragsNr . '</td>
+                                <td>' . $auftrag->Fertigungsstandort . '</td>
+                                <td>' . $auftrag->Name . '</td>
+                                <td>' . $auftrag->SKUNr . '</td>
+                                <td>' . $auftrag->Losgroesse . '</td>
+                                <td>' . $auftrag->Bestand . '</td>
+                                <td>' . $auftrag->Status . '</td>
+                            </tr>
+                        ';
+                    }
+                    echo'
+                            </tbody>
+                        </table>
+                        <button id="saveOrder">Reihenfolge speichern</button>
                     ';
                 }
-                echo'
-                        </tbody>
-                    </table>
-                    <button id="saveOrder">Reihenfolge speichern</button>
-                ';
+                if(isset($feedback)){echo '<p class="feedback">'. $feedback .'</p>';} 
             }
-            if(isset($feedback)){echo '<p class="feedback">'. $feedback .'</p>';} 
         ?>
     </div>
 </main>
@@ -169,8 +193,3 @@ $(function() {
 </script>
 </body>
 </html>
-
-
-
-
-
