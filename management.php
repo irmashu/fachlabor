@@ -63,7 +63,6 @@ $result = $db->getEntityArray($query);
 ?>
 
 
-
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -135,6 +134,7 @@ $result = $db->getEntityArray($query);
                                     <th>Losgröße</th>
                                     <th>Lagerbestand</th>
                                     <th>Auftragsstatus</th>
+                                    <th>Details</th>
                                 </tr>
                             </thead>
                             <tbody id="sortable">
@@ -150,6 +150,7 @@ $result = $db->getEntityArray($query);
                                 <td>' . $auftrag->Losgroesse . '</td>
                                 <td>' . $auftrag->Bestand . '</td>
                                 <td>' . $auftrag->Status . '</td>
+                                <td><a href="auftragsdetails.php?AuftragsNr=' . $auftrag->AuftragsNr . '">Details</a></td>
                             </tr>
                         ';
                     }
