@@ -76,6 +76,7 @@ $servicePartnerResult = $db->getEntityArray($servicePartnerQuery);
 
 // Update service partner data
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $error = '';
     if (isset($_POST['update_service_partner'])) {
         $servicePartnerNr = $_POST['ServicepartnerNr'];
         $nachname = $_POST['NachnameKontaktperson'];
@@ -105,11 +106,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $deleteQuery = "DELETE FROM servicepartner WHERE ServicepartnerNr = $servicePartnerNr";
         $db->query($deleteQuery);
+
+        // Redirect nach dem Löschen
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit();
+    } elseif (isset($_POST['add_service_partner'])) {
+        $firmenname = $_POST['Firmenname'];
+        $nachname = $_POST['NachnameKontaktperson'];
+        $vorname = $_POST['VornameKontaktperson'];
+        $straße = $_POST['Straße'];
+        $hausNr = $_POST['HausNr'];
+        $stadt = $_POST['Stadt'];
+        $plz = $_POST['PLZ'];
+        $telefonNr = $_POST['TelefonNr'];
+        $email = $_POST['Email'];
+        $vipKunde = $_POST['VIPKunde'];
+
+        // Serverseitige Validierung
+        if (empty($firmenname) || empty($nachname) || empty($vorname) || empty($straße) || empty($hausNr) || 
+            empty($stadt) || empty($plz) || empty($telefonNr) || empty($email) || empty($vipKunde)) {
+            $error = 'Bitte füllen Sie alle Felder aus.';
+        } else {
+            $addQuery = "
+                INSERT INTO servicepartner (Firmenname, `Nachname Kontaktperson`, `Vorname Kontaktperson`, Straße, HausNr, Stadt, PLZ, TelefonNr, `E-Mail`, VIPKunde)
+                VALUES ('$firmenname', '$nachname', '$vorname', '$straße', '$hausNr', '$stadt', '$plz', '$telefonNr', '$email', '$vipKunde')
+            ";
+            $db->query($addQuery);
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit();
+        }
     }
-    header('Location: ' . $_SERVER['PHP_SELF']);
-    exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="de">
@@ -212,6 +241,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         ?>
 
+        <h2>Neuen Kunden hinzufügen</h2>
+        <?php if (!empty($error)) { echo '<p class="feedback">' . $error . '</p>'; } ?>
+        <form method="POST" action="">
+            <table>
+                <tr>
+                    <td><input type="text" name="Firmenname" placeholder="Firmenname" required></td>
+                    <td><input type="text" name="NachnameKontaktperson" placeholder="Nachname Kontaktperson" required></td>
+                    <td><input type="text" name="VornameKontaktperson" placeholder="Vorname Kontaktperson" required></td>
+                    <td><input type="text" name="Straße" placeholder="Straße" required></td>
+                    <td><input type="text" name="HausNr" placeholder="HausNr" required></td>
+                    <td><input type="text" name="Stadt" placeholder="Stadt" required></td>
+                    <td><input type="text" name="PLZ" placeholder="PLZ" required></td>
+                    <td><input type="text" name="TelefonNr" placeholder="TelefonNr" required></td>
+                    <td><input type="email" name="Email" placeholder="E-Mail" required></td>
+                    <td>
+                        <label for="VIPKunde">VIP-Kunde</label>
+                        <select name="VIPKunde" required>
+                            <option value="">Bitte wählen</option>
+                            <option value="Ja">Ja</option>
+                            <option value="Nein">Nein</option>
+                        </select>
+                    </td>
+                    <td><button type="submit" name="add_service_partner">Hinzufügen</button></td>
+                </tr>
+            </table>
+        </form>
+
         <h2>Kundenübersicht</h2>
         <form method="GET" action="">
             <label for="search">Suche nach Firmenname:</label>
@@ -253,7 +309,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <td><input type="text" name="TelefonNr" value="' . $partner->TelefonNr . '"></td>
                                     <td><input type="email" name="Email" value="' . $partner->{"E-Mail"} . '"></td>
                                     <td>
-                                        <select name="VIPKunde">
+                                        <label for="VIPKunde_' . $partner->ServicepartnerNr . '">VIP-Kunde</label>
+                                        <select name="VIPKunde" id="VIPKunde_' . $partner->ServicepartnerNr . '">
                                             <option value="Ja" ' . ($partner->VIPKunde == "Ja" ? 'selected' : '') . '>Ja</option>
                                             <option value="Nein" ' . ($partner->VIPKunde == "Nein" ? 'selected' : '') . '>Nein</option>
                                         </select>
