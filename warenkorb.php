@@ -33,7 +33,7 @@ if (isset($userID) and isset($userType)) {
 
 // Hilfsfunktion, um den Lagerbestand zu aktualisieren und Produktionsaufträge zu prüfen
 function updateStockAndProduction($db, $skuNr, $orderQty, $bestellNr) {
-    // Den aktuellen Bestand und die Standardlosgröße abrufen
+    // Den aktuellen Bestand und die Standardlosgröße, sowie die betreffende Fertigungsstätte abrufen
     $skuQuery = "
         SELECT s.Bestand, k.Standardlosgroeße, k.FertigungsNr
         FROM sind_in s 
@@ -50,13 +50,13 @@ function updateStockAndProduction($db, $skuNr, $orderQty, $bestellNr) {
         $newStock = $currentStock - $orderQty;
 
         if ($newStock >= $batchSize) {
-            // Fall A: Lagerbestand - Bestellmenge ist größer als die Losgröße
+            // Fall A: Lagerbestand - Bestellmenge ist größer als die Losgröße, kein neuer Auftrag nötig
             $updateStockQuery = "UPDATE sind_in SET Bestand = Bestand - $orderQty WHERE SKUNr = '$skuNr'";
             $db->query($updateStockQuery);
             return true;
         } elseif ($newStock < 0) {
-            // Fall C: Lagerbestand - Bestellmenge ist kleiner als 0
-            // Nach bestehenden Produktionsaufträgen suchen
+            // Fall C: Lagerbestand - Bestellmenge ist kleiner als 0, neuer Kundenauftrag nötig
+            // Nach bestehenden Produktionsaufträgen für dieses SKU suchen, die nicht fertig sind
             $productionQuery = 'SELECT * FROM `airlimited`.`gehoert_zu` ';
             $productionQuery .= 'LEFT JOIN `airlimited`.`auftrag` ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr ';
             $productionQuery .= 'WHERE SKUNr ='. $skuNr ." AND Status != 'fertig'";
@@ -64,7 +64,7 @@ function updateStockAndProduction($db, $skuNr, $orderQty, $bestellNr) {
             
             if (!$productionResult) {
                 // Kein bestehender Produktionsauftrag, einen neuen erstellen
-                $productionQty = ceil(abs($newStock) / $batchSize) * $batchSize + $batchSize;
+                $productionQty = ceil(abs($newStock) / $batchSize) * $batchSize + $batchSize; //Höhe des Auftrages entspricht vielfachem der Losgröße
                 $aktuellesDatumZeit = date('Y-m-d H:i:s');
 
                 // Abrufen der FertigungsNr aus der SKU-Tabelle
@@ -118,7 +118,14 @@ function updateStockAndProduction($db, $skuNr, $orderQty, $bestellNr) {
             
             if (!$productionResult) {
                 // Kein bestehender Produktionsauftrag, einen neuen erstellen
-                $newOrderQuery = "INSERT INTO auftrag (SKUNr, Status) VALUES ('$skuNr', 'in_production')";
+                $aktuellesDatumZeit = date('Y-m-d H:i:s');
+                // Abrufen der FertigungsNr aus der SKU-Tabelle
+                $fertigungsNrQuery = "SELECT FertigungsNr FROM sku WHERE SKUNr = '$skuNr'";
+                $fertigungsNrResult = $db->query($fertigungsNrQuery);
+                $fertigungsNrRow = $fertigungsNrResult->fetch_assoc();
+                $fertigungsNr = $fertigungsNrRow['FertigungsNr'];
+                
+                $newOrderQuery = "INSERT INTO auftrag (Auftragsdatum, Status, SKUNr, FertigungsNr) VALUES ('$aktuellesDatumZeit', 'In Bearbeitung', '$skuNr', '$fertigungsNr')";
                 $db->query($newOrderQuery);
                 $productionOrderId = $db->getAutoIncID();
                 $gehoertZuQuery = "INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($productionOrderId, $bestellNr, $orderQty)";

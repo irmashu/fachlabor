@@ -175,8 +175,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </header>
 
-<h2>Auftragsübersicht für das Management</h2>
-
+    <?php 
+            if($loginRichtig)
+                echo '<h2>Auftragsübersicht für das Management</h2>'
+            ?>
 <main>
     <div class="product-content">
         <?php 
@@ -240,8 +242,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if(isset($feedback)){echo '<p class="feedback">'. $feedback .'</p>';} 
             }
         ?>
+  <?php 
+            if($loginRichtig)
+                echo '<h2>Neuen Kunden hinzufügen</h2>'
+            ?>
 
-        <h2>Neuen Kunden hinzufügen</h2>
         <?php if (!empty($error)) { echo '<p class="feedback">' . $error . '</p>'; } ?>
         <form method="POST" action="">
             <table>
@@ -268,7 +273,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </table>
         </form>
 
-        <h2>Kundenübersicht</h2>
+        
+    <?php 
+            if($loginRichtig)
+                echo '<h2>Kundenübersicht</h2>'
+            ?>
+
         <form method="GET" action="">
             <label for="search">Suche nach Firmenname:</label>
             <input type="text" id="search" name="search" value="<?php echo htmlspecialchars($searchTerm); ?>">
@@ -293,7 +303,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </thead>
             <tbody>
                 <?php
-                if ($servicePartnerResult) {
+                if ($servicePartnerResult and $loginRichtig) {
                     foreach ($servicePartnerResult as $partner) {
                         echo '
                             <tr>
