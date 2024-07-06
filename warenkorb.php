@@ -12,7 +12,7 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $userIDText = '';
 }
 
-// Get Access to our database
+// Zugriff auf die Datenbank erhalten
 require_once "db_class.php";
 
 $DBServer   = 'localhost';
@@ -23,12 +23,132 @@ $DBPassword = '';
 $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
-// richtigen Login Prüfen
+// Richtigen Login prüfen
 $loginRichtig = FALSE;
 if (isset($userID) and isset($userType)) {
     if($userType == 'servicepartner' or $userType == 'lager'){
         $loginRichtig = TRUE;
     }
+}
+
+// Hilfsfunktion, um den Lagerbestand zu aktualisieren und Produktionsaufträge zu prüfen
+function updateStockAndProduction($db, $skuNr, $orderQty, $bestellNr) {
+    // Den aktuellen Bestand und die Standardlosgröße abrufen
+    $skuQuery = "
+        SELECT s.Bestand, k.Standardlosgroeße, k.FertigungsNr
+        FROM sind_in s 
+        JOIN sku k ON s.SKUNr = k.SKUNr 
+        WHERE s.SKUNr = '$skuNr'
+    ";
+    $skuResult = $db->getEntityArray($skuQuery);
+    
+    if ($skuResult) {
+        $currentStock = $skuResult[0]->Bestand;
+        $batchSize = $skuResult[0]->Standardlosgroeße;
+
+        // Den neuen Lagerbestand berechnen
+        $newStock = $currentStock - $orderQty;
+
+        if ($newStock >= $batchSize) {
+            // Fall A: Lagerbestand - Bestellmenge ist größer als die Losgröße
+            $updateStockQuery = "UPDATE sind_in SET Bestand = Bestand - $orderQty WHERE SKUNr = '$skuNr'";
+            $db->query($updateStockQuery);
+            return true;
+        } elseif ($newStock < 0) {
+            // Fall C: Lagerbestand - Bestellmenge ist kleiner als 0
+            // Nach bestehenden Produktionsaufträgen suchen
+            $productionQuery = 'SELECT * FROM `airlimited`.`gehoert_zu` ';
+            $productionQuery .= 'LEFT JOIN `airlimited`.`auftrag` ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr ';
+            $productionQuery .= 'WHERE SKUNr ='. $skuNr ." AND Status != 'fertig'";
+            $productionResult = $db->getEntityArray($productionQuery);
+            
+            if (!$productionResult) {
+                // Kein bestehender Produktionsauftrag, einen neuen erstellen
+                $productionQty = ceil(abs($newStock) / $batchSize) * $batchSize + $batchSize;
+                $aktuellesDatumZeit = date('Y-m-d H:i:s');
+
+                // Abrufen der FertigungsNr aus der SKU-Tabelle
+                $fertigungsNrQuery = "SELECT FertigungsNr FROM sku WHERE SKUNr = '$skuNr'";
+                $fertigungsNrResult = $db->query($fertigungsNrQuery);
+                $fertigungsNrRow = $fertigungsNrResult->fetch_assoc();
+                $fertigungsNr = $fertigungsNrRow['FertigungsNr'];
+
+                // Einfügen des neuen Auftrags mit der abgerufenen FertigungsNr
+                $newOrderQuery = "INSERT INTO auftrag (Auftragsdatum, Status, SKUNr, FertigungsNr) VALUES ('$aktuellesDatumZeit', 'In Bearbeitung', '$skuNr', '$fertigungsNr')";
+                $db->query($newOrderQuery);
+                $productionOrderId = $db->getAutoIncID();
+               
+                $gehoertZuQuery = "INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($productionOrderId, $bestellNr, $orderQty)";
+                $db->query($gehoertZuQuery);
+
+            } else {
+                // Bestehender Produktionsauftrag gefunden
+                $productionOrderId = $productionResult[0]->AuftragsNr;
+
+                // Berechnen, ob der bestehende Auftrag ausreicht
+                $totalOrderQty = $db->getEntityArray("SELECT SUM(Quantitaet) as total FROM gehoert_zu WHERE AuftragsNr = $productionOrderId")[0]->total;
+                $remainingQty = $productionResult[0]->Quantitaet - $totalOrderQty;
+
+                if ($remainingQty >= $batchSize) {
+                    // Produktionsauftrag reicht aus
+                    $gehoertZuQuery = "INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($productionOrderId, $bestellNr, $orderQty)";
+                    $db->query($gehoertZuQuery);
+                } else {
+                    // Bestehender Produktionsauftrag reicht nicht aus, neuen erstellen
+                    $fertigungsNrQuery = "SELECT FertigungsNr FROM sku WHERE SKUNr = '$skuNr'";
+                    $fertigungsNrResult = $db->query($fertigungsNrQuery);
+                    $fertigungsNrRow = $fertigungsNrResult->fetch_assoc();
+                    $fertigungsNr = $fertigungsNrRow['FertigungsNr'];
+
+                    $newProductionQty = ceil(abs($newStock) / $batchSize) * $batchSize + $batchSize;
+                    $aktuellesDatumZeit = date('Y-m-d H:i:s');
+                    $newOrderQuery = "INSERT INTO auftrag (Auftragsdatum, Status, SKUNr, FertigungsNr) VALUES ('$aktuellesDatumZeit', 'In Bearbeitung', '$skuNr', '$fertigungsNr')";
+                    $db->query($newOrderQuery);
+                    $newProductionOrderId = $db->getAutoIncID();
+                    $gehoertZuQuery = "INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($newProductionOrderId, $bestellNr, $orderQty)";
+                    $db->query($gehoertZuQuery);
+                }
+            }
+            return false;
+        } else {
+            // Fall B: Lagerbestand - Bestellmenge ist größer als 0, aber kleiner als die Losgröße
+            // Nach bestehenden Produktionsaufträgen suchen
+            $productionQuery = "SELECT * FROM auftrag WHERE SKUNr = '$skuNr' AND Status != 'fertig'";
+            $productionResult = $db->getEntityArray($productionQuery);
+            
+            if (!$productionResult) {
+                // Kein bestehender Produktionsauftrag, einen neuen erstellen
+                $newOrderQuery = "INSERT INTO auftrag (SKUNr, Status) VALUES ('$skuNr', 'in_production')";
+                $db->query($newOrderQuery);
+                $productionOrderId = $db->getAutoIncID();
+                $gehoertZuQuery = "INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($productionOrderId, $bestellNr, $orderQty)";
+                $db->query($gehoertZuQuery);
+            } else {
+                // Bestehender Produktionsauftrag gefunden
+                $productionOrderId = $productionResult[0]->AuftragsNr;
+
+                // Berechnen, ob der bestehende Auftrag ausreicht
+                $totalOrderQty = $db->getEntityArray("SELECT SUM(Quantitaet) as total FROM gehoert_zu WHERE AuftragsNr = $productionOrderId")[0]->total;
+                $remainingQty = $productionResult[0]->Quantitaet - $totalOrderQty;
+
+                if ($remainingQty >= $batchSize) {
+                    // Produktionsauftrag reicht aus
+                    $gehoertZuQuery = "INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($productionOrderId, $bestellNr, $orderQty)";
+                    $db->query($gehoertZuQuery);
+                } else {
+                    // Bestehender Produktionsauftrag reicht nicht aus, neuen erstellen
+                    $newProductionQty = ceil(abs($newStock) / $batchSize) * $batchSize + $batchSize;
+                    $newOrderQuery = "INSERT INTO auftrag (SKUNr, Status) VALUES ('$skuNr', 'in Bearbeitung')";
+                    $db->query($newOrderQuery);
+                    $newProductionOrderId = $db->getAutoIncID();
+                    $gehoertZuQuery = "INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($newProductionOrderId, $bestellNr, $orderQty)";
+                    $db->query($gehoertZuQuery);
+                }
+            }
+            return true;
+        }
+    }
+    return false;
 }
 
 // Beim Drücken der Knöpfe
@@ -38,7 +158,7 @@ if ($loginRichtig) {
         $Menge = $_POST['menge'];
 
         // Menge aktualisieren
-        $sql = 'UPDATE `airlimited`.`warenkorb` SET `menge` = '. $Menge .' WHERE `SKUNr` = '. $skuNr .' AND `'. $userType .'Nr` = '. $userID .';';
+        $sql = 'UPDATE `airlimited`.`warenkorb` SET `Menge` = '. $Menge .' WHERE `SKUNr` = '. $skuNr .' AND `'. $userType .'Nr` = '. $userID .';';
         $input = $db->query($sql);
 
         // Seite Neu laden (damit die aktualisierten Daten angezeigt werden)
@@ -62,7 +182,7 @@ if ($loginRichtig) {
     if (isset($_POST['bestellen'])) {
         // Bestellung erzeugen
         $datum = date('Y-m-d H:i:s');
-        $sql = 'INSERT INTO `airlimited`.`bestellung` (`Bestelldatum`, '. $userType .'Nr'.') VALUES ("'. $datum .'", '. $userID .');';
+        $sql = 'INSERT INTO `airlimited`.`bestellung` (`Bestelldatum`, '. $userType .'Nr) VALUES ("'. $datum .'", '. $userID .');';
         $input = $db->query($sql);
 
         // Erzeugte BestellNr speichern
@@ -77,12 +197,25 @@ if ($loginRichtig) {
         $query .= 'ORDER BY warenkorb.SKUNr ';
         $query .= 'LIMIT 1000;';
 
-        // Query the data
+        // Daten abfragen
         $result = $db->getEntityArray($query);
         
         foreach ($result as $sku) {
-            $sql = 'INSERT INTO `airlimited`.`bestellposten` (`BestellNr`, `Quantität`, `SKUNr`) VALUES ('. $erzeugte_BestellNr .', '. $sku->Menge .', '. $sku->SKUNr .');';
+            $skuNr = $sku->SKUNr;
+            $menge = $sku->Menge;
+            
+            // Bestellposten hinzufügen
+            $sql = 'INSERT INTO `airlimited`.`bestellposten` (`BestellNr`, `Quantität`, `SKUNr`) VALUES ('. $erzeugte_BestellNr .', '. $menge .', '. $skuNr .');';
             $input = $db->query($sql);
+
+            // Überprüfen und Lagerbestand aktualisieren
+            $isReadyForShipment = updateStockAndProduction($db, $skuNr, $menge, $erzeugte_BestellNr);
+
+            // Versandbereit markieren
+            if ($isReadyForShipment) {
+                $updateQuery = "UPDATE bestellposten SET versandbereit = 1 WHERE BestellNr = $erzeugte_BestellNr AND SKUNr = $skuNr";
+                $db->query($updateQuery);
+            }
         }
 
         $feedback = 'Bestellung für '. $userType .' '. $userID . ' wurde erzeugt.';
@@ -93,26 +226,24 @@ if ($loginRichtig) {
         $sql = 'DELETE FROM `airlimited`.`warenkorb` WHERE warenkorb.'. $userType .'Nr = '. $userID . ' ;';
         $input = $db->query($sql);
 
-        // Seite Neu laden (Ohne alten Warenkorb)
+        // Seite neu laden (ohne alten Warenkorb)
         header("Refresh:0");
         exit();
     }
 
-    //Datenbankabfrage
+    // Datenbankabfrage
     $query = 'SELECT * FROM `airlimited`.`warenkorb` ';
     $query .= 'LEFT JOIN `airlimited`.`sku` ON warenkorb.SKUNr = sku.SKUNr ';
     $query .= 'WHERE warenkorb.'. $userType .'Nr = '. $userID . ' ';
     $query .= 'ORDER BY warenkorb.SKUNr ';
     $query .= 'LIMIT 1000;';
 
-    // Query the data
+    // Daten abfragen
     $result = $db->getEntityArray($query);
 } else {
     $feedback = 'Bitte als Servicepartner oder Lager anmelden';
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="de">
