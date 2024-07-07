@@ -76,6 +76,14 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
                     mysqli_stmt_close($stmt);
                 }
 
+                // Status "versandbereit" für alle verknüpften Bestellungen auf 1 setzen
+                $updateReadyQuery = "UPDATE bestellposten SET versandbereit = 1 WHERE BestellNr IN 
+                                     (SELECT BestellNr FROM gehoert_zu WHERE AuftragsNr = ?)";
+                $stmt = mysqli_prepare($db->getConnection(), $updateReadyQuery);
+                mysqli_stmt_bind_param($stmt, 's', $auftragsNr);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_close($stmt);
+
                 header("Location: fertigung.php");
                 exit;
             } else {
