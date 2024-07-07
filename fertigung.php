@@ -56,7 +56,7 @@ $result = $db->getEntityArray($query);
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-   <header>
+    <header>
         <div class="logo">
             <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
         </div>
@@ -71,20 +71,20 @@ $result = $db->getEntityArray($query);
             <button onclick="window.location.href='fertigung.php'">Hallo Fertigung!</button>
         </div>
         <div class="meine-logindaten">
-        <p>
-            <?php
+            <p>
+                <?php
                 echo $userTypeText;
                 echo $userIDText;
-            ?>
-        </p>
-    </div>
+                ?>
+            </p>
+        </div>
     </header>
 
-<h2>Auftragsübersicht</h2>
+    <h2>Auftragsübersicht</h2>
 
-<main>
-    <?php
-        if($loginRichtig && isset($result)){
+    <main>
+        <?php
+        if ($loginRichtig && isset($result)) {
             echo '
                 <table>
                     <thead>
@@ -102,43 +102,57 @@ $result = $db->getEntityArray($query);
                     <tbody> 
             ';
 
-                        if ($result) {
-                            foreach ($result as $auftrag) {
-                                echo '<tr>';
-                                echo '<td>' . $auftrag->Reihenfolge . '</td>';
-                                echo '<td>' . $auftrag->AuftragsNr . '</td>';
-                                echo '<td>' . $auftrag->Name . '</td>';
-                                echo '<td>' . $auftrag->SKUNr . '</td>';
-                                echo '<td>' . $auftrag->Losgröße . '</td>';
-                                echo '<td>' . $auftrag->Fertigungsanweisungen . '</td>';
-                                echo '<td>';
-                                echo '<form method="post" action="update_status.php">';
-                                echo '<input type="hidden" name="AuftragsNr" value="' . $auftrag->AuftragsNr . '">';
-                                echo '<select name="Status">';
-                                echo '<option value="In Auftrag"' . ($auftrag->Status == 'In Auftrag' ? ' selected' : '') . '>In Auftrag</option>';
-                                echo '<option value="In Bearbeitung"' . ($auftrag->Status == 'In Bearbeitung' ? ' selected' : '') . '>In Bearbeitung</option>';
-                                echo '<option value="Fertig"' . ($auftrag->Status == 'Fertig' ? ' selected' : '') . '>Fertig</option>';
-                                echo '</select>';
-                                echo '<input type="submit" value="Ändern">';
-                                echo '</form>';
-                                echo '</td>';
-                                echo '<td><a href="fertigungsdetails.php?AuftragsNr=' . urlencode($auftrag->AuftragsNr) . '">Details anzeigen</a></td>';
-                                echo '</tr>';
-                            }
-                        } else {
-                            echo '<tr><td colspan="8">Kein Auftrag gefunden.</td></tr>';
-                        }
+            if ($result) {
+                foreach ($result as $auftrag) {
+                    echo '<tr>';
+                    echo '<td>' . $auftrag->Reihenfolge . '</td>';
+                    echo '<td>' . $auftrag->AuftragsNr . '</td>';
+                    echo '<td>' . $auftrag->Name . '</td>';
+                    echo '<td>' . $auftrag->SKUNr . '</td>';
+                    echo '<td>' . $auftrag->Losgröße . '</td>';
+                    echo '<td>' . $auftrag->Fertigungsanweisungen . '</td>';
+                    echo '<td>';
+                    echo '<form method="post" action="update_status.php">';
+                    echo '<input type="hidden" name="AuftragsNr" value="' . $auftrag->AuftragsNr . '">';
+                    echo '<select name="Status">';
+                    echo '<option value="In Auftrag"' . ($auftrag->Status == 'In Auftrag' ? ' selected' : '') . '>In Auftrag</option>';
+                    echo '<option value="In Bearbeitung"' . ($auftrag->Status == 'In Bearbeitung' ? ' selected' : '') . '>In Bearbeitung</option>';
+                    echo '<option value="Fertig"' . ($auftrag->Status == 'Fertig' ? ' selected' : '') . '>Fertig</option>';
+                    echo '</select>';
+                    echo '<input type="submit" value="Ändern">';
+                    echo '</form>';
+                    echo '</td>';
+                    echo '<td><a href="fertigungsdetails.php?AuftragsNr=' . urlencode($auftrag->AuftragsNr) . '">Details anzeigen</a></td>';
+                    echo '</tr>';
+                }
+            } else {
+                echo '<tr><td colspan="8">Kein Auftrag gefunden.</td></tr>';
+            }
             echo '
                     </tbody>
                 </table>
             ';
         }
-        if(isset($feedback)){echo '<p class = "feedback">'. $feedback .'</p>';}
-    ?>
-</main>
+        if (isset($feedback)) {
+            echo '<p class="feedback">' . $feedback . '</p>';
+        }
+        ?>
+    </main>
 
-<footer>
-    <p>&copy; 2024 AirLimited. Alle Rechte vorbehalten.</p>
-</footer>
+    <footer>
+        <p>&copy; 2024 AirLimited. Alle Rechte vorbehalten.</p>
+    </footer>
+
+    <?php
+    // Erfolgreiche Benachrichtigung anzeigen
+    if (isset($_SESSION['success_message'])) {
+        echo '<script>
+            document.addEventListener("DOMContentLoaded", function() {
+                alert("' . $_SESSION['success_message'] . '");
+            });
+        </script>';
+        unset($_SESSION['success_message']);
+    }
+    ?>
 </body>
 </html>
