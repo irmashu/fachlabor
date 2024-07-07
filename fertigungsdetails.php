@@ -43,6 +43,8 @@ $query = 'SELECT sku.Name, auftrag.SKUNr, gehoert_zu.BestellNr, bestellung.Servi
 
 // Query the data
 $result = $db->getEntityArray($query);
+$feedback = $_SESSION['feedback'] ?? '';
+unset($_SESSION['feedback']);
 ?>
 
 <!DOCTYPE html>
@@ -69,18 +71,14 @@ $result = $db->getEntityArray($query);
             <button onclick="window.location.href='fertigung.php'">Hallo Fertigung!</button>
         </div>
         <div class="meine-logindaten">
-        <p>
-            <?php
-                echo $userTypeText;
-                echo $userIDText;
-            ?>
-        </p>
+        <p><?php echo $userTypeText; echo $userIDText; ?></p>
     </div>
     </header>
 
 <h2>Auftrags- und Lieferdetails für Auftrag Nummer <?php echo $AuftragsNr ?></h2>
 
 <main>
+    <?php if ($feedback) { echo '<p class="feedback">' . $feedback . '</p>'; } ?>
     <form method="post" action="update_versandt.php">
         <table>
             <thead>
@@ -113,8 +111,8 @@ $result = $db->getEntityArray($query);
                         echo '<input type="hidden" name="BestellNr[]" value="' . $bestellung->BestellNr . '">';
                         echo '<input type="hidden" name="AuftragsNr" value="' . $AuftragsNr . '">';
                         echo '<select name="Versandt[]">';
-                        echo '<option value="1"' . ($bestellung->Versandt ? ' selected' : '') . '>Ja</option>';
-                        echo '<option value="0"' . (!$bestellung->Versandt ? ' selected' : '') . '>Nein</option>';
+                        echo '<option value="Ja"' . ($bestellung->Versandt === "Ja" ? ' selected' : '') . '>Ja</option>';
+                        echo '<option value="Nein"' . ($bestellung->Versandt === "Nein" ? ' selected' : '') . '>Nein</option>';
                         echo '</select>';
                         echo '</td>';
                         echo '</tr>';
