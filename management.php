@@ -175,15 +175,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </header>
 
-    <?php 
-            if($loginRichtig)
-                echo '<h2>Auftragsübersicht für das Management</h2>'
-            ?>
 <main>
-    <div class="product-content">
-        <?php 
-            if($loginRichtig) {
-                echo '
+    <?php 
+        if($loginRichtig) {
+            echo '<h2 class="content-header">Auftragsübersicht für das Management</h2>';
+            echo '<div class="product-content">';
+            echo '
                     <form method="GET" action="">
                         <label for="standort">Fertigungsstandort:</label>
                         <select name="standort" id="standort" onchange="this.form.submit()">
@@ -240,70 +237,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ';
                 }
                 if(isset($feedback)){echo '<p class="feedback">'. $feedback .'</p>';} 
-            }
-        ?>
-  <?php 
-            if($loginRichtig)
-                echo '<h2>Neuen Kunden hinzufügen</h2>'
-            ?>
+            echo '</div>';
 
-        <?php if (!empty($error)) { echo '<p class="feedback">' . $error . '</p>'; } ?>
-        <form method="POST" action="">
-            <table>
-                <tr>
-                    <td><input type="text" name="Firmenname" placeholder="Firmenname" required></td>
-                    <td><input type="text" name="NachnameKontaktperson" placeholder="Nachname Kontaktperson" required></td>
-                    <td><input type="text" name="VornameKontaktperson" placeholder="Vorname Kontaktperson" required></td>
-                    <td><input type="text" name="Straße" placeholder="Straße" required></td>
-                    <td><input type="text" name="HausNr" placeholder="HausNr" required></td>
-                    <td><input type="text" name="Stadt" placeholder="Stadt" required></td>
-                    <td><input type="text" name="PLZ" placeholder="PLZ" required></td>
-                    <td><input type="text" name="TelefonNr" placeholder="TelefonNr" required></td>
-                    <td><input type="email" name="Email" placeholder="E-Mail" required></td>
-                    <td>
-                        <label for="VIPKunde">VIP-Kunde</label>
-                        <select name="VIPKunde" required>
-                            <option value="">Bitte wählen</option>
-                            <option value="Ja">Ja</option>
-                            <option value="Nein">Nein</option>
-                        </select>
-                    </td>
-                    <td><button type="submit" name="add_service_partner">Hinzufügen</button></td>
-                </tr>
-            </table>
-        </form>
+            echo '<h2 class="content-header">Neuen Kunden hinzufügen</h2>';
+            echo '
+                <form method="POST" action="">
+                    <table>
+                        <tr>
+                            <td><input type="text" name="Firmenname" placeholder="Firmenname" required></td>
+                            <td><input type="text" name="NachnameKontaktperson" placeholder="Nachname Kontaktperson" required></td>
+                            <td><input type="text" name="VornameKontaktperson" placeholder="Vorname Kontaktperson" required></td>
+                            <td><input type="text" name="Straße" placeholder="Straße" required></td>
+                            <td><input type="text" name="HausNr" placeholder="HausNr" required></td>
+                            <td><input type="text" name="Stadt" placeholder="Stadt" required></td>
+                            <td><input type="text" name="PLZ" placeholder="PLZ" required></td>
+                            <td><input type="text" name="TelefonNr" placeholder="TelefonNr" required></td>
+                            <td><input type="email" name="Email" placeholder="E-Mail" required></td>
+                            <td>
+                                <label for="VIPKunde">VIP-Kunde</label>
+                                <select name="VIPKunde" required>
+                                    <option value="">Bitte wählen</option>
+                                    <option value="Ja">Ja</option>
+                                    <option value="Nein">Nein</option>
+                                </select>
+                            </td>
+                            <td><button type="submit" name="add_service_partner">Hinzufügen</button></td>
+                        </tr>
+                    </table>
+                </form>
+            ';
 
-        
-    <?php 
-            if($loginRichtig)
-                echo '<h2>Kundenübersicht</h2>'
-            ?>
-
-        <form method="GET" action="">
-            <label for="search">Suche nach Firmenname:</label>
-            <input type="text" id="search" name="search" value="<?php echo htmlspecialchars($searchTerm); ?>">
-            <button type="submit">Suchen</button>
-        </form>
-        <table>
-            <thead>
-                <tr>
-                    <th>ServicepartnerNr</th>
-                    <th>Firmenname</th>
-                    <th>Nachname Kontaktperson</th>
-                    <th>Vorname Kontaktperson</th>
-                    <th>Straße</th>
-                    <th>HausNr</th>
-                    <th>Stadt</th>
-                    <th>PLZ</th>
-                    <th>TelefonNr</th>
-                    <th>Email</th>
-                    <th>VIP-Kunde</th>
-                    <th>Aktionen</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if ($servicePartnerResult and $loginRichtig) {
+            echo '<h2 class="content-header">Kundenübersicht</h2>';
+            echo '
+                <form method="GET" action="">
+                    <label for="search">Suche nach Firmenname:</label>
+                    <input type="text" id="search" name="search" value="' . htmlspecialchars($searchTerm) . '">
+                    <button type="submit">Suchen</button>
+                </form>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ServicepartnerNr</th>
+                            <th>Firmenname</th>
+                            <th>Nachname Kontaktperson</th>
+                            <th>Vorname Kontaktperson</th>
+                            <th>Straße</th>
+                            <th>HausNr</th>
+                            <th>Stadt</th>
+                            <th>PLZ</th>
+                            <th>TelefonNr</th>
+                            <th>Email</th>
+                            <th>VIP-Kunde</th>
+                            <th>Aktionen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            ';
+                if ($servicePartnerResult) {
                     foreach ($servicePartnerResult as $partner) {
                         echo '
                             <tr>
@@ -336,10 +326,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     echo '<tr><td colspan="12">Keine Servicepartner gefunden.</td></tr>';
                 }
-                ?>
-            </tbody>
-        </table>
-    </div>
+                echo '
+                    </tbody>
+                </table>
+            ';
+        echo '</div>';
+    } else {
+        echo '<p>' . $feedback . '</p>';
+    }
+    ?>
 </main>
 
 <footer>

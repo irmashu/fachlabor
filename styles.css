@@ -20,8 +20,10 @@ header h1 {
 }
 
 h2 {
+  text-align: left; /* Links ausgerichtet */
   margin-left: 20px;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .logo img {
@@ -141,36 +143,44 @@ nav button:hover {
 
 main {
   padding: 40px; /* Verdoppelter Seitenabstand */
+}
+
+/* Index-Seite spezifische CSS-Regeln */
+#index-page {
   display: flex;
 }
 
-.main-login {
-  display: grid;
-  text-align: center;
+#index-page .product-content {
+  flex: 1; /* Flexibles Wachstum des Hauptinhalts */
+}
+/* Index-Seite spezifische CSS-Regeln */
+#index-page main {
+  display: flex;
+  flex-direction: row; /* Stellen Sie sicher, dass die Navigation und der Inhalt nebeneinander stehen */
 }
 
-.product-nav {
+#index-page .product-nav {
   width: 25%; /* Breite der Produkt-Navigation */
   padding-right: 40px; /* Abstand zwischen Produkt-Navigation und Hauptinhalt */
   margin-right: 40px; /* Zusätzlicher Abstand rechts */
 }
 
-.product-nav h2 {
+#index-page .product-nav h2 {
   margin-bottom: 20px;
 }
 
-.product-nav form {
+#index-page .product-nav form {
   margin-bottom: 40px;
 }
 
-.product-nav label {
+#index-page .product-nav label {
   display: block;
   margin-bottom: 10px;
 }
 
-.product-nav input[type="number"],
-.product-nav input[type="text"],
-.product-nav select {
+#index-page .product-nav input[type="number"],
+#index-page .product-nav input[type="text"],
+#index-page .product-nav select {
   width: 100%;
   padding: 16px;
   border: 1px solid #ccc;
@@ -178,7 +188,7 @@ main {
   margin-bottom: 20px;
 }
 
-.product-nav button {
+#index-page .product-nav button {
   width: 100%;
   background-color: #ffa500; /* Orange */
   border: none;
@@ -192,50 +202,50 @@ main {
   border-radius: 5px;
 }
 
-.product-nav button:hover {
+#index-page .product-nav button:hover {
   background-color: #cc8400; /* Dunkleres Orange bei Hover */
 }
 
-.product-nav a {
+#index-page .product-nav a {
   text-decoration: none;
   color: #333; /* Dunklerer Grauton */
   font-size: 16px;
 }
 
-.product-nav a:hover {
+#index-page .product-nav a:hover {
   color: #777; /* Dunklerer Grauton bei Hover */
 }
 
-.product-content {
+#index-page .product-content {
   flex: 1; /* Flexibles Wachstum des Hauptinhalts */
   margin-bottom: 100px;
   overflow-y: auto; /* Scrollen ermöglichen */
 }
 
-.product {
+#index-page .product {
   display: flex;
   border: 1px solid #ccc;
   margin-bottom: 40px; /* Verdoppelter Abstand */
   padding: 20px; /* Verdoppelter Seitenabstand */
 }
 
-.product a {
+#index-page .product a {
   text-decoration: none;
   color: #333; /* Dunklerer Grauton */
 }
 
-.product .product-image img {
+#index-page .product .product-image img {
   max-width: 150px; /* Maximale Breite des Bildes */
   max-height: 150px; /* Maximale Höhe des Bildes */
   width: auto; /* Automatische Breite beibehalten */
   height: auto; /* Automatische Höhe beibehalten */
 }
 
-.product-details {
+#index-page .product-details {
   flex: 1; /* Flexibles Wachstum */
 }
 
-.product-details .price {
+#index-page .product-details .price {
   color: #77b0e3; /* Blau */
   text-align: right; /* Text rechtsbündig ausrichten */
 }
@@ -249,10 +259,6 @@ footer {
   width: 100%;
   text-align: center;
   margin-top: 50px;
-}
-
-.main {
-  display: flex;
 }
 
 .product-image {

@@ -91,51 +91,53 @@ $result = $db->getEntityArray($query);
         </div>
     </header>
 
-    <main>
-        <div class="product-nav">
-            <h2>Navigation</h2>
-            <form action="#" method="GET">
-                <label for="search_term">Suche:</label>
-                <input type="text" id="search_term" name="search_term" value="<?php echo htmlspecialchars($search_term); ?>" placeholder="Artikelnamen oder Artikelnummer">
+    <main id="index-page">
+    <div class="product-nav">
+        <h2>Navigation</h2>
+        <form action="#" method="GET">
+            <label for="search_term">Suche:</label>
+            <input type="text" id="search_term" name="search_term" value="<?php echo htmlspecialchars($search_term); ?>" placeholder="Artikelnamen oder Artikelnummer">
 
-                <label for="price">Preis:</label>
-                <input type="number" id="price" name="price_min" min="0" value="<?php echo htmlspecialchars($price_min); ?>">
-                <span>bis</span>
-                <input type="number" id="price" name="price_max" min="0" value="<?php echo htmlspecialchars($price_max); ?>">
+            <label for="price">Preis:</label>
+            <input type="number" id="price" name="price_min" min="0" value="<?php echo htmlspecialchars($price_min); ?>">
+            <span>bis</span>
+            <input type="number" id="price" name="price_max" min="0" value="<?php echo htmlspecialchars($price_max); ?>">
 
-                <label for="sort">Sortieren nach:</label>
-                <select id="sort" name="sort">
-                    <option value="Preis ASC" <?php if ($sort == 'Preis ASC') echo 'selected'; ?>>Preis aufsteigend</option>
-                    <option value="Preis DESC" <?php if ($sort == 'Preis DESC') echo 'selected'; ?>>Preis absteigend</option>
-                    <option value="SKUNr ASC" <?php if ($sort == 'SKUNr ASC') echo 'selected'; ?>>Artikelnummer aufsteigend</option>
-                    <option value="SKUNr DESC" <?php if ($sort == 'SKUNr DESC') echo 'selected'; ?>>Artikelnummer absteigend</option>
-                </select>
-                <button type="submit">Filtern</button>
-            </form>
-        </div>
-        <div class="product-content">
-            <?php
-                foreach ( $result as $sku ){
-                    echo '
-                    <div class="product">
-                        <a href="#">
-                            <div class="product-image">
-                                <img src="images/' . htmlspecialchars($sku->SKUNr) . '.jpg" alt="Produkt ' . htmlspecialchars($sku->SKUNr) . '" width="150" height="150">
-                            </div>
-                            <div class="product-details">
-                                <h3><a href="sku_details.php?sku=' . urlencode($sku->SKUNr) . '"> ' . htmlspecialchars($sku->Name) . ' </a></h3>
-                                <p>Artikelnummer: '. $sku->SKUNr .'</p>
-                                <p>'. $sku->Beschreibung .'</p>
-                                <p class="price">Preis: '. $sku->Preis .'</p>
-                                <p>Verfügbarkeit: '. $sku->Verfuegbarkeit .'</p>
-                            </div>
-                        </a>
-                    </div>
-                    ';
-                }
-            ?>
-        </div>
-    </main>
+            <label for="sort">Sortieren nach:</label>
+            <select id="sort" name="sort">
+                <option value="Preis ASC" <?php if ($sort == 'Preis ASC') echo 'selected'; ?>>Preis aufsteigend</option>
+                <option value="Preis DESC" <?php if ($sort == 'Preis DESC') echo 'selected'; ?>>Preis absteigend</option>
+                <option value="SKUNr ASC" <?php if ($sort == 'SKUNr ASC') echo 'selected'; ?>>Artikelnummer aufsteigend</option>
+                <option value="SKUNr DESC" <?php if ($sort == 'SKUNr DESC') echo 'selected'; ?>>Artikelnummer absteigend</option>
+            </select>
+            <button type="submit">Filtern</button>
+        </form>
+    </div>
+    <div class="product-content">
+        <?php
+            foreach ( $result as $sku ){
+                echo '
+                <div class="product">
+                    <a href="#">
+                        <div class="product-image">
+                            <img src="images/' . htmlspecialchars($sku->SKUNr) . '.jpg" alt="Produkt ' . htmlspecialchars($sku->SKUNr) . '" width="150" height="150">
+                        </div>
+                        <div class="product-details">
+                            <h3><a href="sku_details.php?sku=' . urlencode($sku->SKUNr) . '"> ' . htmlspecialchars($sku->Name) . ' </a></h3>
+                            <p>Artikelnummer: '. $sku->SKUNr .'</p>
+                            <p>'. $sku->Beschreibung .'</p>
+                            <p class="price">Preis: '. $sku->Preis .'</p>
+                            <p>Verfügbarkeit: '. $sku->Verfuegbarkeit .'</p>
+                        </div>
+                    </a>
+                </div>
+                ';
+            }
+        ?>
+    </div>
+</main>
+
+
 
     <footer>
         <p>&copy; 2024 AirLimited. Alle Rechte vorbehalten.</p>

@@ -299,7 +299,6 @@ if ($loginRichtig) {
                                     <th>Stückpreis</th>
                                     <th>Menge</th>
                                     <th>Gesamtpreis</th>
-                                    <th>Aktionen</th>
                                 </tr>
                             </thead>
                             <tbody>
