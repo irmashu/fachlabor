@@ -33,12 +33,12 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
             mysqli_stmt_bind_param($stmt, 'sss', $status, $endDatum, $auftragsNr);
 
             if (mysqli_stmt_execute($stmt)) {
-                // Gesamtmenge der produzierten Artikel aus der Tabelle gehoert_zu berechnen
-                $quantityQuery = "SELECT SUM(Quantitaet) as totalQuantity FROM gehoert_zu WHERE AuftragsNr = ?";
+                // Gesamtproduktionsmenge aus der Tabelle gehoert_zu berechnen
+                $quantityQuery = "SELECT SUM(Quantitaet) as totalProduction FROM gehoert_zu WHERE AuftragsNr = ?";
                 $stmt = mysqli_prepare($db->getConnection(), $quantityQuery);
                 mysqli_stmt_bind_param($stmt, 's', $auftragsNr);
                 mysqli_stmt_execute($stmt);
-                mysqli_stmt_bind_result($stmt, $totalQuantity);
+                mysqli_stmt_bind_result($stmt, $totalProduction);
                 mysqli_stmt_fetch($stmt);
                 mysqli_stmt_close($stmt);
 
@@ -60,32 +60,46 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
                 mysqli_stmt_fetch($stmt);
                 mysqli_stmt_close($stmt);
 
-                // Berechnen der gesamten Kundenbestellmenge, die mit diesem Auftrag verknüpft ist
+                // Berechnen der Kundenbestellmenge korrekt aus der Tabelle bestellposten
                 $customerOrderQuantityQuery = "SELECT SUM(bp.Quantität) as customerQuantity
                                                FROM bestellposten bp
                                                JOIN gehoert_zu g ON bp.BestellNr = g.BestellNr
                                                JOIN bestellung b ON bp.BestellNr = b.BestellNr
-                                               WHERE g.AuftragsNr = ? AND b.ServicepartnerNr IS NOT NULL";
+                                               WHERE g.AuftragsNr = ? AND bp.SKUNr = ? AND b.ServicepartnerNr IS NOT NULL";
                 $stmt = mysqli_prepare($db->getConnection(), $customerOrderQuantityQuery);
-                mysqli_stmt_bind_param($stmt, 's', $auftragsNr);
+                mysqli_stmt_bind_param($stmt, 'ss', $auftragsNr, $skuNr);
                 mysqli_stmt_execute($stmt);
                 mysqli_stmt_bind_result($stmt, $customerQuantity);
                 mysqli_stmt_fetch($stmt);
                 mysqli_stmt_close($stmt);
 
-                // Berechnen der Menge, die direkt an den Kunden geht
-                $directToCustomer = $customerQuantity - $currentStock;
-                if ($directToCustomer < 0) {
-                    $directToCustomer = 0;
-                }
+                // Berechnung der Produktionsmenge für den Kunden und das Lager
+                $batchSizeQuery = "SELECT Standardlosgroeße FROM sku WHERE SKUNr = ?";
+                $stmt = mysqli_prepare($db->getConnection(), $batchSizeQuery);
+                mysqli_stmt_bind_param($stmt, 's', $skuNr);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_bind_result($stmt, $batchSize);
+                mysqli_stmt_fetch($stmt);
+                mysqli_stmt_close($stmt);
 
-                // Berechnen der Menge, die ins Lager geht
-                $lagerQuantity = $totalQuantity - $directToCustomer;
+                // Berechnung der zu produzierenden Menge
+                $directToCustomer = max($customerQuantity - $currentStock, 0); // Was direkt an den Kunden geht
+                $totalProduction = $directToCustomer + $batchSize; // Gesamtproduktionsmenge
+                $lagerQuantity = $batchSize; // Menge für das Lager
+                $newStock = $currentStock - $customerQuantity + $totalProduction; // Neuer Lagerbestand
+
+                // Debugging-Ausgaben hinzufügen
+                echo "Customer Quantity: " . $customerQuantity . "<br>";
+                echo "Current Stock: " . $currentStock . "<br>";
+                echo "Direct to Customer: " . $directToCustomer . "<br>";
+                echo "Total Production: " . $totalProduction . "<br>";
+                echo "Lager Quantity: " . $lagerQuantity . "<br>";
+                echo "New Stock: " . $newStock . "<br>";
 
                 // Lagerbestand aktualisieren
-                $updateStockQuery = "UPDATE sind_in SET Bestand = Bestand + ? WHERE SKUNr = ?";
+                $updateStockQuery = "UPDATE sind_in SET Bestand = ? WHERE SKUNr = ?";
                 $stmt = mysqli_prepare($db->getConnection(), $updateStockQuery);
-                mysqli_stmt_bind_param($stmt, 'is', $lagerQuantity, $skuNr);
+                mysqli_stmt_bind_param($stmt, 'is', $newStock, $skuNr);
                 if (!mysqli_stmt_execute($stmt)) {
                     echo "Fehler beim Aktualisieren des Lagerbestands: " . mysqli_error($db->getConnection());
                     exit;
@@ -105,7 +119,6 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
 
                 // Erfolgreiche Benachrichtigung in Session speichern
                 $_SESSION['success_message'] = "Auftrag $auftragsNr wurde erfolgreich aktualisiert und Bestellposten auf versandbereit gesetzt.";
-                header("Location: fertigung.php");
                 exit;
             } else {
                 echo "Fehler beim Aktualisieren des Status: " . mysqli_error($db->getConnection());
@@ -118,7 +131,6 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
             if (mysqli_stmt_execute($stmt)) {
                 // Erfolgreiche Benachrichtigung in Session speichern
                 $_SESSION['success_message'] = "Auftrag $auftragsNr wurde erfolgreich aktualisiert.";
-                header("Location: fertigung.php");
                 exit;
             } else {
                 echo "Fehler beim Aktualisieren des Status: " . mysqli_error($db->getConnection());
