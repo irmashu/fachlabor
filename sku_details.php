@@ -74,10 +74,6 @@
     }
     
     
-
-
-
-    
 ?>
 
 <!DOCTYPE html>
@@ -100,10 +96,17 @@
             <button onclick="window.location.href='management.php'" class="management-btn">Management</button>
             <button onclick="window.location.href='index.php'" class="login-btn">Anmelden</button>
         </nav>
-        <div class="account-buttons">
-            <button onclick="window.location.href='konto.php'">Mein Konto</button>
-            <button onclick="window.location.href='warenkorb.php'">Warenkorb</button>
-        </div>
+        <?php
+            if(isset($userType)){
+                if($userType == "servicepartner" OR $userType == "lager"){
+                    echo '
+                    <div class="account-buttons">
+                    <button onclick="window.location.href=`konto.php`">Mein Konto</button>
+                    <button onclick="window.location.href=`warenkorb.php`">Warenkorb</button>
+                    </div>';
+                }
+            }
+        ?>
         <div class="meine-logindaten">
             <p>
                 <?php

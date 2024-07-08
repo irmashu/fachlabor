@@ -80,12 +80,12 @@ $result = $db->getEntityArray($query);
         </div>
     </header>
 
-    <h2>Auftragsübersicht</h2>
-
     <main>
-        <?php
+    <?php
         if ($loginRichtig && isset($result)) {
             echo '
+                <h2 class="content-header">Auftragsübersicht</h2>
+
                 <table>
                     <thead>
                         <tr>
@@ -100,7 +100,7 @@ $result = $db->getEntityArray($query);
                         </tr>
                     </thead>
                     <tbody> 
-            ';
+                ';
 
             if ($result) {
                 foreach ($result as $auftrag) {
