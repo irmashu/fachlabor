@@ -51,6 +51,15 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
                 mysqli_stmt_fetch($stmt);
                 mysqli_stmt_close($stmt);
 
+                // Den aktuellen Lagerbestand abrufen
+                $stockQuery = "SELECT Bestand FROM sind_in WHERE SKUNr = ?";
+                $stmt = mysqli_prepare($db->getConnection(), $stockQuery);
+                mysqli_stmt_bind_param($stmt, 's', $skuNr);
+                mysqli_stmt_execute($stmt);
+                mysqli_stmt_bind_result($stmt, $currentStock);
+                mysqli_stmt_fetch($stmt);
+                mysqli_stmt_close($stmt);
+
                 // Berechnen der gesamten Kundenbestellmenge, die mit diesem Auftrag verknüpft ist
                 $customerOrderQuantityQuery = "SELECT SUM(bp.Quantität) as customerQuantity
                                                FROM bestellposten bp
@@ -64,24 +73,34 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
                 mysqli_stmt_fetch($stmt);
                 mysqli_stmt_close($stmt);
 
-                // Berechnen der Menge, die ins Lager geht
-                $lagerQuantity = $totalQuantity - $customerQuantity;
-
-                if ($lagerQuantity > 0) {
-                    // Lagerbestand aktualisieren
-                    $updateStockQuery = "UPDATE sind_in SET Bestand = Bestand + ? WHERE SKUNr = ?";
-                    $stmt = mysqli_prepare($db->getConnection(), $updateStockQuery);
-                    mysqli_stmt_bind_param($stmt, 'is', $lagerQuantity, $skuNr);
-                    mysqli_stmt_execute($stmt);
-                    mysqli_stmt_close($stmt);
+                // Berechnen der Menge, die direkt an den Kunden geht
+                $directToCustomer = $customerQuantity - $currentStock;
+                if ($directToCustomer < 0) {
+                    $directToCustomer = 0;
                 }
+
+                // Berechnen der Menge, die ins Lager geht
+                $lagerQuantity = $totalQuantity - $directToCustomer;
+
+                // Lagerbestand aktualisieren
+                $updateStockQuery = "UPDATE sind_in SET Bestand = Bestand + ? WHERE SKUNr = ?";
+                $stmt = mysqli_prepare($db->getConnection(), $updateStockQuery);
+                mysqli_stmt_bind_param($stmt, 'is', $lagerQuantity, $skuNr);
+                if (!mysqli_stmt_execute($stmt)) {
+                    echo "Fehler beim Aktualisieren des Lagerbestands: " . mysqli_error($db->getConnection());
+                    exit;
+                }
+                mysqli_stmt_close($stmt);
 
                 // Status "versandbereit" für alle verknüpften Bestellungen auf 1 setzen
                 $updateReadyQuery = "UPDATE bestellposten SET versandbereit = 1 WHERE BestellNr IN 
                                      (SELECT BestellNr FROM gehoert_zu WHERE AuftragsNr = ?)";
                 $stmt = mysqli_prepare($db->getConnection(), $updateReadyQuery);
                 mysqli_stmt_bind_param($stmt, 's', $auftragsNr);
-                mysqli_stmt_execute($stmt);
+                if (!mysqli_stmt_execute($stmt)) {
+                    echo "Fehler beim Aktualisieren des Versandbereit-Status: " . mysqli_error($db->getConnection());
+                    exit;
+                }
                 mysqli_stmt_close($stmt);
 
                 // Erfolgreiche Benachrichtigung in Session speichern
