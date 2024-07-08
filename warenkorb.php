@@ -146,7 +146,7 @@ if ($loginRichtig) {
             // Warenkorb leeren
             $db->query("DELETE FROM `airlimited`.`warenkorb` WHERE {$userType}Nr = $userID");
 
-            $feedback = "Bestellung für $userType $userID wurde erzeugt und der Warenkorb wurde geleert.";
+            $feedback = "Vielen Dank für Ihre Bestellung! Sie erhalten die Rechnung innerhalb der nächsten Stunde innerhalb Ihres hinterlegten E-Mail-Postfachs.";
         }
 
         if (isset($_POST['leeren'])) {
