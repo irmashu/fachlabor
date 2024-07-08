@@ -13,6 +13,8 @@ $DBPassword = '';
 $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
+
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Benutzereingaben sicher abrufen und verarbeiten
     $username = htmlspecialchars($_POST['username']);
