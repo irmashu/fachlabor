@@ -62,10 +62,10 @@ unset($_SESSION['feedback']);
         </div>
         <h1>Willkommen im AirLimited Shop</h1>
         <nav>
-            <button onclick="window.location.href='index.php'">Onlineshop</button>
+            <button onclick="window.location.href='onlineshop.php'">Onlineshop</button>
             <button onclick="window.location.href='fertigung.php'" class="fertigung-btn">Fertigung</button>
             <button onclick="window.location.href='management.php'" class="management-btn">Management</button>
-            <button onclick="window.location.href='login.php'" class="login-btn">Anmelden</button>
+            <button onclick="window.location.href='index.php'" class="login-btn">Anmelden</button>
         </nav>
         <div class="account-buttons">
             <button onclick="window.location.href='fertigung.php'">Hallo Fertigung!</button>
