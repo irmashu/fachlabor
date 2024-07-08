@@ -16,12 +16,10 @@
 
 
 -- Exportiere Datenbank-Struktur für airlimited
-DROP DATABASE IF EXISTS `airlimited`;
 CREATE DATABASE IF NOT EXISTS `airlimited` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci */;
 USE `airlimited`;
 
 -- Exportiere Struktur von Tabelle airlimited.auftrag
-DROP TABLE IF EXISTS `auftrag`;
 CREATE TABLE IF NOT EXISTS `auftrag` (
   `AuftragsNr` int(11) NOT NULL AUTO_INCREMENT,
   `Auftragsdatum` datetime DEFAULT NULL,
@@ -46,7 +44,6 @@ INSERT INTO `auftrag` (`AuftragsNr`, `Auftragsdatum`, `Status`, `Enddatum`, `Fer
 	(3, '2024-05-04 17:44:20', 'Fertig', '2024-05-05 17:44:28', 1, 43, 3);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellposten
-DROP TABLE IF EXISTS `bestellposten`;
 CREATE TABLE IF NOT EXISTS `bestellposten` (
   `BestellNr` int(11) NOT NULL,
   `BestellpostenNr` int(11) NOT NULL AUTO_INCREMENT,
@@ -82,7 +79,6 @@ INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUN
 	(50, 34, 2, 18);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellung
-DROP TABLE IF EXISTS `bestellung`;
 CREATE TABLE IF NOT EXISTS `bestellung` (
   `BestellNr` int(11) NOT NULL AUTO_INCREMENT,
   `Bestelldatum` datetime DEFAULT NULL,
@@ -95,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `bestellung` (
   CONSTRAINT `bestellung ServicepartnerNr` FOREIGN KEY (`ServicepartnerNr`) REFERENCES `servicepartner` (`ServicepartnerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.bestellung: ~9 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.bestellung: ~12 rows (ungefähr)
 DELETE FROM `bestellung`;
 INSERT INTO `bestellung` (`BestellNr`, `Bestelldatum`, `ServicepartnerNr`, `LagerNr`) VALUES
 	(1, '2024-05-05 17:33:07', 1, NULL),
@@ -112,7 +108,6 @@ INSERT INTO `bestellung` (`BestellNr`, `Bestelldatum`, `ServicepartnerNr`, `Lage
 	(50, '2024-05-26 12:40:00', 1, NULL);
 
 -- Exportiere Struktur von Tabelle airlimited.fertigung
-DROP TABLE IF EXISTS `fertigung`;
 CREATE TABLE IF NOT EXISTS `fertigung` (
   `FertigungsNr` int(11) NOT NULL AUTO_INCREMENT,
   `Straße` varchar(50) DEFAULT NULL,
@@ -121,25 +116,25 @@ CREATE TABLE IF NOT EXISTS `fertigung` (
   `Stadt` varchar(50) DEFAULT NULL,
   `Land` varchar(50) DEFAULT NULL,
   `TelefonNr` varchar(50) DEFAULT NULL,
+  `Passwort` int(11) DEFAULT NULL,
   PRIMARY KEY (`FertigungsNr`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Exportiere Daten aus Tabelle airlimited.fertigung: ~10 rows (ungefähr)
 DELETE FROM `fertigung`;
-INSERT INTO `fertigung` (`FertigungsNr`, `Straße`, `HausNr`, `PLZ`, `Stadt`, `Land`, `TelefonNr`) VALUES
-	(1, 'Industriestraße', 20, '12345', 'Berlin', 'Deutschland', '+49 30 7654321'),
-	(2, 'Fabrikweg', 15, '54321', 'München', 'Deutschland', '+49 89 9876543'),
-	(3, 'Produktionsstraße', 30, '67890', 'Rom', 'Italien', '+39 06 23456789'),
-	(4, 'Maschinenweg', 25, '13579', 'Barcelona', 'Spanien', '+34 93 357911'),
-	(5, 'Herstellungsweg', 10, '98765', 'Mailand', 'Italien', '+39 02 246810'),
-	(6, 'Fertigungsallee', 5, '24680', 'Lissabon', 'Portugal', '+351 21 8765432'),
-	(7, 'Fabrikstraße', 8, '56789', 'Prag', 'Tschechien', '+420 221 9876543'),
-	(8, 'Produktionsweg', 12, '78901', 'Warschau', 'Polen', '+48 22 6543210'),
-	(9, 'Montageweg', 18, '23456', 'Budapest', 'Ungarn', '+36 1 1357924'),
-	(10, 'Herstellungsstraße', 6, '34567', 'Kopenhagen', 'Dänemark', '+45 1234 5678');
+INSERT INTO `fertigung` (`FertigungsNr`, `Straße`, `HausNr`, `PLZ`, `Stadt`, `Land`, `TelefonNr`, `Passwort`) VALUES
+	(1, 'Industriestraße', 20, '12345', 'Berlin', 'Deutschland', '+49 30 7654321', 0),
+	(2, 'Fabrikweg', 15, '54321', 'München', 'Deutschland', '+49 89 9876543', 0),
+	(3, 'Produktionsstraße', 30, '67890', 'Rom', 'Italien', '+39 06 23456789', 0),
+	(4, 'Maschinenweg', 25, '13579', 'Barcelona', 'Spanien', '+34 93 357911', 0),
+	(5, 'Herstellungsweg', 10, '98765', 'Mailand', 'Italien', '+39 02 246810', 0),
+	(6, 'Fertigungsallee', 5, '24680', 'Lissabon', 'Portugal', '+351 21 8765432', 0),
+	(7, 'Fabrikstraße', 8, '56789', 'Prag', 'Tschechien', '+420 221 9876543', 0),
+	(8, 'Produktionsweg', 12, '78901', 'Warschau', 'Polen', '+48 22 6543210', 0),
+	(9, 'Montageweg', 18, '23456', 'Budapest', 'Ungarn', '+36 1 1357924', 0),
+	(10, 'Herstellungsstraße', 6, '34567', 'Kopenhagen', 'Dänemark', '+45 1234 5678', 0);
 
 -- Exportiere Struktur von Tabelle airlimited.gehoert_zu
-DROP TABLE IF EXISTS `gehoert_zu`;
 CREATE TABLE IF NOT EXISTS `gehoert_zu` (
   `AuftragsNr` int(11) NOT NULL,
   `BestellNr` int(11) NOT NULL,
@@ -160,7 +155,6 @@ INSERT INTO `gehoert_zu` (`AuftragsNr`, `BestellNr`, `Quantitaet`, `Versandt`) V
 	(2, 3, 5, 'Nein');
 
 -- Exportiere Struktur von Tabelle airlimited.lager
-DROP TABLE IF EXISTS `lager`;
 CREATE TABLE IF NOT EXISTS `lager` (
   `LagerNr` int(11) NOT NULL AUTO_INCREMENT,
   `Lagerstandort` varchar(50) DEFAULT NULL,
@@ -171,25 +165,25 @@ CREATE TABLE IF NOT EXISTS `lager` (
   `Verantwortlicher Vormane` varchar(50) DEFAULT NULL,
   `Verantwortlicher Nachname` varchar(50) DEFAULT NULL,
   `TelefonNr` varchar(50) DEFAULT NULL,
+  `Passwort` int(11) DEFAULT NULL,
   PRIMARY KEY (`LagerNr`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Exportiere Daten aus Tabelle airlimited.lager: ~10 rows (ungefähr)
 DELETE FROM `lager`;
-INSERT INTO `lager` (`LagerNr`, `Lagerstandort`, `Straße`, `HausNr`, `PLZ`, `Land`, `Verantwortlicher Vormane`, `Verantwortlicher Nachname`, `TelefonNr`) VALUES
-	(1, 'Berlin', 'Industriestraße', 10, '12345', 'Deutschland', 'Max', 'Schulze', '+49 30 1234567'),
-	(2, 'Hamburg', 'Hauptstraße', 25, '54321', 'Deutschland', 'Julia', 'Becker', '+49 40 9876543'),
-	(3, 'Paris', 'Luftweg', 5, '67890', 'Frankreich', 'Sophie', 'Leclerc', '+33 1 23456789'),
-	(4, 'Frankfurt', 'Kühlstraße', 15, '13579', 'Deutschland', 'Felix', 'Hoffmann', '+49 69 357911'),
-	(5, 'Stuttgart', 'Windweg', 8, '98765', 'Deutschland', 'Nina', 'Wagner', '+49 711 135790'),
-	(6, 'Madrid', 'Luftallee', 20, '24680', 'Spanien', 'Carlos', 'García', '+34 91 2345678'),
-	(7, 'Köln', 'Briseallee', 12, '56789', 'Deutschland', 'Lena', 'Schneider', '+49 221 901234'),
-	(8, 'Dresden', 'Frischweg', 30, '78901', 'Deutschland', 'Tom', 'Mayer', '+49 351 246801'),
-	(9, 'London', 'Klimaweg', 18, '23456', 'England', 'Olivia', 'Taylor', '+44 20 3456789'),
-	(10, 'Leipzig', 'Luftmeisterstraße', 6, '34567', 'Deutschland', 'Finn', 'Schulz', '+49 341 135792');
+INSERT INTO `lager` (`LagerNr`, `Lagerstandort`, `Straße`, `HausNr`, `PLZ`, `Land`, `Verantwortlicher Vormane`, `Verantwortlicher Nachname`, `TelefonNr`, `Passwort`) VALUES
+	(1, 'Berlin', 'Industriestraße', 10, '12345', 'Deutschland', 'Max', 'Schulze', '+49 30 1234567', 0),
+	(2, 'Hamburg', 'Hauptstraße', 25, '54321', 'Deutschland', 'Julia', 'Becker', '+49 40 9876543', 0),
+	(3, 'Paris', 'Luftweg', 5, '67890', 'Frankreich', 'Sophie', 'Leclerc', '+33 1 23456789', 0),
+	(4, 'Frankfurt', 'Kühlstraße', 15, '13579', 'Deutschland', 'Felix', 'Hoffmann', '+49 69 357911', 0),
+	(5, 'Stuttgart', 'Windweg', 8, '98765', 'Deutschland', 'Nina', 'Wagner', '+49 711 135790', 0),
+	(6, 'Madrid', 'Luftallee', 20, '24680', 'Spanien', 'Carlos', 'García', '+34 91 2345678', 0),
+	(7, 'Köln', 'Briseallee', 12, '56789', 'Deutschland', 'Lena', 'Schneider', '+49 221 901234', 0),
+	(8, 'Dresden', 'Frischweg', 30, '78901', 'Deutschland', 'Tom', 'Mayer', '+49 351 246801', 0),
+	(9, 'London', 'Klimaweg', 18, '23456', 'England', 'Olivia', 'Taylor', '+44 20 3456789', 0),
+	(10, 'Leipzig', 'Luftmeisterstraße', 6, '34567', 'Deutschland', 'Finn', 'Schulz', '+49 341 135792', 0);
 
 -- Exportiere Struktur von Tabelle airlimited.servicepartner
-DROP TABLE IF EXISTS `servicepartner`;
 CREATE TABLE IF NOT EXISTS `servicepartner` (
   `ServicepartnerNr` int(11) NOT NULL AUTO_INCREMENT,
   `Firmenname` varchar(50) DEFAULT NULL,
@@ -203,25 +197,25 @@ CREATE TABLE IF NOT EXISTS `servicepartner` (
   `TelefonNr` varchar(50) DEFAULT NULL,
   `E-Mail` varchar(50) DEFAULT NULL,
   `VIPKunde` varchar(5) DEFAULT 'Nein',
+  `Passwort` int(11) DEFAULT NULL,
   PRIMARY KEY (`ServicepartnerNr`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Exportiere Daten aus Tabelle airlimited.servicepartner: ~10 rows (ungefähr)
 DELETE FROM `servicepartner`;
-INSERT INTO `servicepartner` (`ServicepartnerNr`, `Firmenname`, `Nachname Kontaktperson`, `Vorname Kontaktperson`, `Straße`, `HausNr`, `Stadt`, `PLZ`, `Land`, `TelefonNr`, `E-Mail`, `VIPKunde`) VALUES
-	(1, 'Ventilator-Expert GmbH', 'Müller', 'Klaus', 'Industriestraße', 10, 'Berlin', '12345', 'Deutschland', '+49 30 1234567', 'klaus.mueller@ventilator-expert.de', 'Ja'),
-	(2, 'Luftstrom AG', 'Schneider', 'Sabine', 'Hauptstraße', 25, 'Hamburg', '54321', 'Deutschland', '+49 40 9876543', 'sabine.schneider@luftstrom-ag.de', 'Nein'),
-	(3, 'AirTech Solutions GmbH', 'Meier', 'Michael', 'Luftweg', 5, 'München', '67890', 'Deutschland', '+49 89 246813', 'michael.meier@airtech-solutions.de', 'Nein'),
-	(4, 'Cooling Systems GmbH', 'Schulz', 'Andreas', 'Kühlstraße', 15, 'Frankfurt', '13579', 'Deutschland', '+49 69 357911', 'andreas.schulz@coolingsystems.de', 'Nein'),
-	(5, 'Ventilation Services Ltd.', 'Hoffmann', 'Anna', 'Windweg', 8, 'Stuttgart', '98765', 'Deutschland', '+49 711 135790', 'anna.hoffmann@ventilationservices.com', 'Ja'),
-	(6, 'AirFlow Experts GmbH', 'Wagner', 'Peter', 'Luftallee', 20, 'Düsseldorf', '24680', 'Deutschland', '+49 211 468013', 'peter.wagner@airflow-experts.de', 'Nein'),
-	(7, 'Breeze Solutions GmbH', 'Becker', 'Sandra', 'Briseallee', 12, 'Köln', '56789', 'Deutschland', '+49 221 901234', 'sandra.becker@breeze-solutions.de', 'Nein'),
-	(8, 'FreshAir GmbH', 'Zimmermann', 'Thomas', 'Frischweg', 30, 'Dresden', '78901', 'Deutschland', '+49 351 246801', 'thomas.zimmermann@freshair.de', 'Ja'),
-	(9, 'Climate Control AG', 'Hahn', 'Markus', 'Klimaweg', 18, 'Hannover', '23456', 'Deutschland', '+49 511 679013', 'markus.hahn@climatecontrol-ag.de', 'Nein'),
-	(10, 'AirMaster Solutions GmbH', 'Fischer', 'Laura', 'Luftmeisterstraße', 6, 'Leipzig', '34567', 'Deutschland', '+49 341 135792', 'laura.fischer@airmastersolutions.de', 'Nein');
+INSERT INTO `servicepartner` (`ServicepartnerNr`, `Firmenname`, `Nachname Kontaktperson`, `Vorname Kontaktperson`, `Straße`, `HausNr`, `Stadt`, `PLZ`, `Land`, `TelefonNr`, `E-Mail`, `VIPKunde`, `Passwort`) VALUES
+	(1, 'Ventilator-Expert GmbH', 'Müller', 'Klaus', 'Industriestraße', 10, 'Berlin', '12345', 'Deutschland', '+49 30 1234567', 'klaus.mueller@ventilator-expert.de', 'Ja', 0),
+	(2, 'Luftstrom AG', 'Schneider', 'Sabine', 'Hauptstraße', 25, 'Hamburg', '54321', 'Deutschland', '+49 40 9876543', 'sabine.schneider@luftstrom-ag.de', 'Nein', 0),
+	(3, 'AirTech Solutions GmbH', 'Meier', 'Michael', 'Luftweg', 5, 'München', '67890', 'Deutschland', '+49 89 246813', 'michael.meier@airtech-solutions.de', 'Nein', 0),
+	(4, 'Cooling Systems GmbH', 'Schulz', 'Andreas', 'Kühlstraße', 15, 'Frankfurt', '13579', 'Deutschland', '+49 69 357911', 'andreas.schulz@coolingsystems.de', 'Nein', 0),
+	(5, 'Ventilation Services Ltd.', 'Hoffmann', 'Anna', 'Windweg', 8, 'Stuttgart', '98765', 'Deutschland', '+49 711 135790', 'anna.hoffmann@ventilationservices.com', 'Ja', 0),
+	(6, 'AirFlow Experts GmbH', 'Wagner', 'Peter', 'Luftallee', 20, 'Düsseldorf', '24680', 'Deutschland', '+49 211 468013', 'peter.wagner@airflow-experts.de', 'Nein', 0),
+	(7, 'Breeze Solutions GmbH', 'Becker', 'Sandra', 'Briseallee', 12, 'Köln', '56789', 'Deutschland', '+49 221 901234', 'sandra.becker@breeze-solutions.de', 'Nein', 0),
+	(8, 'FreshAir GmbH', 'Zimmermann', 'Thomas', 'Frischweg', 30, 'Dresden', '78901', 'Deutschland', '+49 351 246801', 'thomas.zimmermann@freshair.de', 'Ja', 0),
+	(9, 'Climate Control AG', 'Hahn', 'Markus', 'Klimaweg', 18, 'Hannover', '23456', 'Deutschland', '+49 511 679013', 'markus.hahn@climatecontrol-ag.de', 'Nein', 0),
+	(10, 'AirMaster Solutions GmbH', 'Fischer', 'Laura', 'Luftmeisterstraße', 6, 'Leipzig', '34567', 'Deutschland', '+49 341 135792', 'laura.fischer@airmastersolutions.de', 'Nein', 0);
 
 -- Exportiere Struktur von Tabelle airlimited.sind_in
-DROP TABLE IF EXISTS `sind_in`;
 CREATE TABLE IF NOT EXISTS `sind_in` (
   `LagerNr` int(11) NOT NULL,
   `SKUNr` int(11) NOT NULL,
@@ -240,7 +234,6 @@ INSERT INTO `sind_in` (`LagerNr`, `SKUNr`, `Bestand`) VALUES
 	(2, 10, 10);
 
 -- Exportiere Struktur von Tabelle airlimited.sku
-DROP TABLE IF EXISTS `sku`;
 CREATE TABLE IF NOT EXISTS `sku` (
   `SKUNr` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(20) NOT NULL,
@@ -323,7 +316,6 @@ INSERT INTO `sku` (`SKUNr`, `Name`, `Standardlosgroeße`, `Laenge`, `Breite`, `H
 	(60, 'Luftdrucksensor', 30, 5, 5, 2, 0.2, 'Präziser Luftdrucksensor für Ventilatorüberwachung', 9.99, 'luftdrucksensor.jpg', 'Einfach', 'ja', 'luftdrucksensor_anweisungen.pdf');
 
 -- Exportiere Struktur von Tabelle airlimited.warenkorb
-DROP TABLE IF EXISTS `warenkorb`;
 CREATE TABLE IF NOT EXISTS `warenkorb` (
   `WarenkorbNr` int(11) NOT NULL AUTO_INCREMENT,
   `ServicepartnerNr` int(11) DEFAULT NULL,
