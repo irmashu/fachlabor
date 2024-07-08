@@ -34,28 +34,31 @@ $DBPassword = '';
 $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
-// Construct the query for the data that we want to see
-// $query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, SUM(sku.Preis * bestellposten.Quantität) AS Bestellsumme, auftrag.Status';
-$query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, sku.Preis, bestellposten.Quantität, auftrag.Status';
-$query .= ' FROM bestellung';
-$query .= ' LEFT JOIN gehoert_zu ON bestellung.BestellNr = gehoert_zu.BestellNr';
-$query .= ' LEFT JOIN auftrag ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr';
-$query .= ' LEFT JOIN bestellposten ON bestellung.BestellNr = bestellposten.BestellNr';
-$query .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
-$query .= ' WHERE bestellung.'. $userType .'Nr = '. $userID; 
-$query .= ' GROUP BY bestellung.BestellNr';
-$query .= ' LIMIT 1000';
+
+if($loginRichtig){
+    // Construct the query for the data that we want to see
+    // $query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, SUM(sku.Preis * bestellposten.Quantität) AS Bestellsumme, auftrag.Status';
+    $query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, sku.Preis, bestellposten.Quantität, auftrag.Status';
+    $query .= ' FROM bestellung';
+    $query .= ' LEFT JOIN gehoert_zu ON bestellung.BestellNr = gehoert_zu.BestellNr';
+    $query .= ' LEFT JOIN auftrag ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr';
+    $query .= ' LEFT JOIN bestellposten ON bestellung.BestellNr = bestellposten.BestellNr';
+    $query .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
+    $query .= ' WHERE bestellung.'. $userType .'Nr = '. $userID; 
+    $query .= ' GROUP BY bestellung.BestellNr';
+    $query .= ' LIMIT 1000';
 
 
-// Query the data
-$result = $db->getEntityArray($query);
-$bestellposten = array();
-foreach($result as $bestellung){
-    $postenquery = 'SELECT sku.SKUNr, sku.Preis, bestellposten.Quantität FROM bestellposten';
-    $postenquery .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
-    $postenquery .= ' WHERE bestellposten.BestellNr = '. $bestellung->BestellNr;
-    $postenresult = $db->getEntityArray($postenquery); //Ergebnis query 2 
-    $bestellposten[$bestellung->BestellNr] = $postenresult;
+    // Query the data
+    $result = $db->getEntityArray($query);
+    $bestellposten = array();
+    foreach($result as $bestellung){
+        $postenquery = 'SELECT sku.SKUNr, sku.Preis, bestellposten.Quantität FROM bestellposten';
+        $postenquery .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
+        $postenquery .= ' WHERE bestellposten.BestellNr = '. $bestellung->BestellNr;
+        $postenresult = $db->getEntityArray($postenquery); //Ergebnis query 2 
+        $bestellposten[$bestellung->BestellNr] = $postenresult;
+    }
 }
 ?>
 
@@ -71,7 +74,7 @@ foreach($result as $bestellung){
 <body>
 <header>
     <div class="logo">
-        <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
+        <img src="logo.png" alt="AirLimited Logo">
     </div>
     <h1>Willkommen im AirLimited Shop!</h1>
     <nav>
@@ -80,10 +83,17 @@ foreach($result as $bestellung){
         <button onclick="window.location.href='management.php'" class="management-btn">Management</button>
         <button onclick="window.location.href='index.php'" class="login-btn">Anmelden</button>
     </nav>
-    <div class="account-buttons">
-        <button onclick="window.location.href='konto.php'">Mein Konto</button>
-        <button onclick="window.location.href='warenkorb.php'">Warenkorb</button>
-    </div>
+    <?php
+        if(isset($userType)){
+            if($userType == "servicepartner" OR $userType == "lager"){
+                echo '
+                <div class="account-buttons">
+                <button onclick="window.location.href=`konto.php`">Mein Konto</button>
+                <button onclick="window.location.href=`warenkorb.php`">Warenkorb</button>
+                </div>';
+            }
+        }
+    ?>
     <div class="meine-logindaten">
         <p>
             <?php
@@ -94,7 +104,6 @@ foreach($result as $bestellung){
     </div>
 </header>
 <h2> Hallo Kunde! - Meine Bestellungen </h2>
-<!-- <button onclick="window.location.href='account.html'" style="margin-left:40px;">Meine Accountdetails ändern</button> */ -->
 <main>
     <table>
         <thead>
@@ -130,6 +139,15 @@ foreach($result as $bestellung){
             ?>
         </tbody>
     </table>
+    <div>
+        <p>
+            <?php
+                if (isset($feedback)) {
+                    echo '<p class = "feedback">'. $feedback .'</p>';
+                }
+            ?>
+        </p>
+    </div>
 </main>
 
 <footer>
