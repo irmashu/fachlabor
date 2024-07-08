@@ -96,9 +96,6 @@ function updateStockAndProduction($db, $skuNr, $orderQty, $bestellNr) {
 
             // Lagerbestand aktualisieren
             $db->query("UPDATE sind_in SET Bestand = Bestand - $orderQty WHERE SKUNr = '$skuNr'");
-
-            // Bestehenden Auftrag aktualisieren, um die aktuelle Bestellung zu reflektieren
-            $db->query("INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($newProductionOrderId, $bestellNr, $orderQty)");
         }
 
         return true; // Rückgabe true in Fall B
