@@ -36,10 +36,11 @@ CREATE TABLE IF NOT EXISTS `auftrag` (
   CONSTRAINT `auftrag SKUNr1` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.auftrag: ~1 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.auftrag: ~2 rows (ungefähr)
 DELETE FROM `auftrag`;
 INSERT INTO `auftrag` (`AuftragsNr`, `Auftragsdatum`, `Status`, `Enddatum`, `FertigungsNr`, `SKUNr`, `Reihenfolge`) VALUES
-	(58, '2024-07-07 14:47:08', 'Fertig', '2024-07-07 14:48:40', 1, 13, NULL);
+	(66, '2024-07-08 23:09:00', 'Fertig', '2024-07-09 00:39:05', 1, 17, NULL),
+	(67, '2024-07-08 23:09:00', 'Fertig', '2024-07-09 00:37:33', 1, 33, NULL);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellposten
 CREATE TABLE IF NOT EXISTS `bestellposten` (
@@ -55,11 +56,14 @@ CREATE TABLE IF NOT EXISTS `bestellposten` (
   CONSTRAINT `bestellposten_BestellNr` FOREIGN KEY (`BestellNr`) REFERENCES `bestellung` (`BestellNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=108 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.bestellposten: ~2 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.bestellposten: ~5 rows (ungefähr)
 DELETE FROM `bestellposten`;
 INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUNr`, `versandbereit`) VALUES
-	(100, 106, 1, 13, 1),
-	(101, 107, 60, 13, 0);
+	(118, 125, 2, 13, 1),
+	(118, 126, 50, 17, 1),
+	(119, 127, 60, 17, 1),
+	(118, 128, 60, 33, 1),
+	(120, 129, 40, 33, 1);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellung
 CREATE TABLE IF NOT EXISTS `bestellung` (
@@ -74,11 +78,12 @@ CREATE TABLE IF NOT EXISTS `bestellung` (
   CONSTRAINT `bestellung ServicepartnerNr` FOREIGN KEY (`ServicepartnerNr`) REFERENCES `servicepartner` (`ServicepartnerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.bestellung: ~2 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.bestellung: ~3 rows (ungefähr)
 DELETE FROM `bestellung`;
 INSERT INTO `bestellung` (`BestellNr`, `Bestelldatum`, `ServicepartnerNr`, `LagerNr`) VALUES
-	(100, '2024-07-07 14:47:08', 1, NULL),
-	(101, '2024-07-07 14:47:08', NULL, 1);
+	(118, '2024-07-08 23:09:00', 1, NULL),
+	(119, '2024-07-08 23:09:00', NULL, 1),
+	(120, '2024-07-08 23:09:00', NULL, 1);
 
 -- Exportiere Struktur von Tabelle airlimited.fertigung
 CREATE TABLE IF NOT EXISTS `fertigung` (
@@ -118,11 +123,12 @@ CREATE TABLE IF NOT EXISTS `gehoert_zu` (
   CONSTRAINT `gehört_zu_BestellNr` FOREIGN KEY (`BestellNr`) REFERENCES `bestellung` (`BestellNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.gehoert_zu: ~2 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.gehoert_zu: ~3 rows (ungefähr)
 DELETE FROM `gehoert_zu`;
 INSERT INTO `gehoert_zu` (`AuftragsNr`, `BestellNr`, `Quantitaet`, `Versandt`) VALUES
-	(58, 100, 1, 'Nein'),
-	(58, 101, 60, 'Nein');
+	(66, 119, 60, 'Ja'),
+	(67, 118, 10, 'Ja'),
+	(67, 120, 40, 'Ja');
 
 -- Exportiere Struktur von Tabelle airlimited.lager
 CREATE TABLE IF NOT EXISTS `lager` (
@@ -193,12 +199,69 @@ CREATE TABLE IF NOT EXISTS `sind_in` (
   CONSTRAINT `sind_in SKUNr` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.sind_in: ~3 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.sind_in: ~60 rows (ungefähr)
 DELETE FROM `sind_in`;
 INSERT INTO `sind_in` (`LagerNr`, `SKUNr`, `Bestand`) VALUES
-	(1, 13, 61),
-	(1, 43, 100),
-	(2, 10, 10);
+	(1, 13, 68),
+	(1, 17, 110),
+	(1, 33, 40),
+	(1, 57, 20),
+	(2, 12, 70),
+	(2, 22, 89),
+	(2, 26, 88),
+	(2, 48, 53),
+	(2, 56, 12),
+	(3, 10, 13),
+	(3, 15, 15),
+	(3, 36, 14),
+	(3, 41, 16),
+	(3, 43, 67),
+	(4, 18, 37),
+	(4, 20, 35),
+	(4, 38, 14),
+	(4, 53, 568),
+	(5, 3, 24),
+	(5, 6, 15),
+	(5, 23, 36),
+	(5, 54, 47),
+	(6, 39, 57),
+	(6, 40, 46),
+	(6, 49, 86),
+	(6, 50, 57),
+	(6, 58, 46),
+	(7, 1, 88),
+	(7, 2, 46),
+	(7, 27, 33),
+	(7, 32, 14),
+	(7, 35, 345),
+	(7, 44, 35),
+	(7, 46, 36),
+	(7, 60, 36),
+	(8, 4, 15),
+	(8, 7, 77),
+	(8, 8, 36),
+	(8, 9, 74),
+	(8, 14, 63),
+	(8, 21, 75),
+	(8, 28, 57),
+	(8, 29, 63),
+	(8, 30, 36),
+	(8, 34, 36),
+	(8, 45, 25),
+	(8, 47, 13),
+	(8, 55, 15),
+	(9, 5, 74),
+	(9, 19, 754),
+	(9, 25, 74),
+	(9, 37, 14),
+	(9, 42, 15),
+	(9, 52, 64),
+	(9, 59, 64),
+	(10, 11, 75),
+	(10, 16, 634),
+	(10, 24, 633),
+	(10, 31, 22),
+	(10, 51, 11);
 
 -- Exportiere Struktur von Tabelle airlimited.sku
 CREATE TABLE IF NOT EXISTS `sku` (
