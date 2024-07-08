@@ -332,7 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ';
         echo '</div>';
     } else {
-        echo '<p>' . $feedback . '</p>';
+        echo '<p class = "feedback">' . $feedback . '</p>';
     }
     ?>
 </main>

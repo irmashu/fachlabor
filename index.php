@@ -19,39 +19,58 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Benutzereingaben sicher abrufen und verarbeiten
     $username = htmlspecialchars($_POST['username']);
     $password = htmlspecialchars($_POST['password']);
-    $loginType = htmlspecialchars($_POST['login-type']);
-    $id = htmlspecialchars($_POST['id']);
+    $loginAbkuerzung = strtolower(substr($username, 0, 3)); //erste 3 Zeichen aus Username
+    $id = strtolower(substr($username, 3));     // Alle Zeichen nach der 3. Stelle
+
+    // Fehler durch String vermeiden
+    if (!is_numeric($id)) {
+        $id = 0;
+    }
 
     //Überprüfen, ob logindaten existieren
     $loginRichtig = FALSE;
     
     // Query erstellen
-    switch ($loginType) {
-        case 'servicepartner':
+    switch ($loginAbkuerzung) {
+        case 'ser':
+            $loginType = 'servicepartner';
             $query = 'SELECT * FROM `airlimited`.`servicepartner` WHERE ServicepartnerNr = '. $id .' LIMIT 1000;';
             break;
-        case 'lager':
+        case 'lag':
+            $loginType = 'lager';
             $query = 'SELECT * FROM `airlimited`.`lager` WHERE LagerNr = '. $id .' LIMIT 1000;';
             break;
-        case 'fertigung':
+        case 'fer':
+            $loginType = 'fertigung';
             $query = 'SELECT * FROM `airlimited`.`fertigung` WHERE FertigungsNr = '. $id .' LIMIT 1000;';
             break;
-        case 'management':
+        case 'man':
+            $loginType = 'management';
             $loginRichtig = TRUE;
             break;
         default:
+            $feedback = 'Ungültige Anmeldedaten. Beispiel: fer9';
             break;
     }
 
     // Einträge in DB suchen
     if (isset($query)) {
-        $result = $db->query($query);
+        $result = $db->getEntityArray($query);
+        
+        if(!empty($result)){
+            $result0 = $result[0];
 
-        //Login richtig wenn ein Eintrag gefunden wurde
-        if ($result && mysqli_num_rows($result) > 0) {
-            $loginRichtig = TRUE;
-            $feedback = ' Erfolgreich angemeldet als '. $loginType .' ' . $id;
-        } else {
+            //Login richtig wenn ein Eintrag gefunden wurde
+            if ($result0->Passwort == $password) {
+                $loginRichtig = TRUE;
+                $feedback = ' Erfolgreich angemeldet als '. $loginType .' ' . $id;
+            }
+            else {
+                $feedback = ' Falsches Passwort. Probiere: 0';
+            }
+        }
+        
+        else {
             $feedback = $loginType . ' ' . $id . ' konnte nicht gefunden werden';
         }
     }
@@ -120,21 +139,9 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
             <div>
                 <label for="username">Benutzername:</label>
                 <input type="text" id="username" name="username">
-                <br>
+                &nbsp;&nbsp;
                 <label for="password">Passwort:</label>
                 <input type="password" id="password" name="password">
-            </div>
-            <div>
-                <label for="login-type">Login als:</label>
-                <select id="login-type" name="login-type">
-                    <option value="servicepartner">Servicepartner</option>
-                    <option value="lager">Lager</option>
-                    <option value="fertigung">Fertigung</option>
-                    <option value="management">Management</option>
-                </select>
-                <br>
-                <label for="id">Fertigungs-/ Lager/- Servicepartnernummer:</label>
-                <input type="number" id="id" name="id" min=1 value=1>
             </div>
             
             <div class = login-button>
