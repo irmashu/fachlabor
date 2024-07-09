@@ -36,11 +36,12 @@ CREATE TABLE IF NOT EXISTS `auftrag` (
   CONSTRAINT `auftrag SKUNr1` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.auftrag: ~2 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.auftrag: ~3 rows (ungefähr)
 DELETE FROM `auftrag`;
 INSERT INTO `auftrag` (`AuftragsNr`, `Auftragsdatum`, `Status`, `Enddatum`, `FertigungsNr`, `SKUNr`, `Reihenfolge`) VALUES
-	(68, '2024-07-09 01:33:22', 'In Bearbeitung', NULL, 7, 1, NULL),
-	(69, '2024-07-09 01:34:47', 'Fertig', '2024-07-09 01:35:08', 1, 13, NULL);
+	(68, '2024-07-09 01:33:22', 'In Bearbeitung', NULL, 7, 1, 1),
+	(69, '2024-07-09 01:34:47', 'Fertig', '2024-07-09 01:35:08', 1, 13, NULL),
+	(70, '2024-07-09 15:09:59', 'In Bearbeitung', NULL, 9, 5, NULL);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellposten
 CREATE TABLE IF NOT EXISTS `bestellposten` (
@@ -56,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `bestellposten` (
   CONSTRAINT `bestellposten_BestellNr` FOREIGN KEY (`BestellNr`) REFERENCES `bestellung` (`BestellNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=136 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.bestellposten: ~6 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.bestellposten: ~10 rows (ungefähr)
 DELETE FROM `bestellposten`;
 INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUNr`, `versandbereit`) VALUES
 	(121, 130, 3, 1, 1),
@@ -64,7 +65,11 @@ INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUN
 	(123, 132, 20, 1, 0),
 	(124, 133, 200, 13, 1),
 	(125, 134, 60, 13, 1),
-	(126, 135, 3, 1, 1);
+	(126, 135, 3, 1, 1),
+	(127, 136, 3, 5, 1),
+	(128, 137, 80, 5, 0),
+	(127, 138, 7, 24, 1),
+	(127, 139, 2, 39, 1);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellung
 CREATE TABLE IF NOT EXISTS `bestellung` (
@@ -79,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `bestellung` (
   CONSTRAINT `bestellung ServicepartnerNr` FOREIGN KEY (`ServicepartnerNr`) REFERENCES `servicepartner` (`ServicepartnerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.bestellung: ~6 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.bestellung: ~8 rows (ungefähr)
 DELETE FROM `bestellung`;
 INSERT INTO `bestellung` (`BestellNr`, `Bestelldatum`, `ServicepartnerNr`, `LagerNr`) VALUES
 	(121, '2024-07-09 01:31:44', 1, NULL),
@@ -87,7 +92,9 @@ INSERT INTO `bestellung` (`BestellNr`, `Bestelldatum`, `ServicepartnerNr`, `Lage
 	(123, '2024-07-09 01:33:22', NULL, 7),
 	(124, '2024-07-09 01:34:47', 1, NULL),
 	(125, '2024-07-09 01:34:47', NULL, 1),
-	(126, '2024-07-09 01:37:44', 1, NULL);
+	(126, '2024-07-09 01:37:44', 1, NULL),
+	(127, '2024-07-09 15:09:59', NULL, 5),
+	(128, '2024-07-09 15:09:59', NULL, 9);
 
 -- Exportiere Struktur von Tabelle airlimited.fertigung
 CREATE TABLE IF NOT EXISTS `fertigung` (
@@ -128,13 +135,14 @@ CREATE TABLE IF NOT EXISTS `gehoert_zu` (
   CONSTRAINT `gehört_zu_BestellNr` FOREIGN KEY (`BestellNr`) REFERENCES `bestellung` (`BestellNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.gehoert_zu: ~4 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.gehoert_zu: ~5 rows (ungefähr)
 DELETE FROM `gehoert_zu`;
 INSERT INTO `gehoert_zu` (`AuftragsNr`, `BestellNr`, `Quantitaet`, `Versandt`) VALUES
 	(68, 122, 115, 'Nein'),
 	(68, 123, 20, 'Nein'),
 	(69, 124, 132, 'Nein'),
-	(69, 125, 60, 'Nein');
+	(69, 125, 60, 'Nein'),
+	(70, 128, 80, 'Nein');
 
 -- Exportiere Struktur von Tabelle airlimited.lager
 CREATE TABLE IF NOT EXISTS `lager` (
@@ -248,7 +256,7 @@ INSERT INTO `sind_in` (`LagerNr`, `SKUNr`, `Bestand`) VALUES
 	(5, 6, 15),
 	(5, 23, 36),
 	(5, 54, 47),
-	(6, 39, 57),
+	(6, 39, 55),
 	(6, 40, 46),
 	(6, 49, 86),
 	(6, 50, 57),
@@ -274,7 +282,7 @@ INSERT INTO `sind_in` (`LagerNr`, `SKUNr`, `Bestand`) VALUES
 	(8, 45, 25),
 	(8, 47, 13),
 	(8, 55, 15),
-	(9, 5, 74),
+	(9, 5, 71),
 	(9, 19, 754),
 	(9, 25, 74),
 	(9, 37, 14),
@@ -283,7 +291,7 @@ INSERT INTO `sind_in` (`LagerNr`, `SKUNr`, `Bestand`) VALUES
 	(9, 59, 64),
 	(10, 11, 75),
 	(10, 16, 634),
-	(10, 24, 633),
+	(10, 24, 626),
 	(10, 31, 22),
 	(10, 51, 11);
 
