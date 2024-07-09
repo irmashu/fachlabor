@@ -11,7 +11,6 @@
         $loginText = "Nicht angemeldet". "<br>";
     }
 
-
     //SKUNr aus der URL getten
     if (isset($_GET['sku'])) {
         $sku = htmlspecialchars($_GET['sku']);
@@ -31,20 +30,15 @@
 	$db->connect();
 
     // Construct the query for the data that we want to see
-    $query = 'SELECT `Name`, `SKUNr`, `Foto`, `Preis`, `Verfuegbarkeit` , `Laenge`,  `Breite`,  `Hoehe`,  `Gewicht`,  `Beschreibung` ';
+    $query = 'SELECT `Name`, sku.`SKUNr`, `Foto`, `Preis` , `Laenge`,  `Breite`,  `Hoehe`,  `Gewicht`,  `Beschreibung`, sind_in.Bestand ';
     $query .= 'FROM `airlimited`.`sku` ';
-    $query .= 'WHERE `SKUNr` = '. $sku . ' ';
+    $query .= 'LEFT JOIN sind_in ON sku.SKUNr = sind_in.SKUNr ';
+    $query .= 'WHERE sku.`SKUNr` = '. $sku . ' ';
     $query .= 'LIMIT 1000;';
 
     // Query the data
     $result = $db->getEntityArray($query);
     $skuDB = $result[0];
-
-/*     echo $query;
-    echo '<br>';
-    echo json_encode($result[0]);
-    echo '<br>';
-    echo $result[0]->SKUNr; */
 
 
     // Warenkorb füllen
@@ -62,7 +56,6 @@
                     $sql = 'INSERT INTO `warenkorb` ( `LagerNr`, `SKUNr`, `Menge`) ';
                     $sql .= 'VALUES ('. $userID .' , '. $sku .', '. $_POST['quantity'] .');';
                 }
-
                 $input = $db->query($sql);
                 $feedback = $skuDB->Name .' wurde '. $_POST['quantity'] .' mal in den Warenkorb gelegt.';
             } 
@@ -130,7 +123,7 @@
                             <p>Artikelnummer: '. $skuDB->SKUNr .'</p>
                             <p>'. $skuDB->Beschreibung .'</p>
                             <p class="price">Preis: '. $skuDB->Preis .' €</p>
-                            <p>Verfügbarkeit: '. $skuDB->Verfuegbarkeit .'</p>
+                            <p>Noch '. $skuDB->Bestand .' Stück auf Lager</p>
                         ';
                     ?>
                     <form action="#" class="order-form" method="POST">
