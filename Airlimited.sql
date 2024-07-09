@@ -34,14 +34,13 @@ CREATE TABLE IF NOT EXISTS `auftrag` (
   KEY `Reihenfolge` (`Reihenfolge`),
   CONSTRAINT `auftrag FertigungsNr` FOREIGN KEY (`FertigungsNr`) REFERENCES `fertigung` (`FertigungsNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `auftrag SKUNr1` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.auftrag: ~3 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.auftrag: ~2 rows (ungefähr)
 DELETE FROM `auftrag`;
 INSERT INTO `auftrag` (`AuftragsNr`, `Auftragsdatum`, `Status`, `Enddatum`, `FertigungsNr`, `SKUNr`, `Reihenfolge`) VALUES
-	(1, '2024-05-05 17:41:26', 'In Auftrag', NULL, 1, 13, 1),
-	(2, '2024-05-06 17:41:57', 'In Bearbeitung', NULL, 2, 10, 2),
-	(3, '2024-05-04 17:44:20', 'Fertig', '2024-05-05 17:44:28', 1, 43, 3);
+	(68, '2024-07-09 01:33:22', 'In Bearbeitung', NULL, 7, 1, NULL),
+	(69, '2024-07-09 01:34:47', 'Fertig', '2024-07-09 01:35:08', 1, 13, NULL);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellposten
 CREATE TABLE IF NOT EXISTS `bestellposten` (
@@ -49,34 +48,23 @@ CREATE TABLE IF NOT EXISTS `bestellposten` (
   `BestellpostenNr` int(11) NOT NULL AUTO_INCREMENT,
   `Quantität` int(11) NOT NULL,
   `SKUNr` int(11) NOT NULL,
+  `versandbereit` tinyint(4) NOT NULL DEFAULT 0,
   PRIMARY KEY (`BestellpostenNr`,`BestellNr`) USING BTREE,
   KEY `SKUNr` (`SKUNr`),
   KEY `bestellposten_BestellNr` (`BestellNr`),
   CONSTRAINT `SKUNr` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `bestellposten_BestellNr` FOREIGN KEY (`BestellNr`) REFERENCES `bestellung` (`BestellNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=136 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.bestellposten: ~18 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.bestellposten: ~6 rows (ungefähr)
 DELETE FROM `bestellposten`;
-INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUNr`) VALUES
-	(1, 17, 8, 31),
-	(1, 18, 4, 41),
-	(44, 19, 2, 1),
-	(44, 20, 2, 6),
-	(45, 21, 2, 1),
-	(45, 22, 2, 6),
-	(46, 23, 2, 1),
-	(46, 24, 2, 6),
-	(47, 25, 2, 1),
-	(47, 26, 2, 6),
-	(48, 27, 2, 1),
-	(48, 28, 2, 6),
-	(49, 29, 1, 6),
-	(50, 30, 4, 4),
-	(50, 31, 1, 5),
-	(50, 32, 1, 7),
-	(50, 33, 2, 10),
-	(50, 34, 2, 18);
+INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUNr`, `versandbereit`) VALUES
+	(121, 130, 3, 1, 1),
+	(122, 131, 200, 1, 0),
+	(123, 132, 20, 1, 0),
+	(124, 133, 200, 13, 1),
+	(125, 134, 60, 13, 1),
+	(126, 135, 3, 1, 1);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellung
 CREATE TABLE IF NOT EXISTS `bestellung` (
@@ -89,23 +77,17 @@ CREATE TABLE IF NOT EXISTS `bestellung` (
   KEY `bestellung ServicepartnerNr` (`ServicepartnerNr`),
   CONSTRAINT `bestellung LagerNr` FOREIGN KEY (`LagerNr`) REFERENCES `lager` (`LagerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `bestellung ServicepartnerNr` FOREIGN KEY (`ServicepartnerNr`) REFERENCES `servicepartner` (`ServicepartnerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.bestellung: ~12 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.bestellung: ~6 rows (ungefähr)
 DELETE FROM `bestellung`;
 INSERT INTO `bestellung` (`BestellNr`, `Bestelldatum`, `ServicepartnerNr`, `LagerNr`) VALUES
-	(1, '2024-05-05 17:33:07', 1, NULL),
-	(2, '2024-05-05 20:03:31', NULL, 1),
-	(3, '2024-05-09 16:29:36', 1, NULL),
-	(4, '2024-05-26 10:28:38', 10, NULL),
-	(43, '2024-05-26 10:30:06', NULL, 3),
-	(44, '2024-05-26 10:31:11', 7, NULL),
-	(45, '2024-05-26 10:36:15', 7, NULL),
-	(46, '2024-05-26 10:36:34', 7, NULL),
-	(47, '2024-05-26 10:51:03', 7, NULL),
-	(48, '2024-05-26 10:51:17', 7, NULL),
-	(49, '2024-05-26 11:01:00', 7, NULL),
-	(50, '2024-05-26 12:40:00', 1, NULL);
+	(121, '2024-07-09 01:31:44', 1, NULL),
+	(122, '2024-07-09 01:33:22', 1, NULL),
+	(123, '2024-07-09 01:33:22', NULL, 7),
+	(124, '2024-07-09 01:34:47', 1, NULL),
+	(125, '2024-07-09 01:34:47', NULL, 1),
+	(126, '2024-07-09 01:37:44', 1, NULL);
 
 -- Exportiere Struktur von Tabelle airlimited.fertigung
 CREATE TABLE IF NOT EXISTS `fertigung` (
@@ -116,23 +98,23 @@ CREATE TABLE IF NOT EXISTS `fertigung` (
   `Stadt` varchar(50) DEFAULT NULL,
   `Land` varchar(50) DEFAULT NULL,
   `TelefonNr` varchar(50) DEFAULT NULL,
-  `Passwort` int(11) DEFAULT NULL,
+  `Passwort` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`FertigungsNr`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Exportiere Daten aus Tabelle airlimited.fertigung: ~10 rows (ungefähr)
 DELETE FROM `fertigung`;
 INSERT INTO `fertigung` (`FertigungsNr`, `Straße`, `HausNr`, `PLZ`, `Stadt`, `Land`, `TelefonNr`, `Passwort`) VALUES
-	(1, 'Industriestraße', 20, '12345', 'Berlin', 'Deutschland', '+49 30 7654321', 0),
-	(2, 'Fabrikweg', 15, '54321', 'München', 'Deutschland', '+49 89 9876543', 0),
-	(3, 'Produktionsstraße', 30, '67890', 'Rom', 'Italien', '+39 06 23456789', 0),
-	(4, 'Maschinenweg', 25, '13579', 'Barcelona', 'Spanien', '+34 93 357911', 0),
-	(5, 'Herstellungsweg', 10, '98765', 'Mailand', 'Italien', '+39 02 246810', 0),
-	(6, 'Fertigungsallee', 5, '24680', 'Lissabon', 'Portugal', '+351 21 8765432', 0),
-	(7, 'Fabrikstraße', 8, '56789', 'Prag', 'Tschechien', '+420 221 9876543', 0),
-	(8, 'Produktionsweg', 12, '78901', 'Warschau', 'Polen', '+48 22 6543210', 0),
-	(9, 'Montageweg', 18, '23456', 'Budapest', 'Ungarn', '+36 1 1357924', 0),
-	(10, 'Herstellungsstraße', 6, '34567', 'Kopenhagen', 'Dänemark', '+45 1234 5678', 0);
+	(1, 'Industriestraße', 20, '12345', 'Berlin', 'Deutschland', '+49 30 7654321', '$2y$10$NOPLXvLCIMJ.1LlHT2YdhOJDtzPuWTU0EkcMYoQx45QTvCxpQqS/6'),
+	(2, 'Fabrikweg', 15, '54321', 'München', 'Deutschland', '+49 89 9876543', '$2y$10$nFbDtM.G15gDiB3kIwW3zOJfB968A.YV5m3BOdt./nkS0CqBe7Xyu'),
+	(3, 'Produktionsstraße', 30, '67890', 'Rom', 'Italien', '+39 06 23456789', '$2y$10$gWhykGmJ2g4wgodpzfi.8.FTapuMrX90X//HHpZmUdQMPKUzKApfu'),
+	(4, 'Maschinenweg', 25, '13579', 'Barcelona', 'Spanien', '+34 93 357911', '$2y$10$vvXYAo.MFHQBZ3pnTV0g3uiYBeDybPSWvr4MRFr2LFjRGQqc0Q0W6'),
+	(5, 'Herstellungsweg', 10, '98765', 'Mailand', 'Italien', '+39 02 246810', '$2y$10$GOSEeFrixhILnfs2nKA1j.uKwmc.itQDIJtlEOLnm4qIC/P.lQMxG'),
+	(6, 'Fertigungsallee', 5, '24680', 'Lissabon', 'Portugal', '+351 21 8765432', '$2y$10$XlD3Kar1YQSJ9nf1lmYe0.nCld9eGt2WSubZSmt7Or7VLn9m1rUGu'),
+	(7, 'Fabrikstraße', 8, '56789', 'Prag', 'Tschechien', '+420 221 9876543', '$2y$10$tEiN3co6F1e0WP3BMhYnvuk5K0c./dVUYNg3/rxlg.QcFR4JUdADq'),
+	(8, 'Produktionsweg', 12, '78901', 'Warschau', 'Polen', '+48 22 6543210', '$2y$10$MqEXdONfVrDVlw9GIpZrje8aJWx/Zx.95qJAoCXksjGAtovDPGSb2'),
+	(9, 'Montageweg', 18, '23456', 'Budapest', 'Ungarn', '+36 1 1357924', '$2y$10$mh9Zr6IDoGFdGwn4pWGO1.XuuRkzpqjw223VYQW9MfJ7ug8CiQiUe'),
+	(10, 'Herstellungsstraße', 6, '34567', 'Kopenhagen', 'Dänemark', '+45 1234 5678', '$2y$10$4FsW/KuZRzXiYqcxx0/XiOj2KfghC/EuQic0Fpx9c2B0E62BkY5Li');
 
 -- Exportiere Struktur von Tabelle airlimited.gehoert_zu
 CREATE TABLE IF NOT EXISTS `gehoert_zu` (
@@ -149,10 +131,10 @@ CREATE TABLE IF NOT EXISTS `gehoert_zu` (
 -- Exportiere Daten aus Tabelle airlimited.gehoert_zu: ~4 rows (ungefähr)
 DELETE FROM `gehoert_zu`;
 INSERT INTO `gehoert_zu` (`AuftragsNr`, `BestellNr`, `Quantitaet`, `Versandt`) VALUES
-	(1, 1, 20, 'Nein'),
-	(1, 2, 5, 'Nein'),
-	(2, 1, 10, 'Nein'),
-	(2, 3, 5, 'Nein');
+	(68, 122, 115, 'Nein'),
+	(68, 123, 20, 'Nein'),
+	(69, 124, 132, 'Nein'),
+	(69, 125, 60, 'Nein');
 
 -- Exportiere Struktur von Tabelle airlimited.lager
 CREATE TABLE IF NOT EXISTS `lager` (
@@ -165,23 +147,39 @@ CREATE TABLE IF NOT EXISTS `lager` (
   `Verantwortlicher Vormane` varchar(50) DEFAULT NULL,
   `Verantwortlicher Nachname` varchar(50) DEFAULT NULL,
   `TelefonNr` varchar(50) DEFAULT NULL,
-  `Passwort` int(11) DEFAULT NULL,
+  `Passwort` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`LagerNr`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Exportiere Daten aus Tabelle airlimited.lager: ~10 rows (ungefähr)
 DELETE FROM `lager`;
 INSERT INTO `lager` (`LagerNr`, `Lagerstandort`, `Straße`, `HausNr`, `PLZ`, `Land`, `Verantwortlicher Vormane`, `Verantwortlicher Nachname`, `TelefonNr`, `Passwort`) VALUES
-	(1, 'Berlin', 'Industriestraße', 10, '12345', 'Deutschland', 'Max', 'Schulze', '+49 30 1234567', 0),
-	(2, 'Hamburg', 'Hauptstraße', 25, '54321', 'Deutschland', 'Julia', 'Becker', '+49 40 9876543', 0),
-	(3, 'Paris', 'Luftweg', 5, '67890', 'Frankreich', 'Sophie', 'Leclerc', '+33 1 23456789', 0),
-	(4, 'Frankfurt', 'Kühlstraße', 15, '13579', 'Deutschland', 'Felix', 'Hoffmann', '+49 69 357911', 0),
-	(5, 'Stuttgart', 'Windweg', 8, '98765', 'Deutschland', 'Nina', 'Wagner', '+49 711 135790', 0),
-	(6, 'Madrid', 'Luftallee', 20, '24680', 'Spanien', 'Carlos', 'García', '+34 91 2345678', 0),
-	(7, 'Köln', 'Briseallee', 12, '56789', 'Deutschland', 'Lena', 'Schneider', '+49 221 901234', 0),
-	(8, 'Dresden', 'Frischweg', 30, '78901', 'Deutschland', 'Tom', 'Mayer', '+49 351 246801', 0),
-	(9, 'London', 'Klimaweg', 18, '23456', 'England', 'Olivia', 'Taylor', '+44 20 3456789', 0),
-	(10, 'Leipzig', 'Luftmeisterstraße', 6, '34567', 'Deutschland', 'Finn', 'Schulz', '+49 341 135792', 0);
+	(1, 'Berlin', 'Industriestraße', 10, '12345', 'Deutschland', 'Max', 'Schulze', '+49 30 1234567', '$2y$10$0NRqFxxIGPCJFmvEmps60uTKuGMIFgEOlKn54gMsBwyF4xb6fZEWK'),
+	(2, 'München', 'Hauptstraße', 25, '54321', 'Deutschland', 'Julia', 'Becker', '+49 40 9876543', '$2y$10$vZtYeFKqKdBQJcUfh/9opuRimBsZ2jrwstdxIj9Ix1rhuN7gpILgq'),
+	(3, 'Rom', 'Luftweg', 5, '67890', 'Italien', 'Sophie', 'Leclerc', '+33 1 23456789', '$2y$10$w.bRtN/ej2x0oEeOCaEbGewIo.qZVjZLpYeAPpzm/r.3AitgtUQ2a'),
+	(4, 'Barcelona', 'Kühlstraße', 15, '13579', 'Spanien', 'Felix', 'Hoffmann', '+49 69 357911', '$2y$10$fhtzNboBj9EgDzhVVlUmKeU4mrtAntY63oK2Bp1FNWLJgTQeOtrEa'),
+	(5, 'Venedig', 'Windweg', 8, '98765', 'Italien', 'Nina', 'Wagner', '+49 711 135790', '$2y$10$RgcfQfjRHbdvVyVNwtHCW.EDfXzTRuuv.ElgqgfEjkF63HPj4C45W'),
+	(6, 'Lissabon', 'Luftallee', 20, '24680', 'Portugal', 'Carlos', 'García', '+34 91 2345678', '$2y$10$.4bJYWRhwPSoTFqaSSJTD.FWqOtbdmRA/LGfJ9RhT5k9yyPMCxm2m'),
+	(7, 'Prag', 'Briseallee', 12, '56789', 'Tschechien', 'Lena', 'Schneider', '+49 221 901234', '$2y$10$TimJM44ll9ol1LsFh3rl3ugojDUQeeqp9XaZNBIGA6HcclPEPvRii'),
+	(8, 'Warschau', 'Frischweg', 30, '78901', 'Polen', 'Tom', 'Mayer', '+49 351 246801', '$2y$10$NE5j6f2vzg.Jm2b6JCUXKuZqKRsO.T4lCvvXr1AQEgffRe9Umyzba'),
+	(9, 'Budapest', 'Klimaweg', 18, '23456', 'Ungarn', 'Olivia', 'Taylor', '+44 20 3456789', '$2y$10$PbvzG8xUW3Q4QA32kkmuhuoyzeW0It2BJgnFKNSCPaMsniNjfoT2O'),
+	(10, 'Kopenhagen', 'Luftmeisterstraße', 6, '34567', 'Dänemark', 'Finn', 'Schulz', '+49 341 135792', '$2y$10$4eyJ5R8BAVv2vpRL//srb.JT5AnKIUenVENK.Y1D2f9A0frGhazmC');
+
+-- Exportiere Struktur von Tabelle airlimited.management
+CREATE TABLE IF NOT EXISTS `management` (
+  `ManagementNr` int(11) NOT NULL,
+  `Passwort` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`ManagementNr`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- Exportiere Daten aus Tabelle airlimited.management: ~5 rows (ungefähr)
+DELETE FROM `management`;
+INSERT INTO `management` (`ManagementNr`, `Passwort`) VALUES
+	(1, '$2y$10$.F76M42dFt3x48NnS5bzd.rRRITLnbhzAphJSgzZgCS6PDK6g5xq2'),
+	(2, '$2y$10$JwDy87eHS1vBDWBeH9W/mOeXLRSHYjPR44aZy/CpfTNZNiJm36mEm'),
+	(3, '$2y$10$Y7zAFxNjujsdHUoKhShMg.kuHbocLSchWDGYgeGoUIAOK.54p1SJS'),
+	(4, '$2y$10$xQ6mBm1DCHlo..wRK5QgIO/HhBC0xOWofTwF7YacagPUjbDlDMg3G'),
+	(5, '$2y$10$1f/otgAc3cXHvfU/2sEHKehlKKeLPIeNtXoQgwUPA68X7IHbeRpdG');
 
 -- Exportiere Struktur von Tabelle airlimited.servicepartner
 CREATE TABLE IF NOT EXISTS `servicepartner` (
@@ -197,23 +195,22 @@ CREATE TABLE IF NOT EXISTS `servicepartner` (
   `TelefonNr` varchar(50) DEFAULT NULL,
   `E-Mail` varchar(50) DEFAULT NULL,
   `VIPKunde` varchar(5) DEFAULT 'Nein',
-  `Passwort` int(11) DEFAULT NULL,
+  `Passwort` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`ServicepartnerNr`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.servicepartner: ~10 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.servicepartner: ~9 rows (ungefähr)
 DELETE FROM `servicepartner`;
 INSERT INTO `servicepartner` (`ServicepartnerNr`, `Firmenname`, `Nachname Kontaktperson`, `Vorname Kontaktperson`, `Straße`, `HausNr`, `Stadt`, `PLZ`, `Land`, `TelefonNr`, `E-Mail`, `VIPKunde`, `Passwort`) VALUES
-	(1, 'Ventilator-Expert GmbH', 'Müller', 'Klaus', 'Industriestraße', 10, 'Berlin', '12345', 'Deutschland', '+49 30 1234567', 'klaus.mueller@ventilator-expert.de', 'Ja', 0),
-	(2, 'Luftstrom AG', 'Schneider', 'Sabine', 'Hauptstraße', 25, 'Hamburg', '54321', 'Deutschland', '+49 40 9876543', 'sabine.schneider@luftstrom-ag.de', 'Nein', 0),
-	(3, 'AirTech Solutions GmbH', 'Meier', 'Michael', 'Luftweg', 5, 'München', '67890', 'Deutschland', '+49 89 246813', 'michael.meier@airtech-solutions.de', 'Nein', 0),
-	(4, 'Cooling Systems GmbH', 'Schulz', 'Andreas', 'Kühlstraße', 15, 'Frankfurt', '13579', 'Deutschland', '+49 69 357911', 'andreas.schulz@coolingsystems.de', 'Nein', 0),
-	(5, 'Ventilation Services Ltd.', 'Hoffmann', 'Anna', 'Windweg', 8, 'Stuttgart', '98765', 'Deutschland', '+49 711 135790', 'anna.hoffmann@ventilationservices.com', 'Ja', 0),
-	(6, 'AirFlow Experts GmbH', 'Wagner', 'Peter', 'Luftallee', 20, 'Düsseldorf', '24680', 'Deutschland', '+49 211 468013', 'peter.wagner@airflow-experts.de', 'Nein', 0),
-	(7, 'Breeze Solutions GmbH', 'Becker', 'Sandra', 'Briseallee', 12, 'Köln', '56789', 'Deutschland', '+49 221 901234', 'sandra.becker@breeze-solutions.de', 'Nein', 0),
-	(8, 'FreshAir GmbH', 'Zimmermann', 'Thomas', 'Frischweg', 30, 'Dresden', '78901', 'Deutschland', '+49 351 246801', 'thomas.zimmermann@freshair.de', 'Ja', 0),
-	(9, 'Climate Control AG', 'Hahn', 'Markus', 'Klimaweg', 18, 'Hannover', '23456', 'Deutschland', '+49 511 679013', 'markus.hahn@climatecontrol-ag.de', 'Nein', 0),
-	(10, 'AirMaster Solutions GmbH', 'Fischer', 'Laura', 'Luftmeisterstraße', 6, 'Leipzig', '34567', 'Deutschland', '+49 341 135792', 'laura.fischer@airmastersolutions.de', 'Nein', 0);
+	(1, 'Ventilator-Expert GmbH', 'Müller', 'Klaus', 'Industriestraße', 11, 'Berlin', '12345', 'Deutschland', '+49 30 1234567', 'klaus.mueller@ventilator-expert.de', 'Ja', '$2y$10$L15a72qsdNI2N1p.NNkjEOayh42TY49Qdb.6ZJnAiIgfa6r2/Fm2m'),
+	(2, 'Luftstrom AG', 'Schneider', 'Sabine', 'Hauptstraße', 25, 'Hamburg', '54321', 'Deutschland', '+49 40 9876543', 'sabine.schneider@luftstrom-ag.de', 'Nein', '$2y$10$/QRSRjkSfgbwR1IfaP.2XeyLLK3vojt0GjN4alB5go3p/41vCef0m'),
+	(3, 'AirTech Solutions GmbH', 'Meier', 'Michael', 'Luftweg', 5, 'München', '67890', 'Deutschland', '+49 89 246813', 'michael.meier@airtech-solutions.de', 'Nein', '$2y$10$ZaIR2sXaKi.BwUWSOFNzKO44k1WEE3doK/Eb/ZNUdT6gpIq0Zjrgm'),
+	(4, 'Cooling Systems GmbH', 'Schulz', 'Andreas', 'Kühlstraße', 15, 'Frankfurt', '13579', 'Deutschland', '+49 69 357911', 'andreas.schulz@coolingsystems.de', 'Nein', '$2y$10$nbQ9at9A2Vpd1GbMn3YAHuCoUB38w2imfzOIzz5rC0s3t2J5Vftku'),
+	(5, 'Ventilation Services Ltd.', 'Hoffmann', 'Anna', 'Windweg', 8, 'Stuttgart', '98765', 'Deutschland', '+49 711 135790', 'anna.hoffmann@ventilationservices.com', 'Ja', '$2y$10$uDMUv/1qoSQJZBO8QhK0uu5GxNkM/YUPR/D37AJMUkmG6INxcSUpa'),
+	(6, 'AirFlow Experts GmbH', 'Wagner', 'Peter', 'Luftallee', 20, 'Düsseldorf', '24680', 'Deutschland', '+49 211 468013', 'peter.wagner@airflow-experts.de', 'Nein', '$2y$10$yWEbgbDI7yK28ovT56UOwu1Bphu2s2KAs1DVzAC9QoHPQ2YOqHvz2'),
+	(7, 'Breeze Solutions GmbH', 'Becker', 'Sandra', 'Briseallee', 12, 'Köln', '56789', 'Deutschland', '+49 221 901234', 'sandra.becker@breeze-solutions.de', 'Nein', '$2y$10$FGmehw.PJi3wsVV5qU6vhe9w3.wL.NKHtNBQy6iQPKMOylPMWXWJ6'),
+	(8, 'FreshAir GmbH', 'Zimmermann', 'Thomas', 'Frischweg', 30, 'Dresden', '78901', 'Deutschland', '+49 351 246801', 'thomas.zimmermann@freshair.de', 'Ja', '$2y$10$FIVbfAWOnFZCjLdFPXu9gOG.S6GroNfpU5ZS8DJgcwVbMUMu7kj7u'),
+	(9, 'Climate Control AG', 'Hahn', 'Markus', 'Klimaweg', 18, 'Hannover', '23456', 'Deutschland', '+49 511 679013', 'markus.hahn@climatecontrol-ag.de', 'Nein', '$2y$10$UpB0kqNeJHlQ9UdueXj.0.745hEFpDmvc6beCdzoF4RAQjHm2dc6i');
 
 -- Exportiere Struktur von Tabelle airlimited.sind_in
 CREATE TABLE IF NOT EXISTS `sind_in` (
@@ -226,12 +223,69 @@ CREATE TABLE IF NOT EXISTS `sind_in` (
   CONSTRAINT `sind_in SKUNr` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.sind_in: ~3 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.sind_in: ~60 rows (ungefähr)
 DELETE FROM `sind_in`;
 INSERT INTO `sind_in` (`LagerNr`, `SKUNr`, `Bestand`) VALUES
-	(1, 13, 50),
-	(1, 43, 100),
-	(2, 10, 10);
+	(1, 13, 60),
+	(1, 17, 110),
+	(1, 33, 40),
+	(1, 57, 20),
+	(2, 12, 70),
+	(2, 22, 89),
+	(2, 26, 88),
+	(2, 48, 53),
+	(2, 56, 12),
+	(3, 10, 13),
+	(3, 15, 15),
+	(3, 36, 14),
+	(3, 41, 16),
+	(3, 43, 67),
+	(4, 18, 37),
+	(4, 20, 35),
+	(4, 38, 14),
+	(4, 53, 568),
+	(5, 3, 24),
+	(5, 6, 15),
+	(5, 23, 36),
+	(5, 54, 47),
+	(6, 39, 57),
+	(6, 40, 46),
+	(6, 49, 86),
+	(6, 50, 57),
+	(6, 58, 46),
+	(7, 1, 82),
+	(7, 2, 46),
+	(7, 27, 33),
+	(7, 32, 14),
+	(7, 35, 345),
+	(7, 44, 35),
+	(7, 46, 36),
+	(7, 60, 36),
+	(8, 4, 15),
+	(8, 7, 77),
+	(8, 8, 36),
+	(8, 9, 74),
+	(8, 14, 63),
+	(8, 21, 75),
+	(8, 28, 57),
+	(8, 29, 63),
+	(8, 30, 36),
+	(8, 34, 36),
+	(8, 45, 25),
+	(8, 47, 13),
+	(8, 55, 15),
+	(9, 5, 74),
+	(9, 19, 754),
+	(9, 25, 74),
+	(9, 37, 14),
+	(9, 42, 15),
+	(9, 52, 64),
+	(9, 59, 64),
+	(10, 11, 75),
+	(10, 16, 634),
+	(10, 24, 633),
+	(10, 31, 22),
+	(10, 51, 11);
 
 -- Exportiere Struktur von Tabelle airlimited.sku
 CREATE TABLE IF NOT EXISTS `sku` (
@@ -246,74 +300,80 @@ CREATE TABLE IF NOT EXISTS `sku` (
   `Preis` float DEFAULT NULL,
   `Foto` varchar(50) DEFAULT NULL,
   `Art` varchar(50) DEFAULT NULL,
-  `Verfuegbarkeit` varchar(50) DEFAULT NULL,
   `Fertigungsanweisungen` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`SKUNr`)
+  `Verfuegbarkeit` varchar(50) DEFAULT NULL,
+  `FertigungsNr` int(11) DEFAULT NULL,
+  `LagerNr` int(11) DEFAULT NULL,
+  PRIMARY KEY (`SKUNr`),
+  KEY `FertigungsNr` (`FertigungsNr`),
+  KEY `Lagerstandort` (`LagerNr`),
+  CONSTRAINT `sku FertigungsNr` FOREIGN KEY (`FertigungsNr`) REFERENCES `fertigung` (`FertigungsNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `sku LagerNr` FOREIGN KEY (`LagerNr`) REFERENCES `lager` (`LagerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=2051 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Exportiere Daten aus Tabelle airlimited.sku: ~60 rows (ungefähr)
 DELETE FROM `sku`;
-INSERT INTO `sku` (`SKUNr`, `Name`, `Standardlosgroeße`, `Laenge`, `Breite`, `Hoehe`, `Gewicht`, `Beschreibung`, `Preis`, `Foto`, `Art`, `Verfuegbarkeit`, `Fertigungsanweisungen`) VALUES
-	(1, 'Lüfterblatt', 20, 30, 30, 5, 0.5, 'Hochwertiges Lüfterblatt für Industrieanlagen', 25.99, 'lüfterblatt.jpg', 'Komplex', 'ja', 'lüfterblatt_anweisungen.pdf'),
-	(2, 'Lager', 50, 10, 10, 5, 0.1, 'Hochleistungslager für Ventilatoren', 8.75, 'lager.jpg', 'Einfach', 'Auf Anfrage', 'lager_anweisungen.pdf'),
-	(3, 'Flügelrad', 30, 25, 25, 7, 0.7, 'Leichtes und effizientes Flügelrad', 39.99, 'fluegelrad.jpg', 'Komplex', 'In 2 Wochen lieferbar', 'fluegelrad_anweisungen.pdf'),
-	(4, 'Motor', 100, 20, 15, 10, 2.5, 'Hochleistungsmotor für industrielle Ventilatoren', 149.99, 'motor.jpg', 'Komplex', 'ja', 'motor_anweisungen.pdf'),
-	(5, 'Stator', 80, 30, 30, 20, 5, 'Robuster Stator für große Ventilatoren', 199.99, 'stator.jpg', 'Komplex', 'In 4 Wochen lieferbar', 'stator_anweisungen.pdf'),
-	(6, 'Gehäuse', 150, 40, 40, 30, 8, 'Stabiles Gehäuse für Ventilatorbaugruppen', 299.99, 'gehaeuse.jpg', 'Komplex', 'ja', 'gehaeuse_anweisungen.pdf'),
-	(7, 'Rotor', 40, 25, 25, 10, 1.5, 'Präzisionsrotor für effiziente Luftströmung', 69.99, 'rotor.jpg', 'Komplex', 'ja', 'rotor_anweisungen.pdf'),
-	(8, 'Schraube', 10, 5, 5, 2, 0.05, 'Hochfeste Befestigungsschraube', 0.99, 'schraube.jpg', 'Einfach', 'ja', 'schraube_anweisungen.pdf'),
-	(9, 'Schalldämpfer', 70, 30, 20, 15, 3, 'Effektiver Schalldämpfer für geräuscharmen Betrieb', 49.99, 'schalldaempfer.jpg', 'Komplex', 'In 3 Wochen lieferbar', 'schalldaempfer_anweisungen.pdf'),
-	(10, 'Blendenkappe', 20, 10, 10, 5, 0.2, 'Kappen für Lüftungsöffnungen', 4.99, 'blendenkappe.jpg', 'Einfach', 'ja', 'blendenkappe_anweisungen.pdf'),
-	(11, 'Steuerungseinheit', 120, 15, 10, 5, 1, 'Intelligente Steuerung für Ventilatoren', 129.99, 'steuerung.jpg', 'Komplex', 'In 6 Wochen lieferbar', 'steuerung_anweisungen.pdf'),
-	(12, 'Ausgleichsgewicht', 20, 5, 5, 5, 0.3, 'Gewichte für Balancierung von Ventilatorflügeln', 9.99, 'ausgleichsgewicht.jpg', 'Einfach', 'ja', 'ausgleichsgewicht_anweisungen.pdf'),
-	(13, 'Antriebsriemen', 60, 50, 5, 5, 0.5, 'Robuste Riemen für Motorantriebe', 19.99, 'antriebsriemen.jpg', 'Einfach', 'In 2 Wochen lieferbar', 'antriebsriemen_anweisungen.pdf'),
-	(14, 'Luftleitschaufel', 25, 20, 15, 5, 0.3, 'Präzise gefertigte Luftleitschaufel für optimale Luftströmung', 12.99, 'luftleitschaufel.jpg', 'Komplex', 'In 3 Wochen lieferbar', 'luftleitschaufel_anweisungen.pdf'),
-	(15, 'Dichtungssatz', 40, 10, 10, 2, 0.1, 'Hochwertiger Dichtungssatz für Ventilatorbaugruppen', 6.99, 'dichtungssatz.jpg', 'Einfach', 'ja', 'dichtungssatz_anweisungen.pdf'),
-	(16, 'Ventilatorflügel', 35, 30, 30, 8, 0.6, 'Leistungsstarke Ventilatorflügel für industrielle Anwendungen', 29.99, 'ventilatorfluegel.jpg', 'Komplex', 'In 4 Wochen lieferbar', 'ventilatorfluegel_anweisungen.pdf'),
-	(17, 'Achse', 60, 20, 20, 20, 1, 'Stabile Achse für Ventilatoren', 19.99, 'achse.jpg', 'Einfach', 'ja', 'achse_anweisungen.pdf'),
-	(18, 'Drehzahlregler', 80, 10, 5, 2, 0.3, 'Präziser Drehzahlregler für Ventilatoren', 49.99, 'drehzahlregler.jpg', 'Komplex', 'In 2 Wochen lieferbar', 'drehzahlregler_anweisungen.pdf'),
-	(19, 'Sicherungsschalter', 30, 5, 5, 2, 0.1, 'Zuverlässiger Sicherungsschalter für Ventilatoren', 7.99, 'sicherungsschalter.jpg', 'Einfach', 'ja', 'sicherungsschalter_anweisungen.pdf'),
-	(20, 'Filterelement', 45, 15, 15, 10, 0.5, 'Effektives Filterelement für Luftreinigung', 14.99, 'filterelement.jpg', 'Einfach', 'In 3 Wochen lieferbar', 'filterelement_anweisungen.pdf'),
-	(21, 'Schaltkreisplatine', 90, 10, 10, 2, 0.2, 'Hochwertige Schaltkreisplatine für Ventilatorsteuerungen', 79.99, 'schaltkreisplatine.jpg', 'Komplex', 'ja', 'schaltkreisplatine_anweisungen.pdf'),
-	(22, 'Befestigungsklammer', 15, 5, 5, 3, 0.05, 'Robuste Befestigungsklammer für Ventilatorkomponenten', 1.99, 'befestigungsklammer.jpg', 'Einfach', 'In 2 Wochen lieferbar', 'befestigungsklammer_anweisungen.pdf'),
-	(23, 'Gummifüße', 10, 5, 5, 2, 0.05, 'Hochwertige Gummifüße für Vibrationsdämpfung', 3.99, 'gummifuesse.jpg', 'Einfach', 'ja', 'gummifuesse_anweisungen.pdf'),
-	(24, 'Ventilatorblende', 25, 10, 10, 3, 0.3, 'Stabile Blenden für Ventilatorgehäuse', 9.99, 'ventilatorblende.jpg', 'Einfach', 'In 3 Wochen lieferbar', 'ventilatorblende_anweisungen.pdf'),
-	(25, 'Spannungsregler', 70, 10, 5, 2, 0.2, 'Präziser Spannungsregler für Ventilatorantriebe', 39.99, 'spannungsregler.jpg', 'Komplex', 'ja', 'spannungsregler_anweisungen.pdf'),
-	(26, 'Austrittsgitter', 20, 20, 20, 3, 0.2, 'Hochwertiges Austrittsgitter für Ventilatoren', 8.99, 'austrittsgitter.jpg', 'Einfach', 'In 2 Wochen lieferbar', 'austrittsgitter_anweisungen.pdf'),
-	(27, 'Luftführungskanal', 60, 40, 20, 10, 1.5, 'Effizienter Luftführungskanal für Ventilatoranlagen', 24.99, 'luftfuehrungskanal.jpg', 'Komplex', 'ja', 'luftfuehrungskanal_anweisungen.pdf'),
-	(28, 'Schnellverschlusskup', 15, 5, 5, 2, 0.1, 'Zuverlässige Schnellverschlusskupplungen für Ventilatorschläuche', 5.99, 'schnellverschlusskupplung.jpg', 'Einfach', 'In 3 Wochen lieferbar', 'schnellverschlusskupplung_anweisungen.pdf'),
-	(29, 'Schmiermittel', 10, 5, 5, 5, 0.2, 'Hochwertiges Schmiermittel für Ventilatorlager', 4.99, 'schmiermittel.jpg', 'Einfach', 'ja', 'schmiermittel_anweisungen.pdf'),
-	(30, 'Montagehalterung', 25, 10, 10, 5, 0.3, 'Robuste Montagehalterungen für Ventilatorinstallationen', 7.99, 'montagehalterung.jpg', 'Einfach', 'In 2 Wochen lieferbar', 'montagehalterung_anweisungen.pdf'),
-	(31, 'Ventilatorsteuerpult', 100, 30, 20, 10, 2, 'Modernes Steuerpult für industrielle Ventilatoren', 99.99, 'steuerpult.jpg', 'Komplex', 'In 4 Wochen lieferbar', 'steuerpult_anweisungen.pdf'),
-	(32, 'Lagerbock', 30, 15, 15, 10, 0.5, 'Stabiler Lagerbock für Ventilatormontage', 12.99, 'lagerbock.jpg', 'Einfach', 'ja', 'lagerbock_anweisungen.pdf'),
-	(33, 'Ablaufleitung', 40, 20, 20, 5, 0.3, 'Effiziente Ablaufleitungen für Kondenswasserabfluss', 9.99, 'ablaufleitung.jpg', 'Einfach', 'In 3 Wochen lieferbar', 'ablaufleitung_anweisungen.pdf'),
-	(34, 'Motorschutzschalter', 50, 5, 5, 3, 0.2, 'Zuverlässiger Motorschutzschalter für Ventilatoren', 14.99, 'motorschutzschalter.jpg', 'Einfach', 'ja', 'motorschutzschalter_anweisungen.pdf'),
-	(35, 'Kühlgebläse', 70, 20, 20, 10, 1, 'Effektives Kühlgebläse für Ventilatorantriebe', 29.99, 'kuehlgeblaese.jpg', 'Einfach', 'In 2 Wochen lieferbar', 'kuehlgeblaese_anweisungen.pdf'),
-	(36, 'Wandhalterung', 20, 10, 10, 5, 0.5, 'Stabile Wandhalterungen für Ventilatoren', 6.99, 'wandhalterung.jpg', 'Einfach', 'ja', 'wandhalterung_anweisungen.pdf'),
-	(37, 'Schwingungsdämpfer', 15, 5, 5, 3, 0.1, 'Effektive Schwingungsdämpfer für ruhigen Betrieb', 3.99, 'schwingungsdaempfer.jpg', 'Einfach', 'In 3 Wochen lieferbar', 'schwingungsdaempfer_anweisungen.pdf'),
-	(38, 'Drucksensor', 80, 5, 5, 5, 0.3, 'Präziser Drucksensor für Ventilatorüberwachung', 49.99, 'drucksensor.jpg', 'Komplex', 'ja', 'drucksensor_anweisungen.pdf'),
-	(39, 'Isoliermatte', 30, 30, 30, 5, 0.5, 'Effektive Isoliermatten für Schalldämpfung', 9.99, 'isoliermatte.jpg', 'Einfach', 'In 2 Wochen lieferbar', 'isoliermatte_anweisungen.pdf'),
-	(40, 'Hitzeschild', 40, 20, 20, 5, 0.3, 'Robustes Hitzeschild für Ventilatoranlagen', 14.99, 'hitzeschild.jpg', 'Einfach', 'ja', 'hitzeschild_anweisungen.pdf'),
-	(41, 'Drehflügel', 25, 20, 20, 5, 0.4, 'Präzise gefertigte Drehflügel für effiziente Luftzirkulation', 18.99, 'drehfluegel.jpg', 'Komplex', 'In 3 Wochen lieferbar', 'drehfluegel_anweisungen.pdf'),
-	(42, 'Stellmotor', 50, 10, 10, 5, 0.5, 'Zuverlässiger Stellmotor für Ventilatorsteuerung', 29.99, 'stellmotor.jpg', 'Komplex', 'ja', 'stellmotor_anweisungen.pdf'),
-	(43, 'Dichtungsband', 15, 5, 5, 2, 0.1, 'Hochwertiges Dichtungsband für Luftabdichtung', 3.99, 'dichtungsband.jpg', 'Einfach', 'In 2 Wochen lieferbar', 'dichtungsband_anweisungen.pdf'),
-	(44, 'Kondensatablauf', 30, 20, 20, 10, 0.6, 'Effizienter Kondensatablauf für Ventilatoranlagen', 11.99, 'kondensatablauf.jpg', 'Einfach', 'ja', 'kondensatablauf_anweisungen.pdf'),
-	(45, 'Saugrohr', 35, 40, 20, 15, 1.2, 'Stabiles Saugrohr für Luftansaugung', 17.99, 'saugrohr.jpg', 'Einfach', 'In 3 Wochen lieferbar', 'saugrohr_anweisungen.pdf'),
-	(46, 'Kugellager', 20, 5, 5, 5, 0.2, 'Hochwertige Kugellager für Ventilatoren', 5.99, 'kugellager.jpg', 'Einfach', 'ja', 'kugellager_anweisungen.pdf'),
-	(47, 'Schnellkupplung', 15, 5, 5, 3, 0.1, 'Effektive Schnellkupplungen für Ventilatorleitungen', 4.99, 'schnellkupplung.jpg', 'Einfach', 'In 2 Wochen lieferbar', 'schnellkupplung_anweisungen.pdf'),
-	(48, 'Vibrationsdämpfer', 20, 5, 5, 2, 0.2, 'Robuste Vibrationsdämpfer für geräuscharmen Betrieb', 6.99, 'vibrationsdaempfer.jpg', 'Einfach', 'ja', 'vibrationsdaempfer_anweisungen.pdf'),
-	(49, 'Hochleistungsschalte', 40, 5, 5, 3, 0.2, 'Zuverlässiger Hochleistungsschalter für Ventilatoren', 12.99, 'hochleistungsschalter.jpg', 'Einfach', 'In 3 Wochen lieferbar', 'hochleistungsschalter_anweisungen.pdf'),
-	(50, 'Klemmverbinder', 10, 5, 5, 2, 0.1, 'Stabile Klemmverbinder für Ventilatorleitungen', 3.99, 'klemmverbinder.jpg', 'Einfach', 'ja', 'klemmverbinder_anweisungen.pdf'),
-	(51, 'Ventilatorgehäuse', 60, 30, 30, 20, 3.5, 'Robustes Gehäuse für industrielle Ventilatoren', 39.99, 'ventilatorgehaeuse.jpg', 'Komplex', 'In 4 Wochen lieferbar', 'ventilatorgehaeuse_anweisungen.pdf'),
-	(52, 'Steuerkabel', 25, 5, 5, 2, 0.1, 'Hochwertige Steuerkabel für Ventilatorsteuerungen', 4.99, 'steuerkabel.jpg', 'Einfach', 'ja', 'steuerkabel_anweisungen.pdf'),
-	(53, 'Druckluftschlauch', 30, 10, 10, 5, 0.3, 'Robuster Druckluftschlauch für Ventilatoranwendungen', 8.99, 'druckluftschlauch.jpg', 'Einfach', 'In 2 Wochen lieferbar', 'druckluftschlauch_anweisungen.pdf'),
-	(54, 'Gleitlager', 15, 5, 5, 5, 0.1, 'Hochwertige Gleitlager für Ventilatoren', 3.99, 'gleitlager.jpg', 'Einfach', 'ja', 'gleitlager_anweisungen.pdf'),
-	(55, 'Ölabscheider', 20, 10, 10, 5, 0.4, 'Effizienter Ölabscheider für Ventilatoren', 9.99, 'oelabscheider.jpg', 'Einfach', 'In 3 Wochen lieferbar', 'oelabscheider_anweisungen.pdf'),
-	(56, 'Axiallüfter', 45, 20, 20, 10, 1, 'Leistungsstarker Axiallüfter für industrielle Anwendungen', 34.99, 'axialluefter.jpg', 'Einfach', 'ja', 'axialluefter_anweisungen.pdf'),
-	(57, 'Ventilatormesser', 25, 15, 5, 2, 0.2, 'Präzise Ventilatormesser für Leistungsüberwachung', 7.99, 'ventilatormesser.jpg', 'Einfach', 'In 2 Wochen lieferbar', 'ventilatormesser_anweisungen.pdf'),
-	(58, 'Heizwiderstand', 40, 5, 5, 2, 0.3, 'Effektiver Heizwiderstand für Ventilatorheizungen', 11.99, 'heizwiderstand.jpg', 'Einfach', 'ja', 'heizwiderstand_anweisungen.pdf'),
-	(59, 'Stecker', 10, 5, 5, 2, 0.1, 'Zuverlässige Stecker für Ventilatoranschlüsse', 2.99, 'stecker.jpg', 'Einfach', 'In 3 Wochen lieferbar', 'stecker_anweisungen.pdf'),
-	(60, 'Luftdrucksensor', 30, 5, 5, 2, 0.2, 'Präziser Luftdrucksensor für Ventilatorüberwachung', 9.99, 'luftdrucksensor.jpg', 'Einfach', 'ja', 'luftdrucksensor_anweisungen.pdf');
+INSERT INTO `sku` (`SKUNr`, `Name`, `Standardlosgroeße`, `Laenge`, `Breite`, `Hoehe`, `Gewicht`, `Beschreibung`, `Preis`, `Foto`, `Art`, `Fertigungsanweisungen`, `Verfuegbarkeit`, `FertigungsNr`, `LagerNr`) VALUES
+	(1, 'Lüfterblatt', 20, 30, 30, 5, 0.5, 'Hochwertiges Lüfterblatt für Industrieanlagen', 25.99, 'lüfterblatt.jpg', 'Komplex', 'lüfterblatt_anweisungen.pdf', 'ja', 7, 7),
+	(2, 'Lager', 50, 10, 10, 5, 0.1, 'Hochleistungslager für Ventilatoren', 8.75, 'lager.jpg', 'Einfach', 'lager_anweisungen.pdf', 'Auf Anfrage', 7, 7),
+	(3, 'Flügelrad', 30, 25, 25, 7, 0.7, 'Leichtes und effizientes Flügelrad', 39.99, 'fluegelrad.jpg', 'Komplex', 'fluegelrad_anweisungen.pdf', 'In 2 Wochen lieferbar', 5, 5),
+	(4, 'Motor', 100, 20, 15, 10, 2.5, 'Hochleistungsmotor für industrielle Ventilatoren', 149.99, 'motor.jpg', 'Komplex', 'motor_anweisungen.pdf', 'ja', 8, 8),
+	(5, 'Stator', 80, 30, 30, 20, 5, 'Robuster Stator für große Ventilatoren', 199.99, 'stator.jpg', 'Komplex', 'stator_anweisungen.pdf', 'In 4 Wochen lieferbar', 9, 9),
+	(6, 'Gehäuse', 150, 40, 40, 30, 8, 'Stabiles Gehäuse für Ventilatorbaugruppen', 299.99, 'gehaeuse.jpg', 'Komplex', 'gehaeuse_anweisungen.pdf', 'ja', 5, 5),
+	(7, 'Rotor', 40, 25, 25, 10, 1.5, 'Präzisionsrotor für effiziente Luftströmung', 69.99, 'rotor.jpg', 'Komplex', 'rotor_anweisungen.pdf', 'ja', 8, 8),
+	(8, 'Schraube', 10, 5, 5, 2, 0.05, 'Hochfeste Befestigungsschraube', 0.99, 'schraube.jpg', 'Einfach', 'schraube_anweisungen.pdf', 'ja', 8, 8),
+	(9, 'Schalldämpfer', 70, 30, 20, 15, 3, 'Effektiver Schalldämpfer für geräuscharmen Betrieb', 49.99, 'schalldaempfer.jpg', 'Komplex', 'schalldaempfer_anweisungen.pdf', 'In 3 Wochen lieferbar', 8, 8),
+	(10, 'Blendenkappe', 20, 10, 10, 5, 0.2, 'Kappen für Lüftungsöffnungen', 4.99, 'blendenkappe.jpg', 'Einfach', 'blendenkappe_anweisungen.pdf', 'ja', 3, 3),
+	(11, 'Steuerungseinheit', 120, 15, 10, 5, 1, 'Intelligente Steuerung für Ventilatoren', 129.99, 'steuerung.jpg', 'Komplex', 'steuerung_anweisungen.pdf', 'In 6 Wochen lieferbar', 10, 10),
+	(12, 'Ausgleichsgewicht', 20, 5, 5, 5, 0.3, 'Gewichte für Balancierung von Ventilatorflügeln', 9.99, 'ausgleichsgewicht.jpg', 'Einfach', 'ausgleichsgewicht_anweisungen.pdf', 'ja', 2, 2),
+	(13, 'Antriebsriemen', 60, 50, 5, 5, 0.5, 'Robuste Riemen für Motorantriebe', 19.99, 'antriebsriemen.jpg', 'Einfach', 'antriebsriemen_anweisungen.pdf', 'In 2 Wochen lieferbar', 1, 1),
+	(14, 'Luftleitschaufel', 25, 20, 15, 5, 0.3, 'Präzise gefertigte Luftleitschaufel für optimale Luftströmung', 12.99, 'luftleitschaufel.jpg', 'Komplex', 'luftleitschaufel_anweisungen.pdf', 'In 3 Wochen lieferbar', 8, 8),
+	(15, 'Dichtungssatz', 40, 10, 10, 2, 0.1, 'Hochwertiger Dichtungssatz für Ventilatorbaugruppen', 6.99, 'dichtungssatz.jpg', 'Einfach', 'dichtungssatz_anweisungen.pdf', 'ja', 3, 3),
+	(16, 'Ventilatorflügel', 35, 30, 30, 8, 0.6, 'Leistungsstarke Ventilatorflügel für industrielle Anwendungen', 29.99, 'ventilatorfluegel.jpg', 'Komplex', 'ventilatorfluegel_anweisungen.pdf', 'In 4 Wochen lieferbar', 10, 10),
+	(17, 'Achse', 60, 20, 20, 20, 1, 'Stabile Achse für Ventilatoren', 19.99, 'achse.jpg', 'Einfach', 'achse_anweisungen.pdf', 'ja', 1, 1),
+	(18, 'Drehzahlregler', 80, 10, 5, 2, 0.3, 'Präziser Drehzahlregler für Ventilatoren', 49.99, 'drehzahlregler.jpg', 'Komplex', 'drehzahlregler_anweisungen.pdf', 'In 2 Wochen lieferbar', 4, 4),
+	(19, 'Sicherungsschalter', 30, 5, 5, 2, 0.1, 'Zuverlässiger Sicherungsschalter für Ventilatoren', 7.99, 'sicherungsschalter.jpg', 'Einfach', 'sicherungsschalter_anweisungen.pdf', 'ja', 9, 9),
+	(20, 'Filterelement', 45, 15, 15, 10, 0.5, 'Effektives Filterelement für Luftreinigung', 14.99, 'filterelement.jpg', 'Einfach', 'filterelement_anweisungen.pdf', 'In 3 Wochen lieferbar', 4, 4),
+	(21, 'Schaltkreisplatine', 90, 10, 10, 2, 0.2, 'Hochwertige Schaltkreisplatine für Ventilatorsteuerungen', 79.99, 'schaltkreisplatine.jpg', 'Komplex', 'schaltkreisplatine_anweisungen.pdf', 'ja', 8, 8),
+	(22, 'Befestigungsklammer', 15, 5, 5, 3, 0.05, 'Robuste Befestigungsklammer für Ventilatorkomponenten', 1.99, 'befestigungsklammer.jpg', 'Einfach', 'befestigungsklammer_anweisungen.pdf', 'In 2 Wochen lieferbar', 2, 2),
+	(23, 'Gummifüße', 10, 5, 5, 2, 0.05, 'Hochwertige Gummifüße für Vibrationsdämpfung', 3.99, 'gummifuesse.jpg', 'Einfach', 'gummifuesse_anweisungen.pdf', 'ja', 5, 5),
+	(24, 'Ventilatorblende', 25, 10, 10, 3, 0.3, 'Stabile Blenden für Ventilatorgehäuse', 9.99, 'ventilatorblende.jpg', 'Einfach', 'ventilatorblende_anweisungen.pdf', 'In 3 Wochen lieferbar', 10, 10),
+	(25, 'Spannungsregler', 70, 10, 5, 2, 0.2, 'Präziser Spannungsregler für Ventilatorantriebe', 39.99, 'spannungsregler.jpg', 'Komplex', 'spannungsregler_anweisungen.pdf', 'ja', 9, 9),
+	(26, 'Austrittsgitter', 20, 20, 20, 3, 0.2, 'Hochwertiges Austrittsgitter für Ventilatoren', 8.99, 'austrittsgitter.jpg', 'Einfach', 'austrittsgitter_anweisungen.pdf', 'In 2 Wochen lieferbar', 2, 2),
+	(27, 'Luftführungskanal', 60, 40, 20, 10, 1.5, 'Effizienter Luftführungskanal für Ventilatoranlagen', 24.99, 'luftfuehrungskanal.jpg', 'Komplex', 'luftfuehrungskanal_anweisungen.pdf', 'ja', 7, 7),
+	(28, 'Schnellverschlusskup', 15, 5, 5, 2, 0.1, 'Zuverlässige Schnellverschlusskupplungen für Ventilatorschläuche', 5.99, 'schnellverschlusskupplung.jpg', 'Einfach', 'schnellverschlusskupplung_anweisungen.pdf', 'In 3 Wochen lieferbar', 8, 8),
+	(29, 'Schmiermittel', 10, 5, 5, 5, 0.2, 'Hochwertiges Schmiermittel für Ventilatorlager', 4.99, 'schmiermittel.jpg', 'Einfach', 'schmiermittel_anweisungen.pdf', 'ja', 8, 8),
+	(30, 'Montagehalterung', 25, 10, 10, 5, 0.3, 'Robuste Montagehalterungen für Ventilatorinstallationen', 7.99, 'montagehalterung.jpg', 'Einfach', 'montagehalterung_anweisungen.pdf', 'In 2 Wochen lieferbar', 8, 8),
+	(31, 'Ventilatorsteuerpult', 100, 30, 20, 10, 2, 'Modernes Steuerpult für industrielle Ventilatoren', 99.99, 'steuerpult.jpg', 'Komplex', 'steuerpult_anweisungen.pdf', 'In 4 Wochen lieferbar', 10, 10),
+	(32, 'Lagerbock', 30, 15, 15, 10, 0.5, 'Stabiler Lagerbock für Ventilatormontage', 12.99, 'lagerbock.jpg', 'Einfach', 'lagerbock_anweisungen.pdf', 'ja', 7, 7),
+	(33, 'Ablaufleitung', 40, 20, 20, 5, 0.3, 'Effiziente Ablaufleitungen für Kondenswasserabfluss', 9.99, 'ablaufleitung.jpg', 'Einfach', 'ablaufleitung_anweisungen.pdf', 'In 3 Wochen lieferbar', 1, 1),
+	(34, 'Motorschutzschalter', 50, 5, 5, 3, 0.2, 'Zuverlässiger Motorschutzschalter für Ventilatoren', 14.99, 'motorschutzschalter.jpg', 'Einfach', 'motorschutzschalter_anweisungen.pdf', 'ja', 8, 8),
+	(35, 'Kühlgebläse', 70, 20, 20, 10, 1, 'Effektives Kühlgebläse für Ventilatorantriebe', 29.99, 'kuehlgeblaese.jpg', 'Einfach', 'kuehlgeblaese_anweisungen.pdf', 'In 2 Wochen lieferbar', 7, 7),
+	(36, 'Wandhalterung', 20, 10, 10, 5, 0.5, 'Stabile Wandhalterungen für Ventilatoren', 6.99, 'wandhalterung.jpg', 'Einfach', 'wandhalterung_anweisungen.pdf', 'ja', 3, 3),
+	(37, 'Schwingungsdämpfer', 15, 5, 5, 3, 0.1, 'Effektive Schwingungsdämpfer für ruhigen Betrieb', 3.99, 'schwingungsdaempfer.jpg', 'Einfach', 'schwingungsdaempfer_anweisungen.pdf', 'In 3 Wochen lieferbar', 9, 9),
+	(38, 'Drucksensor', 80, 5, 5, 5, 0.3, 'Präziser Drucksensor für Ventilatorüberwachung', 49.99, 'drucksensor.jpg', 'Komplex', 'drucksensor_anweisungen.pdf', 'ja', 4, 4),
+	(39, 'Isoliermatte', 30, 30, 30, 5, 0.5, 'Effektive Isoliermatten für Schalldämpfung', 9.99, 'isoliermatte.jpg', 'Einfach', 'isoliermatte_anweisungen.pdf', 'In 2 Wochen lieferbar', 6, 6),
+	(40, 'Hitzeschild', 40, 20, 20, 5, 0.3, 'Robustes Hitzeschild für Ventilatoranlagen', 14.99, 'hitzeschild.jpg', 'Einfach', 'hitzeschild_anweisungen.pdf', 'ja', 6, 6),
+	(41, 'Drehflügel', 25, 20, 20, 5, 0.4, 'Präzise gefertigte Drehflügel für effiziente Luftzirkulation', 18.99, 'drehfluegel.jpg', 'Komplex', 'drehfluegel_anweisungen.pdf', 'In 3 Wochen lieferbar', 3, 3),
+	(42, 'Stellmotor', 50, 10, 10, 5, 0.5, 'Zuverlässiger Stellmotor für Ventilatorsteuerung', 29.99, 'stellmotor.jpg', 'Komplex', 'stellmotor_anweisungen.pdf', 'ja', 9, 9),
+	(43, 'Dichtungsband', 15, 5, 5, 2, 0.1, 'Hochwertiges Dichtungsband für Luftabdichtung', 3.99, 'dichtungsband.jpg', 'Einfach', 'dichtungsband_anweisungen.pdf', 'In 2 Wochen lieferbar', 3, 3),
+	(44, 'Kondensatablauf', 30, 20, 20, 10, 0.6, 'Effizienter Kondensatablauf für Ventilatoranlagen', 11.99, 'kondensatablauf.jpg', 'Einfach', 'kondensatablauf_anweisungen.pdf', 'ja', 7, 7),
+	(45, 'Saugrohr', 35, 40, 20, 15, 1.2, 'Stabiles Saugrohr für Luftansaugung', 17.99, 'saugrohr.jpg', 'Einfach', 'saugrohr_anweisungen.pdf', 'In 3 Wochen lieferbar', 8, 8),
+	(46, 'Kugellager', 20, 5, 5, 5, 0.2, 'Hochwertige Kugellager für Ventilatoren', 5.99, 'kugellager.jpg', 'Einfach', 'kugellager_anweisungen.pdf', 'ja', 7, 7),
+	(47, 'Schnellkupplung', 15, 5, 5, 3, 0.1, 'Effektive Schnellkupplungen für Ventilatorleitungen', 4.99, 'schnellkupplung.jpg', 'Einfach', 'schnellkupplung_anweisungen.pdf', 'In 2 Wochen lieferbar', 8, 8),
+	(48, 'Vibrationsdämpfer', 20, 5, 5, 2, 0.2, 'Robuste Vibrationsdämpfer für geräuscharmen Betrieb', 6.99, 'vibrationsdaempfer.jpg', 'Einfach', 'vibrationsdaempfer_anweisungen.pdf', 'ja', 2, 2),
+	(49, 'Hochleistungsschalte', 40, 5, 5, 3, 0.2, 'Zuverlässiger Hochleistungsschalter für Ventilatoren', 12.99, 'hochleistungsschalter.jpg', 'Einfach', 'hochleistungsschalter_anweisungen.pdf', 'In 3 Wochen lieferbar', 6, 6),
+	(50, 'Klemmverbinder', 10, 5, 5, 2, 0.1, 'Stabile Klemmverbinder für Ventilatorleitungen', 3.99, 'klemmverbinder.jpg', 'Einfach', 'klemmverbinder_anweisungen.pdf', 'ja', 6, 6),
+	(51, 'Ventilatorgehäuse', 60, 30, 30, 20, 3.5, 'Robustes Gehäuse für industrielle Ventilatoren', 39.99, 'ventilatorgehaeuse.jpg', 'Komplex', 'ventilatorgehaeuse_anweisungen.pdf', 'In 4 Wochen lieferbar', 10, 10),
+	(52, 'Steuerkabel', 25, 5, 5, 2, 0.1, 'Hochwertige Steuerkabel für Ventilatorsteuerungen', 4.99, 'steuerkabel.jpg', 'Einfach', 'steuerkabel_anweisungen.pdf', 'ja', 9, 9),
+	(53, 'Druckluftschlauch', 30, 10, 10, 5, 0.3, 'Robuster Druckluftschlauch für Ventilatoranwendungen', 8.99, 'druckluftschlauch.jpg', 'Einfach', 'druckluftschlauch_anweisungen.pdf', 'In 2 Wochen lieferbar', 4, 4),
+	(54, 'Gleitlager', 15, 5, 5, 5, 0.1, 'Hochwertige Gleitlager für Ventilatoren', 3.99, 'gleitlager.jpg', 'Einfach', 'gleitlager_anweisungen.pdf', 'ja', 5, 5),
+	(55, 'Ölabscheider', 20, 10, 10, 5, 0.4, 'Effizienter Ölabscheider für Ventilatoren', 9.99, 'oelabscheider.jpg', 'Einfach', 'oelabscheider_anweisungen.pdf', 'In 3 Wochen lieferbar', 8, 8),
+	(56, 'Axiallüfter', 45, 20, 20, 10, 1, 'Leistungsstarker Axiallüfter für industrielle Anwendungen', 34.99, 'axialluefter.jpg', 'Einfach', 'axialluefter_anweisungen.pdf', 'ja', 2, 2),
+	(57, 'Ventilatormesser', 25, 15, 5, 2, 0.2, 'Präzise Ventilatormesser für Leistungsüberwachung', 7.99, 'ventilatormesser.jpg', 'Einfach', 'ventilatormesser_anweisungen.pdf', 'In 2 Wochen lieferbar', 1, 1),
+	(58, 'Heizwiderstand', 40, 5, 5, 2, 0.3, 'Effektiver Heizwiderstand für Ventilatorheizungen', 11.99, 'heizwiderstand.jpg', 'Einfach', 'heizwiderstand_anweisungen.pdf', 'ja', 6, 6),
+	(59, 'Stecker', 10, 5, 5, 2, 0.1, 'Zuverlässige Stecker für Ventilatoranschlüsse', 2.99, 'stecker.jpg', 'Einfach', 'stecker_anweisungen.pdf', 'In 3 Wochen lieferbar', 9, 9),
+	(60, 'Luftdrucksensor', 30, 5, 5, 2, 0.2, 'Präziser Luftdrucksensor für Ventilatorüberwachung', 9.99, 'luftdrucksensor.jpg', 'Einfach', 'luftdrucksensor_anweisungen.pdf', 'ja', 7, 7);
 
 -- Exportiere Struktur von Tabelle airlimited.warenkorb
 CREATE TABLE IF NOT EXISTS `warenkorb` (
@@ -329,25 +389,10 @@ CREATE TABLE IF NOT EXISTS `warenkorb` (
   CONSTRAINT `warenkorb_LagerNr` FOREIGN KEY (`LagerNr`) REFERENCES `lager` (`LagerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `warenkorb_SKUNr` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `warenkorb_ServicepartnerNr` FOREIGN KEY (`ServicepartnerNr`) REFERENCES `servicepartner` (`ServicepartnerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.warenkorb: ~14 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.warenkorb: ~0 rows (ungefähr)
 DELETE FROM `warenkorb`;
-INSERT INTO `warenkorb` (`WarenkorbNr`, `ServicepartnerNr`, `LagerNr`, `SKUNr`, `Menge`) VALUES
-	(45, 1, NULL, 4, 4),
-	(46, 1, NULL, 7, 1),
-	(47, 1, NULL, 10, 2),
-	(48, 2, NULL, 5, 1),
-	(49, 1, NULL, 18, 2),
-	(51, NULL, 3, 31, 8),
-	(52, 1, NULL, 5, 1),
-	(53, 5, NULL, 6, 2),
-	(54, 3, NULL, 6, 15),
-	(55, 3, NULL, 4, 1),
-	(57, NULL, 3, 41, 4),
-	(62, 1, NULL, 1, 1),
-	(63, 1, NULL, 11, 1),
-	(64, 1, NULL, 1, 1);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
