@@ -44,6 +44,7 @@ if($loginRichtig){
     $query .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
     $query .= ' WHERE bestellung.'. $userType .'Nr = '. $userID; 
     $query .= ' GROUP BY bestellung.BestellNr';
+    $query .= ' ORDER BY bestellung.BestellNr DESC';
     $query .= ' LIMIT 1000';
 
     // Query the data
