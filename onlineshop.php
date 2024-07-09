@@ -23,7 +23,7 @@ $db->connect();
 
 // Variablen für Filter getten 
 $price_min = 0;
-$price_max = 99999;
+$price_max = 1000;
 $search_term = '';
 
 if (isset($_GET['price_min']) and (int)$_GET['price_min'] <> 0 ) {
@@ -42,12 +42,13 @@ if (!isset($_GET['sort'])) {
 }
 
 // Construct the query for the data that we want to see
-$query = 'SELECT `Foto`, `Name`, `SKUNr`, `Beschreibung`, `Preis`, `Verfuegbarkeit` ';
+$query = 'SELECT `Foto`, `Name`,  sku.`SKUNr`, `Beschreibung`, `Preis`, sind_in.Bestand ';
 $query .= 'FROM `airlimited`.`sku` ';
+$query .= 'LEFT JOIN sind_in ON sku.SKUNr = sind_in.SKUNr ';
 $query .= 'WHERE Preis > '. $price_min .' AND Preis < ' . $price_max . ' ';
 
 if ($search_term != '') {
-    $query .= 'AND (Name LIKE "%' . $search_term . '%" OR SKUNr LIKE "%' . $search_term . '%") ';
+    $query .= 'AND (Name LIKE "%' . $search_term . '%" OR sku.SKUNr LIKE "%' . $search_term . '%") ';
 }
 
 $query .= 'ORDER BY ' . $sort . ' ';
@@ -136,7 +137,7 @@ $result = $db->getEntityArray($query);
                             <p>Artikelnummer: '. $sku->SKUNr .'</p>
                             <p>'. $sku->Beschreibung .'</p>
                             <p class="price">Preis: '. $sku->Preis .'</p>
-                            <p>Verfügbarkeit: '. $sku->Verfuegbarkeit .'</p>
+                            <p>Noch '. $sku->Bestand .' Stück auf Lager</p>
                         </div>
                     </a>
                 </div>

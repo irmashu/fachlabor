@@ -13,6 +13,20 @@ $DBPassword = '';
 $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
+//Passwörter Generieren
+/* for ($i=1; $i < 6; $i++) { 
+    $pwd = 'fachlaborMAN'. $i ;
+    echo $pwd . '<br>';
+    $pwd = password_hash($pwd, PASSWORD_DEFAULT);
+    echo $pwd . '<br>';
+
+    $sql = "UPDATE `airlimited`.`management` SET `Passwort`='$pwd' WHERE  `ManagementNr`=$i;";
+    if ($db->query($sql) === TRUE) {
+        echo "Neuer Datensatz erfolgreich erstellt";
+    } else {
+        echo "Fehler: ";
+    }
+} */
 
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -46,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
         case 'man':
             $loginType = 'management';
-            $loginRichtig = TRUE;
+            $query = 'SELECT * FROM `airlimited`.`management` WHERE ManagementNr = '. $id .' LIMIT 1000;';
             break;
         default:
             $feedback = 'Ungültige Anmeldedaten. Beispiel: fer9';
@@ -60,8 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if(!empty($result)){
             $result0 = $result[0];
 
-            //Login richtig wenn ein Eintrag gefunden wurde
-            if ($result0->Passwort == $password) {
+            //Login-Daten überprüfen
+            if (password_verify($password ,$result0->Passwort)) {
                 $loginRichtig = TRUE;
                 $feedback = ' Erfolgreich angemeldet als '. $loginType .' ' . $id;
             }
@@ -178,6 +192,3 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     </footer>
 </body>
 </html>
-
-
-
