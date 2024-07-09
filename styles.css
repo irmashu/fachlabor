@@ -360,3 +360,33 @@ form select:hover {
 #saveOrder:hover {
   opacity: 0.8; /* Geringere Deckkraft bei Hover */
 }
+
+/* Suchfeld und Suchbutton mein konto */
+.search-field {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 200px;
+}
+
+.search-button {
+  background-color: #77b0e3;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.search-button:hover {
+  background-color: #5d91c9;
+}
+
+.search-container {
+  margin-bottom: 20px;
+}

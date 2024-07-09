@@ -34,7 +34,23 @@ $DBPassword = '';
 $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
+$firmName = '';
+$searchTerm = '';
 if($loginRichtig){
+    // Firmennamen abrufen
+    $firmQuery = 'SELECT Firmenname FROM servicepartner WHERE ServicepartnerNr = ?';
+    $stmt = mysqli_prepare($db->getConnection(), $firmQuery);
+    mysqli_stmt_bind_param($stmt, 'i', $userID);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $firmName);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+
+    // Suchfeld
+    if (isset($_GET['search'])) {
+        $searchTerm = $_GET['search'];
+    }
+
     // Construct the query for the data that we want to see
     $query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, sku.Preis, bestellposten.Quantität, auftrag.Status, auftrag.AuftragsNr';
     $query .= ' FROM bestellung';
@@ -42,7 +58,12 @@ if($loginRichtig){
     $query .= ' LEFT JOIN auftrag ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr';
     $query .= ' LEFT JOIN bestellposten ON bestellung.BestellNr = bestellposten.BestellNr';
     $query .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
-    $query .= ' WHERE bestellung.'. $userType .'Nr = '. $userID; 
+    $query .= ' WHERE bestellung.'. $userType .'Nr = '. $userID;
+
+    if (!empty($searchTerm)) {
+        $query .= " AND bestellung.BestellNr LIKE '%$searchTerm%'";
+    }
+
     $query .= ' GROUP BY bestellung.BestellNr';
     $query .= ' ORDER BY bestellung.BestellNr DESC';
     $query .= ' LIMIT 1000';
@@ -136,8 +157,14 @@ function getStatusText($status, $auftragsNr, $db) {
         </p>
     </div>
 </header>
-<h2> Hallo Kunde! - Meine Bestellungen </h2>
+<h2> Hallo <?php echo htmlspecialchars($firmName); ?>! - Meine Bestellungen </h2>
 <main>
+    <div class="search-container">
+        <form method="GET" action="">
+            <input type="text" name="search" placeholder="Bestellnummer" value="<?php echo htmlspecialchars($searchTerm); ?>" class="search-field">
+            <button type="submit" class="search-button">Suchen</button>
+        </form>
+    </div>
     <table>
         <thead>
             <tr>
