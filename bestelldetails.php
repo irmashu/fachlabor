@@ -23,7 +23,7 @@ $DBPassword = '';
 $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
-//Bestellnr aus der URL getten
+// Bestellnummer aus der URL getten
 if (isset($_GET['BestellNr'])) {
     $bestellnr = htmlspecialchars($_GET['BestellNr']);
 } else {
@@ -84,7 +84,7 @@ $result = $db->getEntityArray($query);
     </div>
 </header>
 <h2> Hallo Kunde! - Meine Bestelldetails </h2>
-<!-- <button onclick="window.location.href='account.html'" style="margin-left:40px;">Meine Accountdetails ändern</button> */ -->
+<!-- <button onclick="window.location.href='account.html'" style="margin-left:40px;">Meine Accountdetails ändern</button> -->
 <main>
     <table>
         <thead>
@@ -107,7 +107,7 @@ $result = $db->getEntityArray($query);
                     echo '<td>' . $bestellposten->SKUNr. '</td>';
                     echo '<td>' . $bestellposten->Preis . '</td>';
                     echo '<td>' . $bestellposten->Quantität . '</td>';
-                    echo '<td>' . $bestellposten->Status . '</td>';
+                    echo '<td>' . (!empty($bestellposten->Status) ? $bestellposten->Status : 'Die Artikel sind auf Lager und versandbereit') . '</td>';
                     echo '</tr>';
                 }
             } else {

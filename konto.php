@@ -213,3 +213,5 @@ function getStatusText($status, $auftragsNr, $db) {
 </footer>
 </body>
 </html>
+
+
