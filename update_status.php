@@ -88,14 +88,6 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
                 $lagerQuantity = $batchSize; // Menge für das Lager
                 $newStock = $currentStock - $customerQuantity + $totalProduction; // Neuer Lagerbestand
 
-                // Debugging-Ausgaben hinzufügen
-                echo "Customer Quantity: " . $customerQuantity . "<br>";
-                echo "Current Stock: " . $currentStock . "<br>";
-                echo "Direct to Customer: " . $directToCustomer . "<br>";
-                echo "Total Production: " . $totalProduction . "<br>";
-                echo "Lager Quantity: " . $lagerQuantity . "<br>";
-                echo "New Stock: " . $newStock . "<br>";
-
                 // Lagerbestand aktualisieren
                 $updateStockQuery = "UPDATE sind_in SET Bestand = ? WHERE SKUNr = ?";
                 $stmt = mysqli_prepare($db->getConnection(), $updateStockQuery);
@@ -119,6 +111,7 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
 
                 // Erfolgreiche Benachrichtigung in Session speichern
                 $_SESSION['success_message'] = "Auftrag $auftragsNr wurde erfolgreich aktualisiert und Bestellposten auf versandbereit gesetzt.";
+                header('Location: fertigung.php');
                 exit;
             } else {
                 echo "Fehler beim Aktualisieren des Status: " . mysqli_error($db->getConnection());
@@ -131,6 +124,7 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
             if (mysqli_stmt_execute($stmt)) {
                 // Erfolgreiche Benachrichtigung in Session speichern
                 $_SESSION['success_message'] = "Auftrag $auftragsNr wurde erfolgreich aktualisiert.";
+                header('Location: fertigung.php');
                 exit;
             } else {
                 echo "Fehler beim Aktualisieren des Status: " . mysqli_error($db->getConnection());

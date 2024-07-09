@@ -34,11 +34,9 @@ $DBPassword = '';
 $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
-
 if($loginRichtig){
     // Construct the query for the data that we want to see
-    // $query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, SUM(sku.Preis * bestellposten.Quantität) AS Bestellsumme, auftrag.Status';
-    $query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, sku.Preis, bestellposten.Quantität, auftrag.Status';
+    $query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, sku.Preis, bestellposten.Quantität, auftrag.Status, auftrag.AuftragsNr';
     $query .= ' FROM bestellung';
     $query .= ' LEFT JOIN gehoert_zu ON bestellung.BestellNr = gehoert_zu.BestellNr';
     $query .= ' LEFT JOIN auftrag ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr';
@@ -47,7 +45,6 @@ if($loginRichtig){
     $query .= ' WHERE bestellung.'. $userType .'Nr = '. $userID; 
     $query .= ' GROUP BY bestellung.BestellNr';
     $query .= ' LIMIT 1000';
-
 
     // Query the data
     $result = $db->getEntityArray($query);
@@ -60,8 +57,43 @@ if($loginRichtig){
         $bestellposten[$bestellung->BestellNr] = $postenresult;
     }
 }
-?>
 
+// Funktion zur Ermittlung des Status
+function getStatusText($status, $auftragsNr, $db) {
+    // Prüfen, ob die Sendung als versandt gekennzeichnet ist
+    $shippedQuery = 'SELECT COUNT(*) FROM gehoert_zu WHERE AuftragsNr = ? AND Versandt = "Ja"';
+    $stmt = mysqli_prepare($db->getConnection(), $shippedQuery);
+    mysqli_stmt_bind_param($stmt, 's', $auftragsNr);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $shippedCount);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+
+    if ($shippedCount > 0) {
+        return 'Die Bestellung wurde versandt';
+    }
+
+    // Prüfen, ob alle Bestellposten versandbereit sind
+    $readyQuery = 'SELECT COUNT(*) FROM bestellposten WHERE BestellNr IN (SELECT BestellNr FROM gehoert_zu WHERE AuftragsNr = ?) AND versandbereit = 0';
+    $stmt = mysqli_prepare($db->getConnection(), $readyQuery);
+    mysqli_stmt_bind_param($stmt, 's', $auftragsNr);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_bind_result($stmt, $notReadyCount);
+    mysqli_stmt_fetch($stmt);
+    mysqli_stmt_close($stmt);
+
+    if ($notReadyCount == 0) {
+        return 'Die Sendung wird bald versandt';
+    }
+
+    if ($status == 'In Bearbeitung') {
+        return 'In der Fertigung';
+    }
+
+    return 'Der Status wird gerade aktualisiert';
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="de">
@@ -111,14 +143,13 @@ if($loginRichtig){
                 <th>Bestelldatum</th>
                 <th>Bestellnummer</th>
                 <th>Bestellsumme</th>
-                <th>Auftragsstatus</th>
+                <th>Status Ihrer Bestellung</th>
                 <th>Bestelldetails</th>
             </tr>
         </thead>
         <tbody>
             <?php
             if ($result) {
-                // print("<pre>".print_r($bestellposten,true)."</pre>"); debug-ausgabe
                 foreach ($result as $bestellung) {
                     echo '<tr>';
                     echo '<td>' . $bestellung->Bestelldatum . '</td>';
@@ -128,10 +159,9 @@ if($loginRichtig){
                         $sum += $posten->Preis * $posten->Quantität;
                     }
                     echo '<td>' . $sum.' €</td>';
-                    echo '<td>' . $bestellung->Status . '</td>';
+                    echo '<td>' . getStatusText($bestellung->Status, $bestellung->AuftragsNr, $db) . '</td>';
                     echo '<td><a href="bestelldetails.php?BestellNr=' . urlencode($bestellung->BestellNr) . '">Details anzeigen</a></td>';
                     echo '</tr>';
-                  
                 }
             } else {
                 echo '<tr><td colspan="5">Keine Bestellungen gefunden.</td></tr>';
