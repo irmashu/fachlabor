@@ -34,17 +34,20 @@ $DBPassword = '';
 $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
-// Construct the query for the data that we want to see
-$query = 'SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, sku.Name, auftrag.SKUNr, SUM(gehoert_zu.Quantitaet) AS Losgröße, sku.Fertigungsanweisungen, auftrag.Status';
-$query .= ' FROM auftrag';
-$query .= ' LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr';
-$query .= ' LEFT JOIN gehoert_zu ON auftrag.AuftragsNr = gehoert_zu.AuftragsNr';
-$query .= ' WHERE auftrag.FertigungsNr = 1';
-$query .= ' GROUP BY auftrag.AuftragsNr';
-$query .= ' ORDER BY auftrag.AuftragsNr DESC;';
+if ($loginRichtig) {
+    // Construct the query for the data that we want to see
+    $query = 'SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, sku.Name, auftrag.SKUNr, SUM(gehoert_zu.Quantitaet) AS Losgröße, sku.Fertigungsanweisungen, auftrag.Status';
+    $query .= ' FROM auftrag';
+    $query .= ' LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr';
+    $query .= ' LEFT JOIN gehoert_zu ON auftrag.AuftragsNr = gehoert_zu.AuftragsNr';
+    $query .= ' WHERE auftrag.FertigungsNr = '. $userID .' ';
+    $query .= ' GROUP BY auftrag.AuftragsNr';
+    $query .= ' ORDER BY auftrag.AuftragsNr DESC;';
 
-// Query the data
-$result = $db->getEntityArray($query);
+    // Query the data
+    $result = $db->getEntityArray($query);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -58,7 +61,7 @@ $result = $db->getEntityArray($query);
 <body>
     <header>
         <div class="logo">
-            <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
+            <img src="logo.png" alt="AirLimited Logo">
         </div>
         <h1>Willkommen im AirLimited Shop</h1>
         <nav>
