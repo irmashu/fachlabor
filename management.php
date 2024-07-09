@@ -40,7 +40,7 @@ $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 
 // Construct the query for the data that we want to see
 $query = '
-    SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, fertigung.Stadt AS Fertigungsstandort, sku.`Name` ,auftrag.SKUNr, sind_in.Bestand, auftrag.`Status`, 
+    SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, fertigung.Stadt AS Fertigungsstandort, sku.`Name`, auftrag.SKUNr, sind_in.Bestand, auftrag.`Status`, 
     SUM(gehoert_zu.`Quantitaet`) AS Losgroesse, 
     servicepartner.`VIPKunde`
     FROM auftrag
@@ -57,6 +57,7 @@ $query = '
     LEFT JOIN servicepartner
     ON bestellung.ServicepartnerNr = servicepartner.ServicepartnerNr
     WHERE fertigung.FertigungsNr = '. $standort .'
+    AND auftrag.Status != "Fertig"
     GROUP BY auftrag.AuftragsNr
     ORDER BY auftrag.Reihenfolge ASC;
 ';
@@ -178,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <main>
     <?php 
         if($loginRichtig) {
-            echo '<h2 class="content-header">Auftragsübersicht für das Management</h2>';
+            echo '<h2 class="content-header">Auftragsübersicht über aktuell laufende Fertigungsaufträge</h2>';
             echo '<div class="product-content">';
             echo '
                     <form method="GET" action="">
