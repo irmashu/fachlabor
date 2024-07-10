@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // bei richtigea login Daten in Session übernehmen
     if ($loginRichtig) {
         $_SESSION['username'] = $username;
-        $_SESSION['password'] = $password;
+        //$_SESSION['password'] = $password;
         $_SESSION['userType'] = $loginType;
         $_SESSION['userID'] = $id;
     }

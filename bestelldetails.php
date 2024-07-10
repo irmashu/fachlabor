@@ -5,11 +5,9 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $userType = $_SESSION['userType'];
     $userID = $_SESSION['userID'];
 
-    $userTypeText = "Angemeldet als: " . $userType . " ";
-    $userIDText = $userID . "<br>";
+    $loginText = "Angemeldet als: " . $userType . " " . $userID;
 } else {
-    $userTypeText = "Nicht Angemeldet". "<br>";
-    $userIDText = '';
+    $loginText = "Nicht angemeldet". "<br>";
 }
 
 // Get Access to our database
@@ -54,7 +52,7 @@ $result = $db->getEntityArray($query);
 <body>
 <header>
     <div class="logo">
-        <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
+        <img src="logo.png" alt="AirLimited Logo">
     </div>
     <h1>Willkommen im AirLimited Shop!</h1>
     <nav>
@@ -77,8 +75,7 @@ $result = $db->getEntityArray($query);
     <div class="meine-logindaten">
         <p>
             <?php
-                echo $userTypeText;
-                echo $userIDText;
+                echo $loginText;
             ?>
         </p>
     </div>

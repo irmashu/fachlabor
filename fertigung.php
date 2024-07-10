@@ -5,11 +5,9 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $userType = $_SESSION['userType'];
     $userID = $_SESSION['userID'];
 
-    $userTypeText = "Angemeldet als: " . $userType . " ";
-    $userIDText = $userID . "<br>";
+    $loginText = "Angemeldet als: " . $userType . " " . $userID;
 } else {
-    $userTypeText = "Nicht angemeldet". "<br>";
-    $userIDText = '';
+    $loginText = "Nicht angemeldet". "<br>";
 }
 
 // richtigen Login Prüfen
@@ -76,8 +74,7 @@ if ($loginRichtig) {
         <div class="meine-logindaten">
             <p>
                 <?php
-                echo $userTypeText;
-                echo $userIDText;
+                echo $loginText;
                 ?>
             </p>
         </div>
