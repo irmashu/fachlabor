@@ -10,7 +10,7 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $loginText = "Nicht angemeldet". "<br>";
 }
 
-// Get Access to our database
+// Zugang zur Datenbank
 require_once "db_class.php";
 
 $DBServer   = 'localhost';
@@ -28,7 +28,7 @@ if (isset($_GET['BestellNr'])) {
     $bestellnr = 1;
 }
 
-// Construct the query for the data that we want to see
+// Query erstellen
 $query = 'SELECT DISTINCT bestellposten.BestellpostenNr, sku.`Name`, bestellposten.SKUNr, sku.Preis, bestellposten.Quantität, auftrag.`Status`';
 $query .= ' FROM bestellposten';
 $query .= ' LEFT JOIN sku ON bestellposten.SKUNr = sku.SKUNr';
@@ -37,7 +37,6 @@ $query .= ' LEFT JOIN gehoert_zu ON bestellung.BestellNr = gehoert_zu.BestellNr'
 $query .= ' LEFT JOIN auftrag ON gehoert_zu.AuftragsNr = auftrag.AuftragsNr';
 $query .= ' WHERE bestellposten.BestellNr = ' . $bestellnr;
 
-// Query the data
 $result = $db->getEntityArray($query);
 ?>
 

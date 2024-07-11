@@ -10,7 +10,7 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $loginText = "Nicht angemeldet". "<br>";
 }
 
-// Get Access to our database
+// Zugang zur Datenbank
 require_once "db_class.php";
 
 $DBServer   = 'localhost';
@@ -41,7 +41,7 @@ if (!isset($_GET['sort'])) {
     $sort = $_GET['sort'];
 }
 
-// Construct the query for the data that we want to see
+// Query erstellen
 $query = 'SELECT `Foto`, `Name`,  sku.`SKUNr`, `Beschreibung`, `Preis`, sind_in.Bestand ';
 $query .= 'FROM `airlimited`.`sku` ';
 $query .= 'LEFT JOIN sind_in ON sku.SKUNr = sind_in.SKUNr ';
@@ -54,7 +54,6 @@ if ($search_term != '') {
 $query .= 'ORDER BY ' . $sort . ' ';
 $query .= 'LIMIT 1000;';
 
-// Query the data
 $result = $db->getEntityArray($query);
 ?>
 

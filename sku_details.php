@@ -18,7 +18,7 @@
         $sku = 1;
     }
 
-    // Get Access to our database
+    // Zugang zur Datenbank
     require_once "db_class.php";
 
     $DBServer   = 'localhost';
@@ -29,7 +29,7 @@
 	$db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 	$db->connect();
 
-    // Construct the query for the data that we want to see
+    // Query erstellen
     $query = 'SELECT `Name`, sku.`SKUNr`, `Foto`, `Preis` , `Laenge`,  `Breite`,  
                 `Hoehe`,  `Gewicht`,  `Beschreibung`, sind_in.Bestand ';
     $query .= 'FROM `airlimited`.`sku` ';
@@ -37,10 +37,8 @@
     $query .= 'WHERE sku.`SKUNr` = '. $sku . ' ';
     $query .= 'LIMIT 1000;';
 
-    // Query the data
     $result = $db->getEntityArray($query);
     $skuDB = $result[0];
-
 
     // Warenkorb füllen
     // Login überprüfen
