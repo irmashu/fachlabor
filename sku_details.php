@@ -30,7 +30,8 @@
 	$db->connect();
 
     // Construct the query for the data that we want to see
-    $query = 'SELECT `Name`, sku.`SKUNr`, `Foto`, `Preis` , `Laenge`,  `Breite`,  `Hoehe`,  `Gewicht`,  `Beschreibung`, sind_in.Bestand ';
+    $query = 'SELECT `Name`, sku.`SKUNr`, `Foto`, `Preis` , `Laenge`,  `Breite`,  
+                `Hoehe`,  `Gewicht`,  `Beschreibung`, sind_in.Bestand ';
     $query .= 'FROM `airlimited`.`sku` ';
     $query .= 'LEFT JOIN sind_in ON sku.SKUNr = sind_in.SKUNr ';
     $query .= 'WHERE sku.`SKUNr` = '. $sku . ' ';
@@ -80,7 +81,7 @@
 <body>
    <header>
         <div class="logo">
-            <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
+            <img src="logo.png" alt="AirLimited Logo">
         </div>
         <h1>Willkommen im AirLimited Shop!</h1>
         <nav>
