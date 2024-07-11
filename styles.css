@@ -1,4 +1,3 @@
-/* CSS-Stile */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -6,7 +5,7 @@ body {
 }
 
 header {
-  background-color: #77b0e3; /* Blau */
+  background-color: #77b0e3;
   color: white;
   padding: 40px;
   display: flex;
@@ -16,18 +15,18 @@ header {
 
 header h1 {
   margin: 0;
-  margin-top: 20px; /* Abstand zu den Buttons */
+  margin-top: 20px;
 }
 
 h2 {
-  text-align: left; /* Links ausgerichtet */
+  text-align: left;
   margin-left: 20px;
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
 .logo img {
-  height: 40px; /* Höhe des Logos anpassen */
+  height: 40px;
 }
 
 nav {
@@ -39,7 +38,7 @@ nav button {
   background-color: #77b0e3; /* Blau */
   border: none;
   color: white;
-  padding: 20px 40px; /* Verdoppelter Seitenabstand */
+  padding: 20px 40px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -49,24 +48,24 @@ nav button {
 }
 
 nav button:hover {
-  background-color: #5d91c9; /* Dunkleres Blau bei Hover */
+  background-color: #5d91c9;
 }
 
 .onlineshop-btn {
-  background-color: #3a638e; /* Dunklerer Blauton */
+  background-color: #3a638e;
 }
 
 .onlineshop-btn:hover {
-  background-color: #274665; /* Noch dunkleres Blau bei Hover */
+  background-color: #274665;
 }
 
 .login-btn {
-  background-color: white; /* Weiß */
-  color: #333; /* Dunklerer Grauton */
+  background-color: white;
+  color: #333;
 }
 
 .login-btn:hover {
-  background-color: #f2f2f2; /* Helleres Weiß bei Hover */
+  background-color: #f2f2f2;
 }
 
 .management-btn,
@@ -108,12 +107,11 @@ nav button:hover {
   cursor: pointer;
   border-radius: 5px;
   margin-bottom: 10px;
-  opacity: 1; /* Volle Deckkraft */
-  transition: opacity 0.1s ease; /* Sanfter Übergang */
+  opacity: 1;
 }
 
 .login-button button:hover {
-  opacity: 0.8; /* Geringere Deckkraft bei Hover */
+  opacity: 0.8;
 }
 
 .login-button .red {
@@ -142,27 +140,26 @@ nav button:hover {
 }
 
 main {
-  padding: 40px; /* Verdoppelter Seitenabstand */
+  padding: 40px;
 }
 
-/* Index-Seite spezifische CSS-Regeln */
 #index-page {
   display: flex;
 }
 
 #index-page .product-content {
-  flex: 1; /* Flexibles Wachstum des Hauptinhalts */
+  flex: 1;
 }
-/* Index-Seite spezifische CSS-Regeln */
+
 #index-page main {
   display: flex;
-  flex-direction: row; /* Stellen Sie sicher, dass die Navigation und der Inhalt nebeneinander stehen */
+  flex-direction: row;
 }
 
 #index-page .product-nav {
-  width: 25%; /* Breite der Produkt-Navigation */
-  padding-right: 40px; /* Abstand zwischen Produkt-Navigation und Hauptinhalt */
-  margin-right: 40px; /* Zusätzlicher Abstand rechts */
+  width: 25%;
+  padding-right: 40px;
+  margin-right: 40px;
 }
 
 #index-page .product-nav h2 {
@@ -203,30 +200,30 @@ main {
 }
 
 #index-page .product-nav button:hover {
-  background-color: #cc8400; /* Dunkleres Orange bei Hover */
+  background-color: #cc8400;
 }
 
 #index-page .product-nav a {
   text-decoration: none;
-  color: #333; /* Dunklerer Grauton */
+  color: #333;
   font-size: 16px;
 }
 
 #index-page .product-nav a:hover {
-  color: #777; /* Dunklerer Grauton bei Hover */
+  color: #777;
 }
 
 #index-page .product-content {
-  flex: 1; /* Flexibles Wachstum des Hauptinhalts */
+  flex: 1;
   margin-bottom: 100px;
-  overflow-y: auto; /* Scrollen ermöglichen */
+  overflow-y: auto;
 }
 
 #index-page .product {
   display: flex;
   border: 1px solid #ccc;
-  margin-bottom: 40px; /* Verdoppelter Abstand */
-  padding: 20px; /* Verdoppelter Seitenabstand */
+  margin-bottom: 40px;
+  padding: 20px;
 }
 
 #index-page .product a {
@@ -242,18 +239,18 @@ main {
 }
 
 #index-page .product-details {
-  flex: 1; /* Flexibles Wachstum */
+  flex: 1;
 }
 
 #index-page .product-details .price {
   color: #77b0e3; /* Blau */
-  text-align: right; /* Text rechtsbündig ausrichten */
+  text-align: right;
 }
 
 footer {
-  background-color: #f2f2f2; /* Hellerer Grauton */
-  color: #333; /* Dunklerer Grauton */
-  padding: 20px 40px; /* Seitenabstand */
+  background-color: #f2f2f2;
+  color: #333;
+  padding: 20px 40px;
   position: relative;
   bottom: 0;
   width: 100%;
@@ -274,8 +271,8 @@ footer {
 }
 
 .product-details-container table {
-  border-collapse: collapse; /* Zusammenführen der Zellenrahmen */
-  width: 100%; /* Volle Breite der Tabelle */
+  border-collapse: collapse;
+  width: 100%;
 }
 
 .product-details-container td {
@@ -351,17 +348,15 @@ form select:hover {
   font-size: 16px;
   cursor: pointer;
   border-radius: 5px;
-  margin-top: 20px; /* Abstand nach oben erhöhen */
-  margin-bottom: 20px; /* Abstand nach unten */
-  opacity: 1; /* Volle Deckkraft */
-  transition: opacity 0.1s ease; /* Sanfter Übergang */
+  margin-top: 20px;
+  margin-bottom: 20px;
+  opacity: 1;
 }
 
 #saveOrder:hover {
-  opacity: 0.8; /* Geringere Deckkraft bei Hover */
+  opacity: 0.8;
 }
 
-/* Suchfeld und Suchbutton mein konto */
 .search-field {
   padding: 10px;
   border: 1px solid #ccc;

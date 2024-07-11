@@ -53,9 +53,8 @@ function updateStockAndProduction($db, $skuNr, $orderQty, $bestellNr) {
 
          if ($existingOrderResult) {
             // Es gibt einen bestehenden Auftrag, der groß genug ist
-            // Aktualisieren Sie nur den Lagerbestand
             $db->query("UPDATE sind_in SET Bestand = Bestand - $orderQty WHERE SKUNr = '$skuNr'");
-         } else {
+         } else { // Es gibt keine Aufträge / keine Aufträge, die groß genug sind
             // Kundenbestellung entspricht der Differenz
             $customerOrderQty = abs($newStock);
 
@@ -95,7 +94,6 @@ function updateStockAndProduction($db, $skuNr, $orderQty, $bestellNr) {
 
         if ($existingOrderResult) {
             // Es gibt einen bestehenden Auftrag, der groß genug ist
-            // Aktualisieren Sie nur den Lagerbestand
             $db->query("UPDATE sind_in SET Bestand = Bestand - $orderQty WHERE SKUNr = '$skuNr'");
         } else {
             // Es gibt keinen bestehenden Auftrag, der groß genug ist, daher einen neuen Lagerauftrag anlegen
@@ -119,7 +117,7 @@ function updateStockAndProduction($db, $skuNr, $orderQty, $bestellNr) {
         return true; // Rückgabe true in Fall B
     }
 
-    return true; // Rückgabe true für den allgemeinen Fall
+    return true;
 }
 
 if ($loginRichtig) {
@@ -196,7 +194,7 @@ if ($loginRichtig) {
 <body>
    <header>
         <div class="logo">
-            <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
+            <img src="logo.png" alt="AirLimited Logo">
         </div>
         <h1>Willkommen im AirLimited Shop</h1>
         <nav>

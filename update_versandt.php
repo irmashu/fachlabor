@@ -23,7 +23,7 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
             $versandtStatus = $versandtList[$i];
 
             if ($versandtStatus == 'Ja') {
-                // Check if all order items are ready for shipping
+                // Prüfung, ob alle Bestellpositionen versandbereit sind
                 $checkQuery = "SELECT COUNT(*) as count FROM bestellposten WHERE BestellNr = $bestellNr AND versandbereit != 1";
                 $checkResult = $db->getEntityArray($checkQuery);
                 if ($checkResult[0]->count > 0) {

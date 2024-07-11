@@ -122,7 +122,6 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
             mysqli_stmt_bind_param($stmt, 'ss', $status, $auftragsNr);
 
             if (mysqli_stmt_execute($stmt)) {
-                // Erfolgreiche Benachrichtigung in Session speichern
                 $_SESSION['success_message'] = "Auftrag $auftragsNr wurde erfolgreich aktualisiert.";
                 header('Location: fertigung.php');
                 exit;
