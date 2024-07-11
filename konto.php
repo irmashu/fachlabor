@@ -23,7 +23,7 @@ if (!$loginRichtig) {
     $feedback = 'Bitte als Servicepartner oder Lager anmelden';
 }
 
-// Get Access to our database
+// Zugang zur Datenbank
 require_once "db_class.php";
 
 $DBServer   = 'localhost';
@@ -51,7 +51,7 @@ if($loginRichtig){
         $searchTerm = $_GET['search'];
     }
 
-    // Construct the query for the data that we want to see
+    // Query erstellen
     $query = 'SELECT DISTINCT bestellung.Bestelldatum, bestellung.BestellNr, sku.Preis, bestellposten.Quantität, auftrag.Status, auftrag.AuftragsNr';
     $query .= ' FROM bestellung';
     $query .= ' LEFT JOIN gehoert_zu ON bestellung.BestellNr = gehoert_zu.BestellNr';
@@ -68,7 +68,7 @@ if($loginRichtig){
     $query .= ' ORDER BY bestellung.BestellNr DESC';
     $query .= ' LIMIT 1000';
 
-    // Query the data
+    // Query erstellen
     $result = $db->getEntityArray($query);
     $bestellposten = array();
     foreach($result as $bestellung){

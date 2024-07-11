@@ -1,8 +1,8 @@
 <?php
-// Session starten/ fortsetzen
+// Session starten / fortsetzen
 session_start();
 
-// Get Access to our database
+// Zugang zur Datenbank
 require_once "db_class.php";
 
 $DBServer   = 'localhost';
@@ -12,22 +12,6 @@ $DBPassword = '';
 
 $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
-
-//Passwörter Generieren
-/* for ($i=1; $i < 6; $i++) { 
-    $pwd = 'fachlaborMAN'. $i ;
-    echo $pwd . '<br>';
-    $pwd = password_hash($pwd, PASSWORD_DEFAULT);
-    echo $pwd . '<br>';
-
-    $sql = "UPDATE `airlimited`.`management` SET `Passwort`='$pwd' WHERE  `ManagementNr`=$i;";
-    if ($db->query($sql) === TRUE) {
-        echo "Neuer Datensatz erfolgreich erstellt";
-    } else {
-        echo "Fehler: ";
-    }
-} */
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Benutzereingaben sicher abrufen und verarbeiten

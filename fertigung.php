@@ -21,7 +21,7 @@ if (!$loginRichtig) {
     $feedback = 'Bitte als Fertigung anmelden';
 }
 
-// Get Access to our database
+// Zugang zur Datenbank
 require_once "db_class.php";
 
 $DBServer   = 'localhost';
@@ -33,7 +33,7 @@ $db = new DBConnector($DBServer, $DBHost, $DBUser, $DBPassword);
 $db->connect();
 
 if ($loginRichtig) {
-    // Construct the query for the data that we want to see
+    // Query erstellen
     $query = 'SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, sku.Name, auftrag.SKUNr, SUM(gehoert_zu.Quantitaet) AS Losgröße, sku.Fertigungsanweisungen, auftrag.Status';
     $query .= ' FROM auftrag';
     $query .= ' LEFT JOIN sku ON auftrag.SKUNr = sku.SKUNr';
@@ -42,7 +42,6 @@ if ($loginRichtig) {
     $query .= ' GROUP BY auftrag.AuftragsNr';
     $query .= ' ORDER BY auftrag.AuftragsNr DESC;';
 
-    // Query the data
     $result = $db->getEntityArray($query);
 }
 

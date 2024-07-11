@@ -10,7 +10,7 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $loginText = "Nicht angemeldet". "<br>";
 }
 
-// Get Access to our database
+// Zugang zur Datenbank
 require_once "db_class.php";
 
 $DBServer   = 'localhost';
@@ -38,7 +38,7 @@ $standort = isset($_GET['standort']) ? $_GET['standort'] : 1;
 // Suchfeld
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 
-// Construct the query for the data that we want to see
+// Query erstellen
 $query = '
     SELECT auftrag.Reihenfolge, auftrag.AuftragsNr, fertigung.Stadt AS Fertigungsstandort, sku.`Name`, auftrag.SKUNr, sind_in.Bestand, auftrag.`Status`, 
     SUM(gehoert_zu.`Quantitaet`) AS Losgroesse, 
@@ -62,10 +62,9 @@ $query = '
     ORDER BY auftrag.Reihenfolge ASC;
 ';
 
-// Query the data
 $auftragsResult = $db->getEntityArray($query);
 
-// Query for the service partners
+// Query für Servicepartner
 $servicePartnerQuery = '
     SELECT ServicepartnerNr, Firmenname, `Nachname Kontaktperson`, `Vorname Kontaktperson`, Straße, HausNr, Stadt, PLZ, TelefonNr, `E-Mail`, VIPKunde
     FROM servicepartner
@@ -75,7 +74,7 @@ if ($searchTerm != '') {
 }
 $servicePartnerResult = $db->getEntityArray($servicePartnerQuery);
 
-// Update service partner data
+// Update Servicepartner Daten
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $error = '';
     if (isset($_POST['update_service_partner'])) {
@@ -155,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
    <header>
         <div class="logo">
-            <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
+            <img src="logo.png" alt="AirLimited Logo"> 
         </div>
         <h1>Willkommen im AirLimited Shop</h1>
         <nav>

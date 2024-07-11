@@ -12,7 +12,7 @@ if (isset($_SESSION['userType']) && isset($_SESSION['userID'])) {
     $userIDText = '';
 }
 
-// Get Access to our database
+// Zugang zur Datenbank
 require_once "db_class.php";
 
 $DBServer   = 'localhost';
@@ -27,7 +27,7 @@ if (isset($_GET['AuftragsNr'])) {
     $AuftragsNr = (int)$_GET['AuftragsNr'];
 }
 
-// Construct the query for the data that we want to see
+// Query erstellen
 $query = 'SELECT sku.Name, auftrag.SKUNr, gehoert_zu.BestellNr, bestellung.ServicepartnerNr, servicepartner.Firmenname, 
     CONCAT(servicepartner.Straße, " " , servicepartner.HausNr, ", ", servicepartner.PLZ, " ", servicepartner.Stadt) AS ServicepartnerAdresse,
     bestellung.LagerNr, lager.Lagerstandort,
@@ -58,7 +58,7 @@ unset($_SESSION['feedback']);
 <body>
    <header>
         <div class="logo">
-            <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
+            <img src="logo.png" alt="AirLimited Logo">
         </div>
         <h1>Willkommen im AirLimited Shop</h1>
         <nav>

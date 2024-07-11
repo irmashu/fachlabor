@@ -12,7 +12,7 @@
         $userIDText = '';
     }
 
-    // Get Access to our database
+    // Datenbankzugang
     require_once "db_class.php";
 
     $DBServer   = 'localhost';
@@ -26,10 +26,8 @@
 
     if (isset($_GET['AuftragsNr'])) {
         $auftragsNr = (int)$_GET['AuftragsNr'];
-        //echo $auftragsNr;
 
-
-        // Construct the query for the data that we want to see
+        // Query erstellen
 
         $query = 'SELECT fertigung.Stadt, sku.Name, auftrag.SKUNr, gehoert_zu.Quantitaet, servicepartner.Firmenname, lager.Lagerstandort, servicepartner.VIPKunde, lager.Lagerstandort
         FROM gehoert_zu
@@ -41,8 +39,6 @@
         LEFT JOIN fertigung ON auftrag.FertigungsNr = fertigung.FertigungsNr
         WHERE gehoert_zu.AuftragsNr = ' . $auftragsNr;
 
-
-        // Query the data
         $result = $db->getEntityArray($query);
     }
 ?>
@@ -58,7 +54,7 @@
 <body>
    <header>
         <div class="logo">
-            <img src="logo.png" alt="AirLimited Logo"> <!-- Hier dein Logo einfügen -->
+            <img src="logo.png" alt="AirLimited Logo">
         </div>
         <h1>Willkommen im AirLimited Shop</h1>
         <nav>
