@@ -60,7 +60,7 @@ if (isset($_SESSION['userType']) && $_SESSION['userType'] == 'fertigung') {
                 mysqli_stmt_fetch($stmt);
                 mysqli_stmt_close($stmt);
 
-                // Berechnen der Kundenbestellmenge korrekt aus der Tabelle bestellposten
+                // Berechnen der Kundenbestellmenge aus der Tabelle bestellposten
                 $customerOrderQuantityQuery = "SELECT SUM(bp.Quantität) as customerQuantity
                                                FROM bestellposten bp
                                                JOIN gehoert_zu g ON bp.BestellNr = g.BestellNr

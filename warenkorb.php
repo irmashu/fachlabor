@@ -39,26 +39,44 @@ function updateStockAndProduction($db, $skuNr, $orderQty, $bestellNr) {
 
     // Fall C: Lagerbestand - Bestellmenge ist kleiner als 0, neuer Kundenauftrag und Lagerbestellung nötig
     if ($newStock < 0) {
-        // Kundenbestellung entspricht der Differenz
-        $customerOrderQty = abs($newStock);
 
-        // Erstellen des neuen Produktionsauftrags
-        $db->query("INSERT INTO auftrag (Auftragsdatum, Status, SKUNr, FertigungsNr) VALUES ('$aktuellesDatumZeit', 'In Bearbeitung', '$skuNr', '$fertigungsNr')");
-        $productionOrderId = $db->getAutoIncID();
+          // Überprüfen, ob es bereits einen offenen Produktionsauftrag für diese SKU gibt, der groß genug ist
+          $existingOrderQuery = "
+          SELECT a.AuftragsNr, SUM(g.Quantitaet) AS Gesamtmenge
+          FROM auftrag a
+          JOIN gehoert_zu g ON a.AuftragsNr = g.AuftragsNr
+          WHERE a.SKUNr = '$skuNr' AND a.Status = 'In Bearbeitung'
+          GROUP BY a.AuftragsNr
+          HAVING Gesamtmenge >= $batchSize
+        ";
+         $existingOrderResult = $db->getEntityArray($existingOrderQuery);
 
-        // Verknüpfen des Produktionsauftrags mit der Kundenbestellung
-        $db->query("INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($productionOrderId, $bestellNr, $customerOrderQty)");
+         if ($existingOrderResult) {
+            // Es gibt einen bestehenden Auftrag, der groß genug ist
+            // Aktualisieren Sie nur den Lagerbestand
+            $db->query("UPDATE sind_in SET Bestand = Bestand - $orderQty WHERE SKUNr = '$skuNr'");
+         } else {
+            // Kundenbestellung entspricht der Differenz
+            $customerOrderQty = abs($newStock);
 
-        // Erstellen einer neuen Lagerbestellung
-        $db->query("INSERT INTO bestellung (Bestelldatum, lagerNr) VALUES ('$aktuellesDatumZeit', '$lagerNr')");
-        $lagerBestellNr = $db->getAutoIncID();
+            // Erstellen des neuen Produktionsauftrags
+            $db->query("INSERT INTO auftrag (Auftragsdatum, Status, SKUNr, FertigungsNr) VALUES ('$aktuellesDatumZeit', 'In Bearbeitung', '$skuNr', '$fertigungsNr')");
+            $productionOrderId = $db->getAutoIncID();
 
-        // Verknüpfen des Produktionsauftrags mit der Lagerbestellung
-        $db->query("INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($productionOrderId, $lagerBestellNr, $batchSize)");
+            // Verknüpfen des Produktionsauftrags mit der Kundenbestellung
+            $db->query("INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($productionOrderId, $bestellNr, $customerOrderQty)");
 
-        // Hinzufügen des Bestellpostens zur Lagerbestellung
-        $db->query("INSERT INTO bestellposten (BestellNr, Quantität, SKUNr) VALUES ($lagerBestellNr, $batchSize, '$skuNr')");
+            // Erstellen einer neuen Lagerbestellung
+            $db->query("INSERT INTO bestellung (Bestelldatum, lagerNr) VALUES ('$aktuellesDatumZeit', '$lagerNr')");
+            $lagerBestellNr = $db->getAutoIncID();
 
+            // Verknüpfen des Produktionsauftrags mit der Lagerbestellung
+            $db->query("INSERT INTO gehoert_zu (AuftragsNr, BestellNr, Quantitaet) VALUES ($productionOrderId, $lagerBestellNr, $batchSize)");
+
+            // Hinzufügen des Bestellpostens zur Lagerbestellung
+            $db->query("INSERT INTO bestellposten (BestellNr, Quantität, SKUNr) VALUES ($lagerBestellNr, $batchSize, '$skuNr')");
+         }
+      
         return false;
     }
 
