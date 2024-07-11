@@ -2,7 +2,7 @@
 -- Host:                         localhost
 -- Server-Version:               10.4.32-MariaDB - mariadb.org binary distribution
 -- Server-Betriebssystem:        Win64
--- HeidiSQL Version:             12.7.0.6850
+-- HeidiSQL Version:             12.6.0.6765
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -34,14 +34,16 @@ CREATE TABLE IF NOT EXISTS `auftrag` (
   KEY `Reihenfolge` (`Reihenfolge`),
   CONSTRAINT `auftrag FertigungsNr` FOREIGN KEY (`FertigungsNr`) REFERENCES `fertigung` (`FertigungsNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `auftrag SKUNr1` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.auftrag: ~3 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.auftrag: ~4 rows (ungefähr)
 DELETE FROM `auftrag`;
 INSERT INTO `auftrag` (`AuftragsNr`, `Auftragsdatum`, `Status`, `Enddatum`, `FertigungsNr`, `SKUNr`, `Reihenfolge`) VALUES
 	(68, '2024-07-09 01:33:22', 'In Bearbeitung', NULL, 7, 1, 1),
-	(69, '2024-07-09 01:34:47', 'Fertig', '2024-07-09 01:35:08', 1, 13, NULL),
-	(70, '2024-07-09 15:09:59', 'In Bearbeitung', NULL, 9, 5, NULL);
+	(69, '2024-07-09 01:34:47', 'In Bearbeitung', '2024-07-09 01:35:08', 1, 13, NULL),
+	(70, '2024-07-09 15:09:59', 'In Bearbeitung', NULL, 9, 5, NULL),
+	(71, '2024-07-09 23:16:51', 'In Bearbeitung', NULL, 8, 4, NULL),
+	(72, '2024-07-11 21:07:00', 'In Bearbeitung', NULL, 7, 2, 2);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellposten
 CREATE TABLE IF NOT EXISTS `bestellposten` (
@@ -55,9 +57,9 @@ CREATE TABLE IF NOT EXISTS `bestellposten` (
   KEY `bestellposten_BestellNr` (`BestellNr`),
   CONSTRAINT `SKUNr` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `bestellposten_BestellNr` FOREIGN KEY (`BestellNr`) REFERENCES `bestellung` (`BestellNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=136 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=146 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.bestellposten: ~10 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.bestellposten: ~12 rows (ungefähr)
 DELETE FROM `bestellposten`;
 INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUNr`, `versandbereit`) VALUES
 	(121, 130, 3, 1, 1),
@@ -69,7 +71,13 @@ INSERT INTO `bestellposten` (`BestellNr`, `BestellpostenNr`, `Quantität`, `SKUN
 	(127, 136, 3, 5, 1),
 	(128, 137, 80, 5, 0),
 	(127, 138, 7, 24, 1),
-	(127, 139, 2, 39, 1);
+	(127, 139, 2, 39, 1),
+	(129, 140, 10, 1, 1),
+	(129, 141, 4, 4, 1),
+	(130, 142, 100, 4, 0),
+	(131, 143, 5, 1, 1),
+	(132, 144, 50, 2, 0),
+	(133, 145, 50, 2, 0);
 
 -- Exportiere Struktur von Tabelle airlimited.bestellung
 CREATE TABLE IF NOT EXISTS `bestellung` (
@@ -82,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `bestellung` (
   KEY `bestellung ServicepartnerNr` (`ServicepartnerNr`),
   CONSTRAINT `bestellung LagerNr` FOREIGN KEY (`LagerNr`) REFERENCES `lager` (`LagerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `bestellung ServicepartnerNr` FOREIGN KEY (`ServicepartnerNr`) REFERENCES `servicepartner` (`ServicepartnerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- Exportiere Daten aus Tabelle airlimited.bestellung: ~8 rows (ungefähr)
 DELETE FROM `bestellung`;
@@ -94,7 +102,12 @@ INSERT INTO `bestellung` (`BestellNr`, `Bestelldatum`, `ServicepartnerNr`, `Lage
 	(125, '2024-07-09 01:34:47', NULL, 1),
 	(126, '2024-07-09 01:37:44', 1, NULL),
 	(127, '2024-07-09 15:09:59', NULL, 5),
-	(128, '2024-07-09 15:09:59', NULL, 9);
+	(128, '2024-07-09 15:09:59', NULL, 9),
+	(129, '2024-07-09 23:16:51', 1, NULL),
+	(130, '2024-07-09 23:16:51', NULL, 8),
+	(131, '2024-07-11 21:06:29', 1, NULL),
+	(132, '2024-07-11 21:07:00', 1, NULL),
+	(133, '2024-07-11 21:07:00', NULL, 7);
 
 -- Exportiere Struktur von Tabelle airlimited.fertigung
 CREATE TABLE IF NOT EXISTS `fertigung` (
@@ -142,7 +155,10 @@ INSERT INTO `gehoert_zu` (`AuftragsNr`, `BestellNr`, `Quantitaet`, `Versandt`) V
 	(68, 123, 20, 'Nein'),
 	(69, 124, 132, 'Nein'),
 	(69, 125, 60, 'Nein'),
-	(70, 128, 80, 'Nein');
+	(70, 128, 80, 'Nein'),
+	(71, 130, 100, 'Nein'),
+	(72, 132, 4, 'Nein'),
+	(72, 133, 50, 'Nein');
 
 -- Exportiere Struktur von Tabelle airlimited.lager
 CREATE TABLE IF NOT EXISTS `lager` (
@@ -261,7 +277,7 @@ INSERT INTO `sind_in` (`LagerNr`, `SKUNr`, `Bestand`) VALUES
 	(6, 49, 86),
 	(6, 50, 57),
 	(6, 58, 46),
-	(7, 1, 82),
+	(7, 1, 67),
 	(7, 2, 46),
 	(7, 27, 33),
 	(7, 32, 14),
@@ -269,7 +285,7 @@ INSERT INTO `sind_in` (`LagerNr`, `SKUNr`, `Bestand`) VALUES
 	(7, 44, 35),
 	(7, 46, 36),
 	(7, 60, 36),
-	(8, 4, 15),
+	(8, 4, 11),
 	(8, 7, 77),
 	(8, 8, 36),
 	(8, 9, 74),
@@ -396,12 +412,10 @@ CREATE TABLE IF NOT EXISTS `warenkorb` (
   CONSTRAINT `warenkorb_LagerNr` FOREIGN KEY (`LagerNr`) REFERENCES `lager` (`LagerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `warenkorb_SKUNr` FOREIGN KEY (`SKUNr`) REFERENCES `sku` (`SKUNr`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `warenkorb_ServicepartnerNr` FOREIGN KEY (`ServicepartnerNr`) REFERENCES `servicepartner` (`ServicepartnerNr`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- Exportiere Daten aus Tabelle airlimited.warenkorb: ~1 rows (ungefähr)
+-- Exportiere Daten aus Tabelle airlimited.warenkorb: ~0 rows (ungefähr)
 DELETE FROM `warenkorb`;
-INSERT INTO `warenkorb` (`WarenkorbNr`, `ServicepartnerNr`, `LagerNr`, `SKUNr`, `Menge`) VALUES
-	(84, 1, NULL, 4, 4);
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
